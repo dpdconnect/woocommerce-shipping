@@ -1,0 +1,71 @@
+#map {
+    height: 400px!important;
+    width: 100%!important;
+}
+
+.selected-parcelshop {
+    list-style-type: none;
+    margin: 0;
+}
+
+#parcelshops .button.parcelLink {
+    background-color: #DF0033;
+    color: white;
+    margin-bottom: 3px;
+    margin: 10px 0 10px 0;
+    padding: 10px;
+}
+
+#parcelshops img {
+    display: inline;
+}
+
+.modal-week-row {
+    border-bottom: 1px solid #ddd;
+    padding: 5px 0;
+}
+
+.info-modal-content {
+    max-width: 400px;
+    min-width: 300px;
+}
+
+.gm-style-iw.gm-style-iw-c,
+.gm-style-iw-d {
+    max-width: 500px!important;
+
+}
+
+#parcelshops .modal-day {
+    float: left;
+    margin-right: 10px;
+    display: inline-block;
+    width: 33.3%;
+}
+
+#parcelshops .model-week-row .modal-day p {
+    margin-bottom: 0;
+}
+
+.info-modal-content p {
+    margin: 0;
+}
+
+.modal-title {
+    float: right;
+    font-size: 20px;
+    margin: 10px 0px 0px 10px;
+}
+
+.dpdCheckoutRow td {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sidebar_single {
+    margin-top: 10px;
+}
+
+.mapContainer {
+    margin-bottom: 20px;
+}

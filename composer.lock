@@ -1,0 +1,63 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "252190b278c461d371c7466936b8420d",
+    "packages": [
+        {
+            "name": "dpdconnect/php-sdk",
+            "version": "0.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dpdconnect/php-sdk.git",
+                "reference": "d27641fe81ef9b56d348587ba89eb02601be7c29"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/d27641fe81ef9b56d348587ba89eb02601be7c29",
+                "reference": "d27641fe81ef9b56d348587ba89eb02601be7c29",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^5.5 || ^7.0"
+            },
+            "require-dev": {
+                "donatj/mock-webserver": "^2.0",
+                "overtrue/phplint": "^1.1",
+                "phpunit/phpunit": "~6.5.0",
+                "squizlabs/php_codesniffer": "^3.0@dev",
+                "symfony/yaml": "^4.2"
+            },
+            "type": "magento2-library",
+            "autoload": {
+                "psr-4": {
+                    "DpdConnect\\Sdk\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "DPD",
+                    "email": "pluginsupport@dpd.nl",
+                    "homepage": "http://www.dpd.nl"
+                }
+            ],
+            "description": "DPD Magento2 Shipping extension",
+            "time": "2019-07-11T12:14:23+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

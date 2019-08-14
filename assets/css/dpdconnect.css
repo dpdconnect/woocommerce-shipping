@@ -1,0 +1,55 @@
+.dpdconnect_connected, .dpdconnect_not_connected {
+	background: #34a52f;
+    font-size: .9em;
+    border-radius: 3px;
+    padding: .3em;
+    display: inline-block;
+    margin-left: 10px;
+    color: #FFF;
+}
+
+.dpdconnect_not_connected {
+	background: #ff4c4c;
+}
+
+#dpdconnect-shipping-label .inside {
+    margin: 0;
+    padding: 0;
+}
+
+.button_dpdconnect_full{
+    width: 100%;
+    text-align: center;
+}
+
+.dpdTag {
+    padding: 5px 10px 5px 10px;
+    color: white;
+    background-color: gray;
+    border-radius: 4px 4px;
+    margin-right: 5px;
+}
+
+.dpdTag.request {
+    background-color: #e79520;
+}
+
+.dpdTag.queued {
+    background-color: #e79520;
+}
+
+.dpdTag.processing {
+    background-color: #e79520;
+}
+
+.dpdTag.success {
+    background-color: #3C933C;
+}
+
+.dpdTag.failed {
+    background-color: #E3503E;
+}
+
+.dpdTag.partial {
+    background-color: #E3503E;
+}

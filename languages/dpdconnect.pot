@@ -1,0 +1,873 @@
+# Copyright (C) 2019 DPD / X-Interactive.nl
+# This file is distributed under the same license as the DPD Connect for WooCommerce plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: DPD Connect for WooCommerce 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dpdconnect\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2019-07-11T12:36:12+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.2.0\n"
+"X-Domain: dpdconnect\n"
+
+#. Plugin Name of the plugin
+msgid "DPD Connect for WooCommerce"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "http://www.dpd.nl"
+msgstr ""
+
+#. Description of the plugin
+msgid "Enables the posibility to integrate DPD Parcel Shop Finder service into your e-commerce store with a breeze."
+msgstr ""
+
+#. Author of the plugin
+msgid "DPD / X-Interactive.nl"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://github.com/dpdconnect"
+msgstr ""
+
+#: classes/OrderValidator.php:30
+msgid "Configure your company name in DPD Connect settings"
+msgstr ""
+
+#: classes/OrderValidator.php:36
+msgid "Configure your company address in DPD Connect settings"
+msgstr ""
+
+#: classes/OrderValidator.php:42
+msgid "Configure your company country code in DPD Connect settings"
+msgstr ""
+
+#: classes/OrderValidator.php:48
+msgid "Configure your company postal code in DPD Connect settings"
+msgstr ""
+
+#: classes/OrderValidator.php:54
+msgid "Configure your company city in DPD Connect settings"
+msgstr ""
+
+#: classes/OrderValidator.php:60
+msgid "Configure your company phone in DPD Connect settings"
+msgstr ""
+
+#: classes/OrderValidator.php:66
+msgid "Configure your company email in DPD Connect settings"
+msgstr ""
+
+#: classes/OrderValidator.php:72
+msgid "Configure your depot in DPD Connect settings"
+msgstr ""
+
+#: classes/OrderValidator.php:81
+msgid "First name is required for sender"
+msgstr ""
+
+#: classes/OrderValidator.php:87
+msgid "Last name is required for sender"
+msgstr ""
+
+#: classes/OrderValidator.php:93
+msgid "Address is required for sender"
+msgstr ""
+
+#: classes/OrderValidator.php:99
+msgid "Country is required for sender"
+msgstr ""
+
+#: classes/OrderValidator.php:105
+msgid "City is required for sender"
+msgstr ""
+
+#: classes/OrderValidator.php:111
+msgid "Postalcode is required for sender"
+msgstr ""
+
+#: classes/OrderValidator.php:118
+msgid "Multiple parcels is not supported for %s"
+msgstr ""
+
+#. translators: %s: ID of product
+#: classes/OrderValidator.php:130
+msgid "Product name is required on all products. Check product with ID %s"
+msgstr ""
+
+#. translators: %s: Weight of product
+#: classes/OrderValidator.php:137
+msgid "Product weight is missing for: %s"
+msgstr ""
+
+#. translators: 1: Name of product 2: ID of product
+#: classes/OrderValidator.php:144
+msgid "Product country of origin is missing for: %1$s . Either set a country for <a href=\"wp-admin/post.php?post=%2$s&action=edit\">this product</a> in its shipping attributes or configure a <a href=\"/wp-admin/admin.php?page=dpdconnect\">default country</a> for your entire shop."
+msgstr ""
+
+#: classes/JobView.php:18
+msgid "Job details"
+msgstr ""
+
+#: classes/enums/BatchStatus.php:21
+#: classes/enums/JobStatus.php:17
+msgid "Request"
+msgstr ""
+
+#: classes/enums/BatchStatus.php:23
+#: classes/enums/JobStatus.php:19
+msgid "Queued"
+msgstr ""
+
+#: classes/enums/BatchStatus.php:25
+#: classes/enums/JobStatus.php:21
+msgid "Processing"
+msgstr ""
+
+#: classes/enums/BatchStatus.php:27
+#: classes/enums/JobStatus.php:23
+msgid "Success"
+msgstr ""
+
+#: classes/enums/BatchStatus.php:29
+#: classes/enums/JobStatus.php:25
+msgid "Failed"
+msgstr ""
+
+#: classes/enums/BatchStatus.php:31
+msgid "Partially failed"
+msgstr ""
+
+#: classes/JobList.php:15
+msgid "Job"
+msgstr ""
+
+#: classes/JobList.php:16
+#: classes/Settings/Menu.php:54
+msgid "Jobs"
+msgstr ""
+
+#: classes/JobList.php:94
+msgid "And %s more errors."
+msgstr ""
+
+#: classes/JobList.php:118
+#: classes/BatchList.php:91
+msgid "Date"
+msgstr ""
+
+#: classes/JobList.php:119
+msgid "Batch ID"
+msgstr ""
+
+#: classes/JobList.php:120
+msgid "Order ID"
+msgstr ""
+
+#: classes/JobList.php:121
+#: classes/BatchList.php:95
+msgid "Status"
+msgstr ""
+
+#: classes/JobList.php:122
+msgid "Job ID"
+msgstr ""
+
+#: classes/JobList.php:123
+msgid "Error"
+msgstr ""
+
+#: classes/JobList.php:124
+msgid "Message"
+msgstr ""
+
+#: classes/JobList.php:125
+#: classes/BatchList.php:96
+msgid "Action"
+msgstr ""
+
+#: classes/JobList.php:150
+msgid "View details"
+msgstr ""
+
+#: classes/Settings/Company.php:24
+msgid "Company information"
+msgstr ""
+
+#: classes/Settings/Company.php:32
+msgid "Company name"
+msgstr ""
+
+#: classes/Settings/Company.php:46
+msgid "Company address"
+msgstr ""
+
+#: classes/Settings/Company.php:60
+msgid "Company postal code"
+msgstr ""
+
+#: classes/Settings/Company.php:74
+msgid "Company city"
+msgstr ""
+
+#: classes/Settings/Company.php:88
+msgid "Company country Code"
+msgstr ""
+
+#: classes/Settings/Company.php:103
+msgid "Company phone number"
+msgstr ""
+
+#: classes/Settings/Company.php:117
+msgid "Company email"
+msgstr ""
+
+#: classes/Settings/Company.php:153
+msgid "Company information will be used as sender on label requests."
+msgstr ""
+
+#: classes/Settings/Parcelshop.php:24
+msgid "Parcelshop settings"
+msgstr ""
+
+#: classes/Settings/Parcelshop.php:32
+msgid "Google Maps Static & Javascript API key"
+msgstr ""
+
+#: classes/Settings/Parcelshop.php:41
+msgid "This key is sent to your visitors browser and is used to render Google Maps in the checkout so visitors can select a parcelshop."
+msgstr ""
+
+#: classes/Settings/Parcelshop.php:48
+msgid "Google Maps Geocoding API key"
+msgstr ""
+
+#: classes/Settings/Parcelshop.php:57
+msgid "This key is used for requesting Geographical coordinates based on zipcodes. This key remains on the server."
+msgstr ""
+
+#: classes/Settings/Parcelshop.php:85
+msgid "Google Maps API keys can be obtained directly from Google. You can use the same key for both fields, which however will result in reaching Googles rate limit more quickly."
+msgstr ""
+
+#: classes/Settings/Advanced.php:26
+msgid "DPD Advanced settings"
+msgstr ""
+
+#: classes/Settings/Advanced.php:34
+msgid "Connect URL"
+msgstr ""
+
+#: classes/Settings/Advanced.php:43
+msgid "The url to DPD Connect"
+msgstr ""
+
+#: classes/Settings/Advanced.php:50
+msgid "Callback URL"
+msgstr ""
+
+#: classes/Settings/Advanced.php:59
+msgid "Responses for async requests will be sent to this base url"
+msgstr ""
+
+#: classes/Settings/Advanced.php:66
+msgid "Async treshold"
+msgstr ""
+
+#: classes/Settings/Advanced.php:75
+msgid "Labels requested in bulk will be handled immediately if the amount is below this treshold. The maximum treshold is %s."
+msgstr ""
+
+#: classes/Settings/Advanced.php:130
+msgid "These settings are for debugging purposes. You may leave these settings empty."
+msgstr ""
+
+#: classes/Settings/Product.php:24
+msgid "Product attributes"
+msgstr ""
+
+#: classes/Settings/Product.php:32
+msgid "Default Harmonized System Code"
+msgstr ""
+
+#: classes/Settings/Product.php:46
+msgid "Default Country of Origin"
+msgstr ""
+
+#: classes/Settings/Menu.php:33
+msgid "Settings"
+msgstr ""
+
+#: classes/Settings/Menu.php:43
+#: classes/BatchList.php:14
+msgid "Batches"
+msgstr ""
+
+#: classes/Settings/Menu.php:109
+msgid "Settings Saved"
+msgstr ""
+
+#: classes/Settings/Menu.php:126
+msgid "General"
+msgstr ""
+
+#: classes/Settings/Menu.php:127
+msgid "Credentials"
+msgstr ""
+
+#: classes/Settings/Menu.php:128
+msgid "Company"
+msgstr ""
+
+#: classes/Settings/Menu.php:129
+msgid "Product"
+msgstr ""
+
+#: classes/Settings/Menu.php:130
+msgid "Parcelshop"
+msgstr ""
+
+#: classes/Settings/Menu.php:131
+msgid "Advanced"
+msgstr ""
+
+#: classes/Settings/Menu.php:170
+msgid "Save Settings"
+msgstr ""
+
+#: classes/Settings/General.php:24
+msgid "General settings"
+msgstr ""
+
+#: classes/Settings/General.php:32
+msgid "DPD Account type"
+msgstr ""
+
+#: classes/Settings/General.php:46
+msgid "DPD Depot"
+msgstr ""
+
+#: classes/Settings/General.php:60
+msgid " DPD Label Format"
+msgstr ""
+
+#: classes/Settings/General.php:106
+msgid "A4 format"
+msgstr ""
+
+#: classes/Settings/General.php:109
+msgid "A6 format"
+msgstr ""
+
+#: classes/Settings/General.php:113
+msgid "Choose the correct label format for your store."
+msgstr ""
+
+#: classes/Settings/General.php:129
+msgid "B2C"
+msgstr ""
+
+#: classes/Settings/General.php:132
+msgid "B2B"
+msgstr ""
+
+#: classes/Settings/General.php:136
+msgid "Choose the correct account type for your store."
+msgstr ""
+
+#: classes/Settings/Credentials.php:24
+msgid "DPD Connect Credentials"
+msgstr ""
+
+#: classes/Settings/Credentials.php:32
+msgid "Connect Username"
+msgstr ""
+
+#: classes/Settings/Credentials.php:47
+msgid "Connect Password"
+msgstr ""
+
+#: classes/Handlers/OrderColumn.php:20
+msgid "DPD Shipping label"
+msgstr ""
+
+#: classes/Handlers/OrderColumn.php:21
+msgid "DPD Return label"
+msgstr ""
+
+#: classes/Handlers/OrderColumn.php:22
+msgid "DPD Saturday label"
+msgstr ""
+
+#: classes/Handlers/OrderColumn.php:45
+#: classes/Handlers/OrderColumn.php:71
+#: classes/Handlers/OrderColumn.php:97
+msgid "View job"
+msgstr ""
+
+#: classes/Handlers/OrderColumn.php:60
+#: classes/Handlers/OrderColumn.php:86
+#: classes/Handlers/OrderColumn.php:112
+msgid "Download PDF Label"
+msgstr ""
+
+#: classes/Handlers/OrderColumn.php:60
+#: classes/Handlers/OrderColumn.php:86
+#: classes/Handlers/OrderColumn.php:112
+msgid "PDF"
+msgstr ""
+
+#: classes/Handlers/Pickup.php:39
+msgid "Select parcelshop"
+msgstr ""
+
+#: classes/Handlers/Pickup.php:40
+msgid "Change parcelshop"
+msgstr ""
+
+#: classes/Handlers/Pickup.php:41
+msgid "Close"
+msgstr ""
+
+#: classes/Handlers/Pickup.php:42
+msgid "Closed"
+msgstr ""
+
+#: classes/Handlers/Pickup.php:59
+msgid "Parcel Shop"
+msgstr ""
+
+#: classes/Handlers/Pickup.php:62
+msgid "Choose your DPD Parcel Shop"
+msgstr ""
+
+#: classes/Handlers/DownloadLabelBox.php:17
+msgid "DPD Connect Download Labels"
+msgstr ""
+
+#: classes/Handlers/DownloadLabelBox.php:40
+msgid "Shipping label"
+msgstr ""
+
+#: classes/Handlers/DownloadLabelBox.php:47
+msgid "Return label"
+msgstr ""
+
+#: classes/Handlers/DownloadLabelBox.php:54
+msgid "Saturday label"
+msgstr ""
+
+#: classes/Handlers/ShippingAttributes.php:19
+msgid "Harmonized System Code"
+msgstr ""
+
+#: classes/Handlers/ShippingAttributes.php:20
+msgid "e.g.: 9030"
+msgstr ""
+
+#: classes/Handlers/ShippingAttributes.php:22
+msgid "Harmonized System Codes, to be used in customs data"
+msgstr ""
+
+#: classes/Handlers/ShippingAttributes.php:27
+msgid "Customs Value"
+msgstr ""
+
+#: classes/Handlers/ShippingAttributes.php:28
+msgid "e.g.: 29.50"
+msgstr ""
+
+#: classes/Handlers/ShippingAttributes.php:30
+msgid "Value used by customs to determine the import duty"
+msgstr ""
+
+#: classes/Handlers/ShippingAttributes.php:35
+msgid "Country of Origin"
+msgstr ""
+
+#: classes/Handlers/ShippingAttributes.php:36
+msgid "e.g.: NL"
+msgstr ""
+
+#: classes/Handlers/ShippingAttributes.php:38
+msgid "ISO 3166-1 alpha-2 code of the Country of origin"
+msgstr ""
+
+#: classes/Handlers/GenerateLabelBox.php:18
+msgid "DPD Connect Generate Labels"
+msgstr ""
+
+#: classes/Handlers/GenerateLabelBox.php:51
+msgid "Request shipping labels from DPD Connect. Shipments can be seperated in multiple parcels by specifying the amount of needed labels (Only available for supported EU destinations)."
+msgstr ""
+
+#: classes/Handlers/GenerateLabelBox.php:56
+msgid "Shipping"
+msgstr ""
+
+#: classes/Handlers/GenerateLabelBox.php:60
+msgid "Return"
+msgstr ""
+
+#: classes/Handlers/GenerateLabelBox.php:65
+msgid "Saturday"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Pickup.php:30
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:17
+msgid "DPD Pickup"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Pickup.php:31
+msgid "B2C Pickup DPD shipment"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Pickup.php:79
+#: classes/shippingmethods/DPD_E10.php:70
+#: classes/shippingmethods/DPD_E12.php:71
+#: classes/shippingmethods/DPD_Predict.php:78
+#: classes/shippingmethods/DPD_Saturday.php:80
+#: classes/shippingmethods/DPD_Classic.php:70
+#: classes/shippingmethods/DPD_E18.php:70
+msgid "Enable"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Pickup.php:81
+msgid "Enable DPD Pickup."
+msgstr ""
+
+#: classes/shippingmethods/DPD_Pickup.php:85
+#: classes/shippingmethods/DPD_E10.php:76
+#: classes/shippingmethods/DPD_E12.php:77
+#: classes/shippingmethods/DPD_Predict.php:84
+#: classes/shippingmethods/DPD_Saturday.php:86
+#: classes/shippingmethods/DPD_Classic.php:76
+#: classes/shippingmethods/DPD_E18.php:76
+msgid "Title"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Pickup.php:87
+#: classes/shippingmethods/DPD_E10.php:78
+#: classes/shippingmethods/DPD_E12.php:79
+#: classes/shippingmethods/DPD_Predict.php:86
+#: classes/shippingmethods/DPD_Saturday.php:88
+#: classes/shippingmethods/DPD_Classic.php:78
+#: classes/shippingmethods/DPD_E18.php:78
+msgid "This is title of the shippingmethod shown in the shippingzones"
+msgstr ""
+
+#: classes/shippingmethods/DPD_E10.php:28
+#: classes/shippingmethods/includes/settings-dpd-e10.php:17
+msgid "DPD Express 10"
+msgstr ""
+
+#: classes/shippingmethods/DPD_E10.php:29
+msgid "B2B Express 10 DPD shipment"
+msgstr ""
+
+#: classes/shippingmethods/DPD_E10.php:72
+msgid "Enable DPD E10."
+msgstr ""
+
+#: classes/shippingmethods/DPD_E12.php:28
+#: classes/shippingmethods/includes/settings-dpd-e12.php:17
+msgid "DPD Express 12"
+msgstr ""
+
+#: classes/shippingmethods/DPD_E12.php:29
+msgid "B2B Express 12 DPD shipment"
+msgstr ""
+
+#: classes/shippingmethods/DPD_E12.php:73
+msgid "Enable DPD E12."
+msgstr ""
+
+#: classes/shippingmethods/DPD_Predict.php:29
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:17
+#: classes/shippingmethods/includes/settings-dpd-predict.php:17
+msgid "DPD Predict"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Predict.php:30
+msgid "B2C Predict DPD shipment"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Predict.php:80
+msgid "Enable DPD Predict."
+msgstr ""
+
+#: classes/shippingmethods/DPD_Saturday.php:31
+msgid "DPD Saturday"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Saturday.php:32
+msgid "B2C Saturday DPD shipment"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Saturday.php:82
+msgid "Enable DPD Saturday."
+msgstr ""
+
+#: classes/shippingmethods/DPD_Saturday.php:91
+msgid "Show from day"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Saturday.php:93
+msgid "From which day and time in the week Saturday deliveries will be available in checkout"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Saturday.php:105
+msgid "Show from time"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Saturday.php:107
+msgid "From which time Saturday deliveries will be available in checkout"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Saturday.php:110
+msgid "Show untill day"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Saturday.php:112
+msgid "Untill which day in the week Saturday deliveries will be available in checkout"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Saturday.php:124
+msgid "Show untill time"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Saturday.php:126
+msgid "Untill which time Saturday deliveries will be available in checkout"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Classic.php:28
+#: classes/shippingmethods/includes/settings-dpd-classic.php:17
+msgid "DPD Classic"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Classic.php:29
+msgid "B2B Classic DPD shipment"
+msgstr ""
+
+#: classes/shippingmethods/DPD_Classic.php:72
+msgid "Enable DPD Classic."
+msgstr ""
+
+#: classes/shippingmethods/DPD_E18.php:28
+#: classes/shippingmethods/includes/settings-dpd-e18.php:17
+msgid "DPD Express 18"
+msgstr ""
+
+#: classes/shippingmethods/DPD_E18.php:29
+msgid "B2B Express 18 DPD shipment"
+msgstr ""
+
+#: classes/shippingmethods/DPD_E18.php:72
+msgid "Enable DPD E18."
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:10
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:10
+#: classes/shippingmethods/includes/settings-dpd-e12.php:10
+#: classes/shippingmethods/includes/settings-dpd-classic.php:10
+#: classes/shippingmethods/includes/settings-dpd-e18.php:10
+#: classes/shippingmethods/includes/settings-dpd-predict.php:10
+#: classes/shippingmethods/includes/settings-dpd-e10.php:10
+msgid "Enter a cost (excl. tax) or sum, e.g. <code>10.00 * [qty]</code>."
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:10
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:10
+#: classes/shippingmethods/includes/settings-dpd-e12.php:10
+#: classes/shippingmethods/includes/settings-dpd-classic.php:10
+#: classes/shippingmethods/includes/settings-dpd-e18.php:10
+#: classes/shippingmethods/includes/settings-dpd-predict.php:10
+#: classes/shippingmethods/includes/settings-dpd-e10.php:10
+msgid "Use <code>[qty]</code> for the number of items, <br/><code>[cost]</code> for the total cost of items, and <code>[fee percent=\"10\" min_fee=\"20\" max_fee=\"\"]</code> for percentage based fees."
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:14
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:14
+#: classes/shippingmethods/includes/settings-dpd-e12.php:14
+#: classes/shippingmethods/includes/settings-dpd-classic.php:14
+#: classes/shippingmethods/includes/settings-dpd-e18.php:14
+#: classes/shippingmethods/includes/settings-dpd-predict.php:14
+#: classes/shippingmethods/includes/settings-dpd-e10.php:14
+msgid "Method title"
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:16
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:16
+#: classes/shippingmethods/includes/settings-dpd-e12.php:16
+#: classes/shippingmethods/includes/settings-dpd-classic.php:16
+#: classes/shippingmethods/includes/settings-dpd-e18.php:16
+#: classes/shippingmethods/includes/settings-dpd-predict.php:16
+#: classes/shippingmethods/includes/settings-dpd-e10.php:16
+msgid "This controls the title which the user sees during checkout."
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:21
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:21
+#: classes/shippingmethods/includes/settings-dpd-e12.php:21
+#: classes/shippingmethods/includes/settings-dpd-classic.php:21
+#: classes/shippingmethods/includes/settings-dpd-e18.php:21
+#: classes/shippingmethods/includes/settings-dpd-predict.php:21
+#: classes/shippingmethods/includes/settings-dpd-e10.php:21
+msgid "Tax status"
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:26
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:26
+#: classes/shippingmethods/includes/settings-dpd-e12.php:26
+#: classes/shippingmethods/includes/settings-dpd-classic.php:26
+#: classes/shippingmethods/includes/settings-dpd-e18.php:26
+#: classes/shippingmethods/includes/settings-dpd-predict.php:26
+#: classes/shippingmethods/includes/settings-dpd-e10.php:26
+msgid "Taxable"
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:27
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:27
+#: classes/shippingmethods/includes/settings-dpd-e12.php:27
+#: classes/shippingmethods/includes/settings-dpd-classic.php:27
+#: classes/shippingmethods/includes/settings-dpd-e18.php:27
+#: classes/shippingmethods/includes/settings-dpd-predict.php:27
+#: classes/shippingmethods/includes/settings-dpd-e10.php:27
+msgctxt "Tax status"
+msgid "None"
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:31
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:31
+#: classes/shippingmethods/includes/settings-dpd-e12.php:31
+#: classes/shippingmethods/includes/settings-dpd-classic.php:31
+#: classes/shippingmethods/includes/settings-dpd-e18.php:31
+#: classes/shippingmethods/includes/settings-dpd-predict.php:31
+#: classes/shippingmethods/includes/settings-dpd-e10.php:31
+msgid "Cost"
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:45
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:45
+#: classes/shippingmethods/includes/settings-dpd-e12.php:45
+#: classes/shippingmethods/includes/settings-dpd-classic.php:45
+#: classes/shippingmethods/includes/settings-dpd-e18.php:45
+#: classes/shippingmethods/includes/settings-dpd-predict.php:45
+#: classes/shippingmethods/includes/settings-dpd-e10.php:45
+msgid "Shipping class costs"
+msgstr ""
+
+#. translators: %s: URL for link.
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:49
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:49
+#: classes/shippingmethods/includes/settings-dpd-e12.php:49
+#: classes/shippingmethods/includes/settings-dpd-classic.php:49
+#: classes/shippingmethods/includes/settings-dpd-e18.php:49
+#: classes/shippingmethods/includes/settings-dpd-predict.php:49
+#: classes/shippingmethods/includes/settings-dpd-e10.php:49
+msgid "These costs can optionally be added based on the <a href=\"%s\">product shipping class</a>."
+msgstr ""
+
+#. translators: %s: shipping class name
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:57
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:57
+#: classes/shippingmethods/includes/settings-dpd-e12.php:57
+#: classes/shippingmethods/includes/settings-dpd-classic.php:57
+#: classes/shippingmethods/includes/settings-dpd-e18.php:57
+#: classes/shippingmethods/includes/settings-dpd-predict.php:57
+#: classes/shippingmethods/includes/settings-dpd-e10.php:57
+msgid "\"%s\" shipping class cost"
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:59
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:70
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:59
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:70
+#: classes/shippingmethods/includes/settings-dpd-e12.php:59
+#: classes/shippingmethods/includes/settings-dpd-e12.php:70
+#: classes/shippingmethods/includes/settings-dpd-classic.php:59
+#: classes/shippingmethods/includes/settings-dpd-classic.php:70
+#: classes/shippingmethods/includes/settings-dpd-e18.php:59
+#: classes/shippingmethods/includes/settings-dpd-e18.php:70
+#: classes/shippingmethods/includes/settings-dpd-predict.php:59
+#: classes/shippingmethods/includes/settings-dpd-predict.php:70
+#: classes/shippingmethods/includes/settings-dpd-e10.php:59
+#: classes/shippingmethods/includes/settings-dpd-e10.php:70
+msgid "N/A"
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:68
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:68
+#: classes/shippingmethods/includes/settings-dpd-e12.php:68
+#: classes/shippingmethods/includes/settings-dpd-classic.php:68
+#: classes/shippingmethods/includes/settings-dpd-e18.php:68
+#: classes/shippingmethods/includes/settings-dpd-predict.php:68
+#: classes/shippingmethods/includes/settings-dpd-e10.php:68
+msgid "No shipping class cost"
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:78
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:78
+#: classes/shippingmethods/includes/settings-dpd-e12.php:78
+#: classes/shippingmethods/includes/settings-dpd-classic.php:78
+#: classes/shippingmethods/includes/settings-dpd-e18.php:78
+#: classes/shippingmethods/includes/settings-dpd-predict.php:78
+#: classes/shippingmethods/includes/settings-dpd-e10.php:78
+msgid "Calculation type"
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:83
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:83
+#: classes/shippingmethods/includes/settings-dpd-e12.php:83
+#: classes/shippingmethods/includes/settings-dpd-classic.php:83
+#: classes/shippingmethods/includes/settings-dpd-e18.php:83
+#: classes/shippingmethods/includes/settings-dpd-predict.php:83
+#: classes/shippingmethods/includes/settings-dpd-e10.php:83
+msgid "Per class: Charge shipping for each shipping class individually"
+msgstr ""
+
+#: classes/shippingmethods/includes/settings-dpd-pickup.php:84
+#: classes/shippingmethods/includes/settings-dpd-saturday.php:84
+#: classes/shippingmethods/includes/settings-dpd-e12.php:84
+#: classes/shippingmethods/includes/settings-dpd-classic.php:84
+#: classes/shippingmethods/includes/settings-dpd-e18.php:84
+#: classes/shippingmethods/includes/settings-dpd-predict.php:84
+#: classes/shippingmethods/includes/settings-dpd-e10.php:84
+msgid "Per order: Charge shipping for the most expensive shipping class"
+msgstr ""
+
+#: classes/Pages/Jobs.php:35
+msgid "Job overview"
+msgstr ""
+
+#: classes/Pages/Jobs.php:37
+msgid "Job overview batch "
+msgstr ""
+
+#: classes/Pages/Batches.php:27
+msgid "Batch overview"
+msgstr ""
+
+#: classes/BatchList.php:13
+msgid "Batch"
+msgstr ""
+
+#: classes/BatchList.php:90
+msgid "ID"
+msgstr ""
+
+#: classes/BatchList.php:92
+msgid "Job count"
+msgstr ""
+
+#: classes/BatchList.php:93
+msgid "Success count"
+msgstr ""
+
+#: classes/BatchList.php:94
+msgid "Failure count"
+msgstr ""
