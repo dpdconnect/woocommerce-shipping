@@ -14,7 +14,7 @@ class Activate
     {
         global $wpdb;
 
-        $version = get_option('my_plugin_version', '1.0');
+        $version = get_option('my_plugin_version', '1.1');
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
@@ -24,7 +24,7 @@ class Activate
         $sql = "CREATE TABLE IF NOT EXISTS $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            order_id smallint(5) NOT NULL,
+            order_id int(11) NOT NULL,
             contents mediumblob NOT NULL,
             type tinyint NOT NULL,
             shipment_identifier varchar(255) NOT NULL,

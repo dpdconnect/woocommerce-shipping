@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "252190b278c461d371c7466936b8420d",
+    "content-hash": "47da907e30692f3d9d13617810cca23c",
     "packages": [
         {
             "name": "dpdconnect/php-sdk",
-            "version": "0.1.3",
+            "version": "1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dpdconnect/php-sdk.git",
-                "reference": "d27641fe81ef9b56d348587ba89eb02601be7c29"
+                "reference": "bdccdc7dba392ca49dfc32eeb386d6c35d435099"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/d27641fe81ef9b56d348587ba89eb02601be7c29",
-                "reference": "d27641fe81ef9b56d348587ba89eb02601be7c29",
+                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/bdccdc7dba392ca49dfc32eeb386d6c35d435099",
+                "reference": "bdccdc7dba392ca49dfc32eeb386d6c35d435099",
                 "shasum": ""
             },
             "require": {
@@ -49,7 +49,7 @@
                 }
             ],
             "description": "DPD Magento2 Shipping extension",
-            "time": "2019-07-11T12:14:23+00:00"
+            "time": "2019-08-14T11:40:01+00:00"
         }
     ],
     "packages-dev": [],
