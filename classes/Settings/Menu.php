@@ -20,7 +20,7 @@ class Menu
         add_menu_page(
             'DPD Connect',
             'DPD Connect',
-            'manage_options',
+            'manage_woocommerce',
             'dpdconnect',
             [self::class, 'page'],
             plugin_dir_url(__FILE__) . '../../assets/images/icon-dpd.png'
@@ -31,7 +31,7 @@ class Menu
             'dpdconnect',
             'settings',
             __('Settings', 'dpdconnect'),
-            'manage_options',
+            'manage_woocommerce',
             'dpdconnect',
             [self::class, 'page']
         );

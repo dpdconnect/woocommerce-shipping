@@ -18,20 +18,13 @@ class OrderTransformer
         $this->productInfo = new productInfo();
     }
 
-    public function createShipment($orderId, $return = false, $parcelCount = 1)
+    public function createShipment($orderId, $type, $parcelCount = 1)
     {
         $order = wc_get_order($orderId);
-
-        $shippingMethods = $order->get_shipping_methods();
-        // Get the first item of the array. Todo: Strict mode in php7 does not agree with
-        // the reset method due to array being passed as reference.
-        $firstMethod = reset($shippingMethods);
-        $shippingMethod = $firstMethod->get_method_id();
 
         $this->validator->validateReceiver($order, $orderId, $parcelCount);
         $shipment = [
             'orderId' => (string) $orderId,
-            'smallParcelNumber' => Option::smallParcelReference(),
             'sendingDepot' => Option::depot(),
             'sender' => [
                 'name1' => Option::companyName(),
@@ -54,14 +47,15 @@ class OrderTransformer
                 'commercialAddress' => false,
             ],
             'product' => [
-                'productCode' => $this->getProductCode($shippingMethod, $return),
-                'saturdayDelivery' => $this->getSaturdayDelivery($shippingMethod, $return),
+                'productCode' => $this->getProductCode($type),
+                'saturdayDelivery' => $this->getSaturdayDelivery($type),
+                'homeDelivery' => $this->isHomeDelivery($type)
             ],
         ];
 
-        if (!$return) {
-            if ($shippingMethod === 'dpd_predict' ||
-                $shippingMethod === 'dpd_saturday') {
+        if ($type != 'return') {
+            if ($type === 'predict' ||
+                $type === 'saturday') {
                 $shipment['notifications'][] = [
                     'subject' => 'predict',
                     'channel' => 'EMAIL',
@@ -69,7 +63,7 @@ class OrderTransformer
                 ];
             }
 
-            if ($shippingMethod === 'dpd_pickup') {
+            if ($type === 'parcelshop') {
                 $parcelShopId = get_post_meta($orderId, '_dpd_parcelshop_id', true);
                 $shipment['product']['parcelshopId'] = $parcelShopId;
                 $shipment['notifications'][] = [
@@ -83,12 +77,16 @@ class OrderTransformer
         $shipment['parcels'] = [];
         $orderItems = $order->get_items();
 
-        $totalWeight = array_reduce($orderItems, function ($sum, $item) use ($orderId) {
+        $totalWeight = @array_reduce($orderItems, function ($sum, $item) use ($orderId) {
             $product = wc_get_product($item['product_id']);
             $this->validator->validateProduct($product, $orderId);
             $sum += $product->get_weight() * $item->get_quantity();
             return $sum;
         });
+
+        if(!$totalWeight) {
+            $totalWeight = (int)Option::defaultProductWeight() * 100;
+        }
 
         for ($x = 1; $x <= $parcelCount; $x++) {
             $shipment['parcels'][] = [
@@ -125,7 +123,7 @@ class OrderTransformer
             $customsValue = $this->productInfo->getCustomsValue($product);
             $originCountry = $this->productInfo->getCountryOfOrigin($productId);
 
-            $productWeight = $product->get_weight() * 10; // Transforming kilo to deca
+            $productWeight = (int)Option::defaultProductWeight() * 100; // Transforming kilo to deca
             $rowWeight = $productWeight * $row->get_quantity();
 
             $amount = $row->get_total();
@@ -159,6 +157,7 @@ class OrderTransformer
             'postalcode' => $order->get_shipping_postcode(), // No spaces in zipCode!
             'city' => $order->get_shipping_city(),
             'commercialAddress' => false,
+            'sprn' => Option::smallParcelReference(),
         ];
 
         $shipment['customs']['customsLines'] = $customsLines;
@@ -168,34 +167,39 @@ class OrderTransformer
         return $shipment;
     }
 
-    private function getProductCode($shippingMethod, $return)
+    private function isHomeDelivery($type)
     {
-        if ($return === true || $return === 1 || $return === '1') {
+        if($type == 'predict' || $type == 'saturday') {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function getProductCode($type)
+    {
+        if ($type === 'return') {
             return 'RETURN';
         }
 
-        if ($shippingMethod === 'dpd_e10') {
+        if ($type === 'express_10') {
             return 'E10';
         }
 
-        if ($shippingMethod === 'dpd_e12') {
+        if ($type === 'express_12') {
             return 'E12';
         }
 
-        if ($shippingMethod === 'dpd_e18') {
+        if ($type === 'express_18') {
             return 'E18';
         }
 
         return 'CL';
     }
 
-    private function getSaturdayDelivery($shippingMethod, $returnLabel)
+    private function getSaturdayDelivery($type)
     {
-        if ($returnLabel) {
-            return false;
-        }
-
-        if ($shippingMethod === 'dpd_saturday') {
+        if ($type === 'saturday') {
             return true;
         }
 

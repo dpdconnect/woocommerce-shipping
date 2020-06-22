@@ -29,11 +29,6 @@ class Option
         return self::parse(get_option('dpdconnect_general'), 'dpdconnect_label_format');
     }
 
-    public static function smallParcelReference()
-    {
-        return self::parse(get_option('dpdconnect_general'), 'dpdconnect_spr');
-    }
-
     /**
      * USER CREDENTIALS
      */
@@ -95,6 +90,11 @@ class Option
         return self::parse(get_option('dpdconnect_company_info'), 'dpdconnect_eori_number');
     }
 
+    public static function smallParcelReference()
+    {
+        return self::parse(get_option('dpdconnect_company_info'), 'dpdconnect_spr');
+    }
+
     /**
      * PRODUCT SETTINGS
      */
@@ -106,6 +106,11 @@ class Option
     public static function defaultOriginCountry()
     {
         return self::parse(get_option('dpdconnect_products'), 'dpdconnect_default_origin_country');
+    }
+
+    public static function defaultProductWeight()
+    {
+        return self::parse(get_option('dpdconnect_products'), 'dpdconnect_default_product_weight');
     }
 
     /**

@@ -21,22 +21,22 @@ class LabelRequest
         add_filter('handle_bulk_actions-edit-shop_order', [self::class, 'bulk'], 10, 3);
     }
 
-    public static function single()
+    public static function single($postID, $type, $parcelCount)
     {
-        $orderId = isset($_GET['order_id']) ? $_GET['order_id'] : false;
-        $return = isset($_GET['returnlabel']) ? $_GET['returnlabel'] : false;
-        $parcelCount = isset($_GET['DPDlabelAmount']) ? $_GET['DPDlabelAmount'] : false;
+        $currentOrder = new WC_Order($postID);
+        $orderId = $currentOrder->get_id();
+
         $validator = new OrderValidator();
         $orderTransformer = new OrderTransformer($validator);
 
         try {
-            $shipment = $orderTransformer->createShipment($orderId, $return, $parcelCount);
+            $shipment = $orderTransformer->createShipment($orderId, self::defineShipmentType($type, $orderId), $parcelCount);
         } catch (InvalidOrderException $e) {
             self::redirect();
         }
 
-        $type = ParcelType::parse($return);
-        $response = self::syncRequest([$shipment], [$orderId], $type);
+        $parcelType = (strpos($type, 'dpdconnect_create') != false) ? ParcelType::TYPERETURN : ParcelType::TYPEREGULAR;
+        $response = self::syncRequest([$shipment], [$orderId], $parcelType);
         $labelContents = $response->getContent()['labelResponses'][0]['label'];
         $code = $response->getContent()['labelResponses'][0]['shipmentIdentifier'];
 
@@ -45,11 +45,12 @@ class LabelRequest
 
     public static function bulk($redirect_to, $action, $post_ids)
     {
-        if ($action !== 'dpdconnect_create_labels_bulk_action' && $action !== 'dpdconnect_create_return_labels_bulk_action') {
+        if (strpos($action, 'dpdconnect_create') === false) {
             return;
         }
 
-        $type = ($action === 'dpdconnect_create_return_labels_bulk_action') ? ParcelType::TYPERETURN : ParcelType::TYPEREGULAR;
+        $type = (strpos($action, 'dpdconnect_create') != false) ? ParcelType::TYPERETURN : ParcelType::TYPEREGULAR;
+
         $orderValidator = new OrderValidator();
         $orderTransformer = new OrderTransformer($orderValidator);
         $shipments = [];
@@ -61,11 +62,7 @@ class LabelRequest
             $orderId = $currentOrder->get_id();
             $map[] = $orderId;
             try {
-                if ($action === 'dpdconnect_create_labels_bulk_action') {
-                    $shipments[] = $orderTransformer->createShipment($orderId);
-                } elseif ($action === 'dpdconnect_create_return_labels_bulk_action') {
-                    $shipments[] = $orderTransformer->createShipment($orderId, true);
-                }
+                $shipments[] = $orderTransformer->createShipment($orderId, self::defineShipmentType($action, $orderId));
             } catch (InvalidOrderException $e) {
                 self::redirect();
             }
@@ -102,6 +99,55 @@ class LabelRequest
             exit;
         } catch (Exception $e) {
             self::redirect();
+        }
+    }
+
+    private static function defineShipmentType($type, $orderId)
+    {
+        switch ($type) {
+            case 'dpdconnect_create_labels_bulk_action':
+                $order = wc_get_order($orderId);
+                $shippingMethods = $order->get_shipping_methods();
+                foreach ($shippingMethods as $method) {
+                    $settings = get_option('woocommerce_'.$method->get_method_id().'_'.$method->get_instance_id().'_settings');
+                    if(!isset($settings['dpd_method_type'])) {
+                        if(get_post_meta($orderId, '_dpd_parcelshop_id', true)) {
+                            return 'parcelshop';
+                        }
+                        Notice::add(__('Shipping method has no DPD type'));
+                        self::redirect();
+                    }
+                    return $settings['dpd_method_type'];
+                }
+                break;
+            case 'dpdconnect_create_return_labels_bulk_action':
+                return 'return';
+                break;
+            case 'dpdconnect_create_predict_labels_bulk_action':
+                return 'predict';
+                break;
+            case 'dpdconnect_create_parcelshop_labels_bulk_action':
+                if (!get_post_meta($orderId, '_dpd_parcelshop_id', true)) {
+                    Notice::add(__('No ParcelShop shipping method was used for this order'));
+                    self::redirect();
+                }
+                return 'parcelshop';
+                break;
+            case 'dpdconnect_create_classic_labels_bulk_action':
+                return 'classic';
+                break;
+            case 'dpdconnect_create_saturday_labels_bulk_action':
+                return 'saturday';
+                break;
+            case 'dpdconnect_create_express_10_labels_bulk_action':
+                return 'express_10';
+                break;
+            case 'dpdconnect_create_express_12_labels_bulk_action':
+                return 'express_12';
+                break;
+            case 'dpdconnect_create_express_18_labels_bulk_action':
+                return 'express_18';
+                break;
         }
     }
 

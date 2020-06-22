@@ -16,6 +16,7 @@ class ShippingMethods
     public static function handle()
     {
         add_filter('woocommerce_shipping_methods', [self::class, 'add']);
+        add_action('woocommerce_init', [self::class, 'addSettingFilters']);
     }
 
     public static function add($methods)
@@ -42,5 +43,38 @@ class ShippingMethods
         $methods['dpd_saturday'] = new DPD_Saturday();
 
         return $methods;
+    }
+
+    public static function addSettingFilters()
+    {
+        $shipping_methods = WC()->shipping->get_shipping_methods();
+        foreach($shipping_methods as $shipping_method) {
+            if($shipping_method->id == 'dpd_pickup') {
+               continue;
+            }
+            add_filter('woocommerce_shipping_instance_form_fields_' . $shipping_method->id, [self::class, 'addCustomSettings']);
+        }
+    }
+
+    public static function addCustomSettings($settings)
+    {
+
+        $settings['dpd_method_type'] = [
+            'title' => 'DPD Label Type',
+            'type' => 'select',
+            'class'   => 'wc-enhanced-select',
+            'default' => 'predict',
+            'options' => [
+                'predict' => 'DPD Predict(Home)',
+                'classic'    => 'DPD Classic',
+                'saturday'    => 'DPD Saturday',
+                'return'    => 'DPD Return',
+                'express_10'    => 'DPD Express 10',
+                'express_12'    => 'DPD Express 12',
+                'express_18'    => 'DPD Express 18',
+            ],
+        ];
+
+        return $settings;
     }
 }

@@ -30,6 +30,15 @@ class ParcelShopFinder
         $password = Option::connectPassword();
         $clientBuilder = new ClientBuilder($url);
         $this->dpdClient = $clientBuilder->buildAuthenticatedByPassword($username, $password);
+
+        $this->client->getAuthentication()->setJwtToken(
+            get_option('dpdconnect_jwt_token') ?: null
+        );
+
+        $this->dpdClient->getAuthentication()->setTokenUpdateCallback(function ($jwtToken) {
+            update_option('dpdconnect_jwt_token', $jwtToken);
+            $this->dpdClient->getAuthentication()->setJwtToken($jwtToken);
+        });
     }
 
     public function getParcelShops($coordinates, $isocode)
