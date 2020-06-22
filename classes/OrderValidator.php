@@ -132,13 +132,6 @@ class OrderValidator
             $this->valid = false;
         }
 
-        if (!$product->get_weight()) {
-            /* translators: %s: Weight of product */
-            $error = sprintf(__('Product weight is missing for: %s', 'dpdconnect'), $product->get_name());
-            $this->flash($error, $orderId);
-            $this->valid = false;
-        }
-
         if (!$this->productInfo->getCountryOfOrigin($product->get_id())) {
             /* translators: 1: Name of product 2: ID of product */
             $error = sprintf(__('Product country of origin is missing for: %1$s . Either set a country for <a href="wp-admin/post.php?post=%2$s&action=edit">this product</a> in its shipping attributes or configure a <a href="/wp-admin/admin.php?page=dpdconnect">default country</a> for your entire shop.', 'dpdconnect'), $product->get_name(), $product->get_id());

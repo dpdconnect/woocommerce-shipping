@@ -20,7 +20,8 @@ class Download
         $fileName = 'labels_' . date('YmdHis');
         $zip = new ZipArchive();
         $zipfile = tempnam(sys_get_temp_dir(), "zip");
-        $res = $zip->open($zipfile, ZipArchive::CREATE);
+
+        $res = $zip->open($zipfile, ZipArchive::OVERWRITE);
         $labelResponses = $response->getContent()['labelResponses'];
 
         foreach ($labelResponses as $labelResponse) {

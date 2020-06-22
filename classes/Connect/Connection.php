@@ -22,6 +22,16 @@ class Connection
             'webshopVersion' => Version::webshop(),
             'pluginVersion' => Version::plugin(),
         ]));
+
         $this->client = $clientBuilder->buildAuthenticatedByPassword($username, $password);
+
+        $this->client->getAuthentication()->setJwtToken(
+            get_option('dpdconnect_jwt_token') ?: null
+        );
+
+        $this->client->getAuthentication()->setTokenUpdateCallback(function ($jwtToken) {
+            update_option('dpdconnect_jwt_token', $jwtToken);
+            $this->client->getAuthentication()->setJwtToken($jwtToken);
+        });
     }
 }
