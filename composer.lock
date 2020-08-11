@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "47da907e30692f3d9d13617810cca23c",
+    "content-hash": "5733164cf8f6bfe8847c1fcc27ec9734",
     "packages": [
         {
             "name": "dpdconnect/php-sdk",
-            "version": "1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dpdconnect/php-sdk.git",
-                "reference": "bdccdc7dba392ca49dfc32eeb386d6c35d435099"
+                "reference": "9d015cd31a441f7734fb65c08f7d420f85dd0ea7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/bdccdc7dba392ca49dfc32eeb386d6c35d435099",
-                "reference": "bdccdc7dba392ca49dfc32eeb386d6c35d435099",
+                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/9d015cd31a441f7734fb65c08f7d420f85dd0ea7",
+                "reference": "9d015cd31a441f7734fb65c08f7d420f85dd0ea7",
                 "shasum": ""
             },
             "require": {
@@ -49,15 +49,18 @@
                 }
             ],
             "description": "DPD Magento2 Shipping extension",
-            "time": "2019-08-14T11:40:01+00:00"
+            "time": "2020-06-22T11:28:43+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "dpdconnect/php-sdk": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
