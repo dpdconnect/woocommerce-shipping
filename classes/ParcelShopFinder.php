@@ -31,7 +31,7 @@ class ParcelShopFinder
         $clientBuilder = new ClientBuilder($url);
         $this->dpdClient = $clientBuilder->buildAuthenticatedByPassword($username, $password);
 
-        $this->client->getAuthentication()->setJwtToken(
+        $this->dpdClient->getAuthentication()->setJwtToken(
             get_option('dpdconnect_jwt_token') ?: null
         );
 
