@@ -4,7 +4,7 @@
     "license": "GPL-3.0-or-later",
     "minimum-stability": "dev",
     "require": {
-	"dpdconnect/php-sdk": "dev-master"
+        "dpdconnect/php-sdk": "dev-master"
     },
     "autoload": {
 	"psr-4": {
