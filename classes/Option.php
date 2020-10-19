@@ -29,6 +29,11 @@ class Option
         return self::parse(get_option('dpdconnect_general'), 'dpdconnect_label_format');
     }
 
+    public static function sendTrackingEmail()
+    {
+        return self::parse(get_option('dpdconnect_general'), 'dpdconnect_send_trackingemail');
+    }
+
     /**
      * USER CREDENTIALS
      */

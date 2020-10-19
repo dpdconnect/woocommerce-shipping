@@ -55,14 +55,18 @@ class LabelRequest
         $orderTransformer = new OrderTransformer($orderValidator);
         $shipments = [];
         $map = [];
+        $emailData = [];
 
         foreach ($post_ids as $id) {
             $post = get_post($id);
             $currentOrder = new WC_Order($post->ID);
             $orderId = $currentOrder->get_id();
+            $emailData[$orderId] = [];
+            $emailData[$orderId]['order'] = $currentOrder;
             $map[] = $orderId;
             try {
-                $shipments[] = $orderTransformer->createShipment($orderId, self::defineShipmentType($action, $orderId));
+                $emailData[$orderId]['shipment'] = $orderTransformer->createShipment($orderId, self::defineShipmentType($action, $orderId));
+                $shipments[] = $emailData[$orderId]['shipment'];
             } catch (InvalidOrderException $e) {
                 self::redirect();
             }
@@ -70,10 +74,68 @@ class LabelRequest
 
         if (count($post_ids) <= Option::asyncTreshold()) {
             $response = self::syncRequest($shipments, $map, $type);
+            $labelResponses = $response->getContent()['labelResponses'];
+            foreach ($labelResponses as $labelResponse) {
+                if (isset($emailData[$labelResponse['orderId']])) {
+                    $emailData[$labelResponse['orderId']]['parcelNumbers'] = $labelResponse['parcelNumbers'];
+                }
+            }
+
+            if ('enabled' == Option::sendTrackingEmail()) {
+                foreach ($emailData as $orderId => $data) {
+                    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $data['shipment']['sender']['name1'] . ' <' . $data['shipment']['sender']['email'] . '>');
+                    ob_start();
+                    include(plugin_dir_path(__FILE__) . "trackingemail" . DIRECTORY_SEPARATOR . "index.php");
+                    $email_content = ob_get_contents();
+                    ob_end_clean();
+                    wp_mail($data['order']->get_billing_email(), __("Je bestelling is gereed voor verzending", 'dpdconnect'), $email_content, $headers);
+                }
+            }
+
             return Download::zip($response);
         }
-
         return self::asyncRequest($shipments, $map, $type);
+    }
+
+    function embed_images( &$phpmailer ) {
+        $phpmailer->AddEmbeddedImage( plugin_dir_path(__FILE__)."trackingemail".DIRECTORY_SEPARATOR."DPD_logo_redgrad_rgb_responsive.svg", 'image1.svg' );
+    }
+
+    function add_attachments_to_php_mailer(&$phpmailer)
+    {
+        /* Required */
+        $phpmailer->SMTPKeepAlive=true;
+        $phpmailer->ContentType = "text/html";
+        $phpmailer->From = strip_tags(get_option('admin_email'));
+        $phpmailer->FromName = get_bloginfo('name');
+
+
+        /* Add attachments to mail */
+        global $global_attachments;
+        foreach ($global_attachments as $attachment) {
+            if (file_exists($attachment['path'])) {
+                $phpmailer->AddEmbeddedImage($attachment['path'], $attachment['cid']);
+            }
+        }
+    }
+
+    function send_mail($to, $subject, $body, $headers = "", $attachments = [])
+    {
+        /* Must match the variable name used by "phpmailer_init" hook callback */
+        global $global_attachments;
+
+        /* Setup before sending email */
+        $global_attachments = $attachments;
+        add_action('phpmailer_init', 'add_attachments_to_php_mailer');
+
+        /* Send Email */
+        $is_sent = wp_mail($to, $subject, $body, $headers);
+
+        /* Cleanup after email is sent */
+        remove_action('phpmailer_init', 'add_attachments_to_php_mailer');
+        $global_attachments = [];
+
+        return $is_sent;
     }
 
     private static function syncRequest($shipments, $map, $type = ParcelType::TYPEREGULAR)
