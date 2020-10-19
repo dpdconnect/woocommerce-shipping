@@ -20,6 +20,6 @@ class Country extends Connection
 
     private function lookupCountry($iso2)
     {
-        return array_search(strtoupper($iso2), array_column($this->getList(), 'country'), true);
+        return @array_search(strtoupper($iso2), array_column($this->getList(), 'country'), true);
     }
 }

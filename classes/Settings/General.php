@@ -67,6 +67,19 @@ class General
                 'dpdconnect_custom_data' => 'custom',
             ]
         );
+
+        add_settings_field(
+            'dpdconnect_send_trackingemail',
+            __(' DPD Send Trackingemail', 'dpdconnect'),
+            [self::class, 'renderInputSendTrackingemail'],
+            self::PAGE,
+            self::SECTION,
+            [
+                'label_for' => 'dpdconnect_send_trackingemail',
+                'class' => 'dpdconnect_row',
+                'dpdconnect_custom_data' => 'custom',
+            ]
+        );
     }
 
     public static function renderDefaultInput($args)
@@ -135,6 +148,29 @@ class General
             <p class="description">
                 <?php esc_html_e('Choose the correct account type for your store.', 'dpdconnect'); ?>
             </p>
+        <?php
+    }
+
+    public static function renderInputSendTrackingemail($args)
+    {
+        // get the value of the setting we've registered with register_setting()
+        $options = get_option('dpdconnect_general');
+        // output the field
+        ?>
+        <select id="<?php echo esc_attr($args['label_for']); ?>"
+                data-custom="<?php echo esc_attr($args['dpdconnect_custom_data']); ?>"
+                name="dpdconnect_general[<?php echo esc_attr($args['label_for']); ?>]"
+        >
+            <option value="disabled" <?php echo isset($options[ $args['label_for'] ]) ? ( selected($options[ $args['label_for'] ], 'disabled', false) ) : ( '' ); ?>>
+                <?php esc_html_e('DISABLED', 'dpdconnect'); ?>
+            </option>
+            <option value="enabled" <?php echo isset($options[ $args['label_for'] ]) ? ( selected($options[ $args['label_for'] ], 'enabled', false) ) : ( '' ); ?>>
+                <?php esc_html_e('ENABLED', 'dpdconnect'); ?>
+            </option>
+        </select>
+        <p class="description">
+            <?php esc_html_e('Enable or disable sending tracking emails.', 'dpdconnect'); ?>
+        </p>
         <?php
     }
 
