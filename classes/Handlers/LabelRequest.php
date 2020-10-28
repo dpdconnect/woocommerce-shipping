@@ -65,7 +65,9 @@ class LabelRequest
             $emailData[$orderId]['order'] = $currentOrder;
             $map[] = $orderId;
             try {
-                $emailData[$orderId]['shipment'] = $orderTransformer->createShipment($orderId, self::defineShipmentType($action, $orderId));
+                $shipmentType = self::defineShipmentType($action, $orderId);
+                $emailData[$orderId]['shipment'] = $orderTransformer->createShipment($orderId, $shipmentType);
+                $emailData[$orderId]['shipmentType'] = $shipmentType;
                 $shipments[] = $emailData[$orderId]['shipment'];
             } catch (InvalidOrderException $e) {
                 self::redirect();
