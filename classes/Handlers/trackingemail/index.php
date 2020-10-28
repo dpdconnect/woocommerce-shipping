@@ -24,16 +24,22 @@
 						<tr>
 							<td colspan="2">
 								<?=sprintf(__("Hallo %s",'dpdconnect'),$data['shipment']['receiver']['name1']);?>,<br/>
-								<?=__("We hebben je pakket zojuist verzonden. Je pakket wordt vandaag bij jou aangeboden.",'dpdconnect');?>
+								<?=__("We hebben je pakket zojuist verzonden. Je pakket wordt bij DPD aangeboden.",'dpdconnect');?>
 							</td>
 						</tr>
 						<tr>
 							<td valign="top">
 								<strong style="color:#EF0326"><?=__("Bezorgadres",'dpdconnect');?></strong>
+                                <?php if($data['shipmentType'] == 'parcelshop') { ?>
+                                    <p>
+                                   <?=__("Parcelshop",'dpdconnect');?>
+                                    </p>
+                                <?php } else { ?>
 								<p>
                                     <?=$data['shipment']['receiver']['street']; ?><br/>
                                     <?=$data['shipment']['receiver']['postalcode']; ?> <?=$data['shipment']['receiver']['city']; ?>
 								</p>
+                                <?php } ?>
 							</td>
 							<td valign="top" style="border-left: 1px solid #ddd;">
 								<div >
@@ -43,11 +49,11 @@
 									</p>
 									<br/>
 									<strong style="color:black"><?=__("Barcode",'dpdconnect');?></strong>
-<?php foreach($data['parcelNumbers'] as $parcelNumber): ?>
+<?php foreach($data['parcelNumbers'] as $parcelNumber) { ?>
                                     <p style="margin-bottom:0;">
                                         <?=$parcelNumber;?>
                                     </p>
-<?php endforeach; ?>
+<?php } ?>
 								</div>
 							</td>
 						</tr>
@@ -62,11 +68,11 @@
 								<p>
                                     <?=__("Klik op onderstaande link om je pakket te volgen",'dpdconnect');?>
 								</p>
-<?php foreach($data['parcelNumbers'] as $parcelNumber): ?>
+<?php foreach($data['parcelNumbers'] as $parcelNumber) { ?>
 								<p>
-									<a href="https://tracking.dpd.de/status/nl_NL/parcel/<?=$parcelNumber; ?>" style=" display:inline-block; text-decoration:none; width:140px; height:48px; color:#fff; background-color: #EF0326; text-align: center; line-height: 48px; font-weight: bold;"><?=__("Volg pakket",'dpdconnect');?></a>
+									<a href="https://tracking.dpd.de/status/en_US/parcel/<?=$parcelNumber; ?>" style=" display:inline-block; text-decoration:none; width:140px; height:48px; color:#fff; background-color: #EF0326; text-align: center; line-height: 48px; font-weight: bold;"><?=__("Volg pakket",'dpdconnect');?></a>
 								</p>
-<?php endforeach; ?>
+<?php } ?>
 							</td>
 						</tr>
 						<tr>
