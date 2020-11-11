@@ -32,7 +32,7 @@ class OrderTransformer
                 'country' => strtoupper(Option::companyCountryCode()),
                 'postalcode' => Option::companyPostalCode(),
                 'city' => Option::companyCity(),
-                'phone' => Option::companyPhone(),
+                'phoneNumber' => Option::companyPhone(),
                 'email' => Option::companyEmail(),
                 'commercialAddress' => true,
                 'vat_number' => Option::vatNumber(),
@@ -40,7 +40,8 @@ class OrderTransformer
             ],
             'receiver' => [
                 'name1' => $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
-                'street' => $order->get_shipping_address_1(),
+                'street' => $order->get_shipping_address_1() . $order->get_shipping_address_2(),
+                'phoneNumber' => $order->get_billing_phone(),
                 'country' => $order->get_shipping_country(),
                 'postalcode' => $order->get_shipping_postcode(), // No spaces in zipCode!
                 'city' => $order->get_shipping_city(),
