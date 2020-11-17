@@ -89,6 +89,35 @@ class Pickup
         $coordinates = $parcelshopFinder->getGeoData($postcode, $isocode);
         $parcelshops = $parcelshopFinder->getParcelShops($coordinates, $isocode);
 
+        //Make openingHours translateable
+        foreach ($parcelshops as $key => $parcelshop) {
+            foreach($parcelshop['openingHours'] as $openingHourKey => $openingHour) {
+                switch ($openingHour['weekday']) {
+                    case 'maandag':
+                        $parcelshops[$key]['openingHours'][$openingHourKey]['weekday'] = __('monday', 'dpdconnect');
+                        break;
+                    case 'dinsdag':
+                        $parcelshops[$key]['openingHours'][$openingHourKey]['weekday'] = __('tuesday', 'dpdconnect');
+                        break;
+                    case 'woensdag':
+                        $parcelshops[$key]['openingHours'][$openingHourKey]['weekday'] = __('wednesday', 'dpdconnect');
+                        break;
+                    case 'donderdag':
+                        $parcelshops[$key]['openingHours'][$openingHourKey]['weekday'] = __('thursday', 'dpdconnect');
+                        break;
+                    case 'vrijdag':
+                        $parcelshops[$key]['openingHours'][$openingHourKey]['weekday'] = __('friday', 'dpdconnect');
+                        break;
+                    case 'zaterdag':
+                        $parcelshops[$key]['openingHours'][$openingHourKey]['weekday'] = __('saturday', 'dpdconnect');
+                        break;
+                    case 'zondag':
+                        $parcelshops[$key]['openingHours'][$openingHourKey]['weekday'] = __('sunday', 'dpdconnect');
+                        break;
+                }
+            }
+        }
+
         if (!is_array($parcelshops)) {
             wp_send_json_error(__('Could not find parcelshops near your address.'));
         }

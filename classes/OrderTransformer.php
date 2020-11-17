@@ -60,7 +60,7 @@ class OrderTransformer
                 $shipment['notifications'][] = [
                     'subject' => 'predict',
                     'channel' => 'EMAIL',
-                    'value' => $order->billing_email,
+                    'value' => $order->get_billing_email(),
                 ];
             }
 
@@ -91,7 +91,7 @@ class OrderTransformer
 
         for ($x = 1; $x <= $parcelCount; $x++) {
             $shipment['parcels'][] = [
-                'customerReferenceNumber1' => $orderId,
+                'customerReferences' => [(string)$orderId],
                 'weight' => (int) ceil($totalWeight / $parcelCount),
             ];
         }
