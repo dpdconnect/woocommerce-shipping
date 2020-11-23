@@ -65,7 +65,7 @@ class GenerateLabelBox
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
             return;
         }
-        if(isset($_POST['generate_label'])) {
+       if(isset($_POST['generate_label']) && !empty($_POST['label_type'])) {
             LabelRequest::single($postId, $_POST['label_type'], $_POST['parcel_count']);
         }
     }
