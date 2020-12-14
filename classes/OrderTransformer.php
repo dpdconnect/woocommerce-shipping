@@ -35,8 +35,8 @@ class OrderTransformer
                 'phoneNumber' => Option::companyPhone(),
                 'email' => Option::companyEmail(),
                 'commercialAddress' => true,
-                'vat_number' => Option::vatNumber(),
-                'eori_number' => Option::eoriNumber(),
+                'vatnumber' => Option::vatNumber(),
+                'eorinumber' => Option::eoriNumber(),
             ],
             'receiver' => [
                 'name1' => $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
@@ -109,7 +109,7 @@ class OrderTransformer
     {
         $shipment['customs'] = [
             'terms' => 'DAP',
-            'totalCurrency' => 'EUR',
+            'totalCurrency' => $order->currency,
         ];
 
         $totalAmount = 0.00;
