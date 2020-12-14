@@ -156,7 +156,7 @@ class Company
         add_settings_field(
             'dpdconnect_spr', // as of WP 4.6 this value is used only internally
             // use $args' label_for to populate the id inside the callback
-            __('SPRN', 'dpdconnect'),
+            __('HMRC number', 'dpdconnect'),
             $callback,
             self::PAGE,
             self::SECTION,
