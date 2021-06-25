@@ -38,9 +38,21 @@ class ShippingAttributes
             'description'   => __('ISO 3166-1 alpha-2 code of the Country of origin', 'dpdconnect'),
             'desc_tip'      => true,
         ];
+        $fields[] = [
+            'id'            => 'dpd_age_check',
+            'label'         => __('Age check', 'dpdconnect'),
+            'type'          => 'checkbox',
+            'value'         => get_post_meta($product_object->get_id(), 'dpd_age_check', true),
+            'description'   => __('Age check for 18+ products', 'dpdconnect'),
+            'desc_tip'      => true,
+        ];
 
         foreach ($fields as $field) {
-            woocommerce_wp_text_input($field);
+            if($field['type'] == 'checkbox') {
+                woocommerce_wp_checkbox($field);
+            } else {
+                woocommerce_wp_text_input($field);
+            }
         }
     }
 
@@ -62,5 +74,11 @@ class ShippingAttributes
         update_post_meta($post_id, 'dpd_hs_code', sanitize_text_field($_POST['dpd_hs_code']));
         update_post_meta($post_id, 'dpd_customs_value', sanitize_text_field($_POST['dpd_customs_value']));
         update_post_meta($post_id, 'dpd_origin_country', sanitize_text_field($_POST['dpd_origin_country']));
+
+        if(!empty($_POST['dpd_age_check'])) {
+            update_post_meta($post_id, 'dpd_age_check', sanitize_text_field($_POST['dpd_age_check']));
+        } else {
+            delete_post_meta($post_id, 'dpd_age_check', sanitize_text_field($_POST['dpd_age_check']));
+        }
     }
 }

@@ -50,7 +50,8 @@ class OrderTransformer
             'product' => [
                 'productCode' => $this->getProductCode($type),
                 'saturdayDelivery' => $this->getSaturdayDelivery($type),
-                'homeDelivery' => $this->isHomeDelivery($type)
+                'homeDelivery' => $this->isHomeDelivery($type),
+                'ageCheck' => $this->isAgeCheckNeeded($order)
             ],
         ];
 
@@ -202,6 +203,17 @@ class OrderTransformer
     {
         if ($type === 'saturday') {
             return true;
+        }
+
+        return false;
+    }
+
+    private function isAgeCheckNeeded($order)
+    {
+        foreach($order->get_items() as $lineItem) {
+            if(get_post_meta($lineItem['product_id'], 'dpd_age_check', true) === 'yes') {
+                return true;
+            }
         }
 
         return false;

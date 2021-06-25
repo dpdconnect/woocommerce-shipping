@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "dpdconnect/php-sdk",
-            "version": "1.1.1",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dpdconnect/php-sdk.git",
-                "reference": "577e7c0787fd7dd39cceac5c147e09e482b661fd"
+                "reference": "44af78ee365a0dd51167bcbd710377c367c019ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/577e7c0787fd7dd39cceac5c147e09e482b661fd",
-                "reference": "577e7c0787fd7dd39cceac5c147e09e482b661fd",
+                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/44af78ee365a0dd51167bcbd710377c367c019ee",
+                "reference": "44af78ee365a0dd51167bcbd710377c367c019ee",
                 "shasum": ""
             },
             "require": {
@@ -31,7 +31,7 @@
                 "squizlabs/php_codesniffer": "^3.0@dev",
                 "symfony/yaml": "^4.2"
             },
-            "type": "magento2-library",
+            "type": "library",
             "autoload": {
                 "psr-4": {
                     "DpdConnect\\Sdk\\": "src/"
@@ -48,8 +48,8 @@
                     "homepage": "http://www.dpd.nl"
                 }
             ],
-            "description": "DPD Magento2 Shipping extension",
-            "time": "2020-11-09T10:04:17+00:00"
+            "description": "DPD Connect PHP SDK",
+            "time": "2021-04-27T19:27:36+00:00"
         }
     ],
     "packages-dev": [],
