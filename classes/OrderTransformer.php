@@ -18,10 +18,10 @@ class OrderTransformer
         $this->productInfo = new productInfo();
     }
 
-    public function createShipment($orderId, $type, $parcelCount = 1)
+    public function createShipment($orderId, $dpdProduct, $parcelCount = 1, $orderItems = [], $shippingProduct = TypeHelper::DPD_SHIPPING_PRODUCT_DEFAULT, $freshFreezeData = [])
     {
         $order = wc_get_order($orderId);
-
+        $orderItems = empty($orderItems) ? $order->get_items() : $orderItems;
         $this->validator->validateReceiver($order, $orderId, $parcelCount);
         $shipment = [
             'orderId' => (string) $orderId,
@@ -41,6 +41,7 @@ class OrderTransformer
             'receiver' => [
                 'name1' => $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
                 'street' => $order->get_shipping_address_1() . $order->get_shipping_address_2(),
+                'email' => $order->get_billing_email(),
                 'phoneNumber' => $order->get_billing_phone(),
                 'country' => $order->get_shipping_country(),
                 'postalcode' => $order->get_shipping_postcode(), // No spaces in zipCode!
@@ -48,16 +49,15 @@ class OrderTransformer
                 'commercialAddress' => false,
             ],
             'product' => [
-                'productCode' => $this->getProductCode($type),
-                'saturdayDelivery' => $this->getSaturdayDelivery($type),
-                'homeDelivery' => $this->isHomeDelivery($type),
-                'ageCheck' => $this->isAgeCheckNeeded($order)
+                'productCode' => $dpdProduct['code'],
+                'saturdayDelivery' => TypeHelper::isSaturday($dpdProduct),
+                'homeDelivery' => TypeHelper::isHomeDelivery($dpdProduct),
+                'ageCheck' => $this->isAgeCheckNeeded($orderItems)
             ],
         ];
 
-        if ($type != 'return') {
-            if ($type === 'predict' ||
-                $type === 'saturday') {
+        if (!TypeHelper::isReturn($dpdProduct)) {
+            if (TypeHelper::isPredict($dpdProduct) || TypeHelper::isSaturday($dpdProduct)) {
                 $shipment['notifications'][] = [
                     'subject' => 'predict',
                     'channel' => 'EMAIL',
@@ -65,7 +65,7 @@ class OrderTransformer
                 ];
             }
 
-            if ($type === 'parcelshop') {
+            if (TypeHelper::isParcelshop($dpdProduct)) {
                 $parcelShopId = get_post_meta($orderId, '_dpd_parcelshop_id', true);
                 $shipment['product']['parcelshopId'] = $parcelShopId;
                 $shipment['notifications'][] = [
@@ -77,12 +77,12 @@ class OrderTransformer
         }
 
         $shipment['parcels'] = [];
-        $orderItems = $order->get_items();
 
         $totalWeight = @array_reduce($orderItems, function ($sum, $item) use ($orderId) {
             $product = wc_get_product($item['product_id']);
             $this->validator->validateProduct($product, $orderId);
             $sum += $product->get_weight() * $item->get_quantity();
+
             return $sum;
         });
 
@@ -97,7 +97,23 @@ class OrderTransformer
             ];
         }
 
-        $shipment = $this->addCustomsToShipment($shipment, $order);
+        if ($shippingProduct === TypeHelper::DPD_SHIPPING_PRODUCT_FRESH || $shippingProduct === TypeHelper::DPD_SHIPPING_PRODUCT_FREEZE) {
+            if (empty($freshFreezeData)) {
+                throw new InvalidOrderException('No Fresh/Freeze data was supplied');
+            }
+            // Clear previous parcels
+            $shipment['parcels'] = [];
+
+            $shipment['parcels'] = $this->createFreshFreezeParcels(
+                $orderItems,
+                $order,
+                ceil($totalWeight / $parcelCount),
+                $shippingProduct,
+                $freshFreezeData
+            );
+        }
+
+        $shipment = $this->addCustomsToShipment($shipment, $order, $orderItems);
 
         if (!$this->validator->isValid()) {
             throw new InvalidOrderException('Validation failed');
@@ -106,7 +122,7 @@ class OrderTransformer
         return $shipment;
     }
 
-    private function addCustomsToShipment($shipment, $order)
+    private function addCustomsToShipment($shipment, $order, $orderItems)
     {
         $shipment['customs'] = [
             'terms' => 'DAP',
@@ -115,26 +131,24 @@ class OrderTransformer
 
         $totalAmount = 0.00;
 
-        $rows = $order->get_items();
         $customsLines = [];
-
-        foreach ($rows as $row) {
-            $productId = $row['product_id'];
+        foreach ($orderItems as $orderItem) {
+            $productId = $orderItem['product_id'];
             $product = wc_get_product($productId);
             $hsCode = $this->productInfo->getHsCode($productId);
             $customsValue = $this->productInfo->getCustomsValue($product);
             $originCountry = $this->productInfo->getCountryOfOrigin($productId);
 
             $productWeight = (int)Option::defaultProductWeight() * 100; // Transforming kilo to deca
-            $rowWeight = $productWeight * $row->get_quantity();
+            $rowWeight = $productWeight * $orderItem->get_quantity();
 
-            $amount = $row->get_total();
+            $amount = $orderItem->get_total();
             $totalAmount += $amount;
             $customsLines[] = [
                 'description' => substr($product->get_name(), 0, 35),
                 'harmonizedSystemCode' => $hsCode,
                 'originCountry' => $originCountry,
-                'quantity' => (int) $row->get_quantity(),
+                'quantity' => (int) $orderItem->get_quantity(),
                 'netWeight' => (int) ceil($rowWeight),
                 'grossWeight' => (int) ceil($rowWeight),
                 'totalAmount' => (double) ($amount),
@@ -169,48 +183,31 @@ class OrderTransformer
         return $shipment;
     }
 
-    private function isHomeDelivery($type)
+    private function createFreshFreezeParcels($orderItems, $order, $weight, $shippingProduct, $freshFreezeData)
     {
-        if($type == 'predict' || $type == 'saturday') {
-            return true;
+        $parcels = [];
+
+        foreach ($orderItems as $orderItem) {
+            /** @var \WC_Product $product */
+            $product = $orderItem->get_product();
+
+            $parcels[] = [
+                'customerReferences' => [
+                    (string)$order->get_id(),
+                    $product->get_sku()
+                ],
+                'weight' => (int) $weight,
+                'goodsExpirationDate' => (int)$freshFreezeData[$order->get_id()][$shippingProduct][$product->get_id()],
+                'goodsDescription' => get_post_meta($product->get_id(), 'dpd_carrier_description', true)
+            ];
         }
 
-        return false;
+        return $parcels;
     }
 
-    private function getProductCode($type)
+    private function isAgeCheckNeeded($orderItems)
     {
-        if ($type === 'return') {
-            return 'RETURN';
-        }
-
-        if ($type === 'express_10') {
-            return 'E10';
-        }
-
-        if ($type === 'express_12') {
-            return 'E12';
-        }
-
-        if ($type === 'express_18') {
-            return 'E18';
-        }
-
-        return 'CL';
-    }
-
-    private function getSaturdayDelivery($type)
-    {
-        if ($type === 'saturday') {
-            return true;
-        }
-
-        return false;
-    }
-
-    private function isAgeCheckNeeded($order)
-    {
-        foreach($order->get_items() as $lineItem) {
+        foreach($orderItems as $lineItem) {
             if(get_post_meta($lineItem['product_id'], 'dpd_age_check', true) === 'yes') {
                 return true;
             }

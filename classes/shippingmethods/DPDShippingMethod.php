@@ -5,11 +5,14 @@ namespace DpdConnect\classes\shippingmethods;
 // Prevent direct file access
 defined('ABSPATH') or exit;
 
+use DpdConnect\classes\Connect\Product;
+use DpdConnect\classes\TypeHelper;
 use WC_Eval_Math;
 use DateTime;
 use DateTimeZone;
+use WC_Shipping_Method;
 
-class DPD_Saturday extends \WC_Shipping_Method
+class DPDShippingMethod extends WC_Shipping_Method
 {
     /**
      * Cost passed to [fee] shortcode.
@@ -17,6 +20,18 @@ class DPD_Saturday extends \WC_Shipping_Method
      * @var string Cost.
      */
     protected $fee_cost = '';
+    /**
+     * @var bool
+     */
+    public $is_dpd_saturday = false;
+    /**
+     * @var bool
+     */
+    public $is_dpd_pickup = false;
+    /**
+     * @var array
+     */
+    protected $modal_settings = [];
 
     /**
      * Constructor.
@@ -25,20 +40,31 @@ class DPD_Saturday extends \WC_Shipping_Method
      */
     public function __construct($instance_id = 0)
     {
-        $this->id                 = 'dpd_saturday';
-        $this->title              = 'DPD Saturday';
+
+        $this->id                 = 'dpd_shipping_method';
+        $this->title              = 'DPD Shipping Method';
+        $this->method_title       = __($this->title, 'dpdconnect');
+        $this->method_description = __('Please select a label type', 'dpdconnect');
         $this->instance_id        = absint($instance_id);
-        $this->method_title       = __('DPD Saturday', 'dpdconnect');
-        $this->method_description = __('B2C Saturday DPD shipment', 'dpdconnect');
         $this->supports           = [
             'shipping-zones',
-            'settings',
+//            'settings',
             'instance-settings',
             'instance-settings-modal',
         ];
+
+        if ($instance_id === 0) {
+            return;
+        }
+
         $this->init();
 
         add_action('woocommerce_update_options_shipping_' . $this->id, [ $this, 'process_admin_options' ]);
+    }
+
+    private function init_modal_settings()
+    {
+        $this->modal_settings = get_option('woocommerce_' . $this->id . '_' . $this->instance_id . '_settings');
     }
 
     /**
@@ -46,17 +72,36 @@ class DPD_Saturday extends \WC_Shipping_Method
      */
     public function init()
     {
-        $this->instance_form_fields = include 'includes/settings-dpd-saturday.php';
+        $this->instance_form_fields = include 'includes/settings-dpd-shipping-method.php';
 
-        $this->init_form_fields();
+        $this->init_instance_settings();
         $this->init_settings();
+        $this->init_modal_settings();
 
-        $this->enabled              = $this->get_option('enabled');
-        $this->title                = (empty($this->get_option('title'))) ? 'DPD Saturday Shipment' : $this->get_option('title');
+        $this->method_title         = $this->modal_settings['zone_title'] ?? $this->get_option('title', $this->title);
+        $this->tax_status           = $this->modal_settings['tax_status'] ?? $this->get_option('tax_status');
+        $this->cost                 = $this->modal_settings['cost'] ?? $this->get_option('cost');
+        $this->type                 = $this->modal_settings['dpd_method_type'] ?? $this->get_option('type', 'class');
 
-        $this->tax_status           = $this->get_option('tax_status');
-        $this->cost                 = $this->get_option('cost');
-        $this->type                 = $this->get_option('type', 'class');
+        $this->init_dpd();
+    }
+
+    private function init_dpd()
+    {
+        $products = new Product();
+        $selectedProduct = $products->getProductByCode($this->type);
+        if ($selectedProduct !== null) {
+            $this->title = $this->modal_settings['zone_title'] ?? $this->get_option('title', $this->title);
+            $this->method_description = $selectedProduct['description'];
+
+            $this->is_dpd_saturday = TypeHelper::isSaturday($selectedProduct);
+            $this->is_dpd_pickup = TypeHelper::isParcelshop($selectedProduct);
+        }
+
+        // Show DPD Saturday settings
+        if ($this->is_dpd_saturday) {
+            $this->instance_form_fields = array_merge($this->instance_form_fields, $this->init_saturday_settings());
+        }
     }
 
     /**
@@ -66,68 +111,6 @@ class DPD_Saturday extends \WC_Shipping_Method
      * @param  array  $args Args.
      * @return string
      */
-
-    /**
-     * Init form fields
-     *
-     * @access public
-     * @return void
-     */
-    public function init_form_fields()
-    {
-        $this->form_fields = [
-            'enabled' => [
-                'title' => __('Enable', 'dpdconnect'),
-                'type' => 'checkbox',
-                'description' => __('Enable DPD Saturday.', 'dpdconnect'),
-                'default' => 'yes'
-            ],
-            'title' => [
-                'title' => __('Title', 'dpdconnect'),
-                'type' => 'text',
-                'description' => __('This is title of the shippingmethod shown in the shippingzones', 'dpdconnect'),
-            ],
-            'show_from_day' => [
-                'title' => __('Show from day', 'dpdconnect'),
-                'type' => 'select',
-                'description' => __('From which day and time in the week Saturday deliveries will be available in checkout', 'dpdconnect'),
-                'options' => [
-                    '1' => __('Monday'),
-                    '2' => __('Tuesday'),
-                    '3' => __('Wednesday'),
-                    '4' => __('Thursday'),
-                    '5' => __('Friday'),
-                    '6' => __('Saturday'),
-                    '7' => __('Sunday'),
-                ],
-            ],
-            'show_from_time' => [
-                'title' => __('Show from time', 'dpdconnect'),
-                'type' => 'time',
-                'description' => __('From which time Saturday deliveries will be available in checkout', 'dpdconnect'),
-            ],
-            'show_untill_day' => [
-                'title' => __('Show untill day', 'dpdconnect'),
-                'type' => 'select',
-                'description' => __('Untill which day in the week Saturday deliveries will be available in checkout', 'dpdconnect'),
-                'options' => [
-                    '1' => __('Monday'),
-                    '2' => __('Tuesday'),
-                    '3' => __('Wednesday'),
-                    '4' => __('Thursday'),
-                    '5' => __('Friday'),
-                    '6' => __('Saturday'),
-                    '7' => __('Sunday'),
-                ],
-            ],
-            'show_untill_time' => [
-                'title' => __('Show untill time', 'dpdconnect'),
-                'type' => 'time',
-                'description' => __('Untill which time Saturday deliveries will be available in checkout', 'dpdconnect'),
-            ],
-        ];
-    }
-
     protected function evaluate_cost($sum, $args = [])
     {
         include_once 'includes/class-wc-eval-math.php';
@@ -343,16 +326,20 @@ class DPD_Saturday extends \WC_Shipping_Method
 
     public function hide($shippingMethods)
     {
+        if (! $this->is_dpd_saturday) {
+            return $shippingMethods;
+        }
+
         $searchString = $this->id;
 
         foreach ($shippingMethods as $key => $value) {
             if ($searchString === substr($key, 0, strlen($searchString))) {
                 $currentDay = date('w');
-                $fromDay = $this->get_option('show_from_day');
-                $untillDay = $this->get_option('show_untill_day');
+                $fromDay = $this->modal_settings['show_from_day'];
+                $untillDay = $this->modal_settings['show_untill_day'];
                 $currentTime = (new DateTime())->setTimeZone(new DateTimeZone('Europe/Amsterdam'));
-                $fromTime = new DateTime($this->get_option('show_from_time'), new DateTimeZone('Europe/Amsterdam'));
-                $untillTime = new DateTime($this->get_option('show_untill_time'), new DateTimeZone('Europe/Amsterdam'));
+                $fromTime = new DateTime($this->modal_settings['show_from_time'], new DateTimeZone('Europe/Amsterdam'));
+                $untillTime = new DateTime($this->modal_settings['show_untill_time'], new DateTimeZone('Europe/Amsterdam'));
 
                 if ($currentDay < $fromDay) {
                     unset($shippingMethods[$key]);
@@ -377,5 +364,49 @@ class DPD_Saturday extends \WC_Shipping_Method
         }
 
         return $shippingMethods;
+    }
+
+    private function init_saturday_settings()
+    {
+        $settings['show_from_day'] = [
+            'title' => __('Show from day', 'dpdconnect'),
+            'type' => 'select',
+            'description' => __('From which day and time in the week Saturday deliveries will be available in checkout', 'dpdconnect'),
+            'options' => [
+                '1' => __('Monday'),
+                '2' => __('Tuesday'),
+                '3' => __('Wednesday'),
+                '4' => __('Thursday'),
+                '5' => __('Friday'),
+                '6' => __('Saturday'),
+                '7' => __('Sunday'),
+            ],
+        ];
+        $settings['show_from_time'] = [
+            'title' => __('Show from time', 'dpdconnect'),
+            'type' => 'time',
+            'description' => __('From which time Saturday deliveries will be available in checkout', 'dpdconnect'),
+        ];
+        $settings['show_untill_day'] = [
+            'title' => __('Show untill day', 'dpdconnect'),
+            'type' => 'select',
+            'description' => __('Untill which day in the week Saturday deliveries will be available in checkout', 'dpdconnect'),
+            'options' => [
+                '1' => __('Monday'),
+                '2' => __('Tuesday'),
+                '3' => __('Wednesday'),
+                '4' => __('Thursday'),
+                '5' => __('Friday'),
+                '6' => __('Saturday'),
+                '7' => __('Sunday'),
+            ],
+        ];
+        $settings['show_untill_time'] = [
+            'title' => __('Show untill time', 'dpdconnect'),
+            'type' => 'time',
+            'description' => __('Untill which time Saturday deliveries will be available in checkout', 'dpdconnect'),
+        ];
+
+        return $settings;
     }
 }

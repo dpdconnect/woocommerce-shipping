@@ -2,7 +2,8 @@
 
 namespace DpdConnect\classes\Handlers;
 
-use DpdConnect\classes\shippingmethods\DPD_Saturday;
+use DpdConnect\classes\Connect\Product;
+use DpdConnect\classes\shippingmethods\DPDShippingMethod;
 
 class OrderListActions
 {
@@ -10,20 +11,34 @@ class OrderListActions
     {
         add_filter('bulk_actions-edit-shop_order', function ($bulk_actions) {
             $bulk_actions['dpdconnect_create_labels_bulk_action'] = __('Create DPD Labels');
-            $bulk_actions['dpdconnect_create_predict_labels_bulk_action'] = __('Create DPD Predict(Home) Labels');
-            $bulk_actions['dpdconnect_create_classic_labels_bulk_action'] = __('Create DPD Classic Labels');
-            $bulk_actions['dpdconnect_create_parcelshop_labels_bulk_action'] = __('Create DPD ParcelShop Labels');
-            $bulk_actions['dpdconnect_create_saturday_labels_bulk_action'] = __('Create DPD Saturday Labels');
-            $bulk_actions['dpdconnect_create_express_10_labels_bulk_action'] = __('Create DPD Express 10 Labels');
-            $bulk_actions['dpdconnect_create_express_12_labels_bulk_action'] = __('Create DPD Express 12 Labels');
-            $bulk_actions['dpdconnect_create_express_18_labels_bulk_action'] = __('Create DPD Express 18 Labels');
-            $bulk_actions['dpdconnect_create_return_labels_bulk_action'] = __('Create DPD Return Labels');
+
+            $product = new Product();
+            foreach ($product->getAllowedProducts() as $dpdProduct) {
+                $label = $dpdProduct['name'];
+                // Check if label already contains 'DPD' to prevent multiple 'DPD' in label
+                if (strpos(strtolower($dpdProduct['name']), 'dpd') === false) {
+                    $label = 'DPD ' . $label;
+                }
+
+                $bulk_actions['dpdconnect_create_' . $dpdProduct['code'] . '_labels_bulk_action'] = __('Create ' . $label . ' Labels');
+            }
+
             return $bulk_actions;
         });
 
-        add_filter('woocommerce_package_rates', function ($shippingMethods) {
-            $saturday = new DPD_saturday();
-            return $saturday->hide($shippingMethods);
+        add_filter('woocommerce_package_rates', function ($shippingRates) {
+            /** @var \WC_Shipping_Rate $shippingRate */
+            foreach ($shippingRates as $shippingRate) {
+                if ($shippingRate->get_method_id() === 'dpd_shipping_method') {
+                    $shippingMethod = new DPDShippingMethod($shippingRate->get_instance_id());
+
+                    if ($shippingMethod->is_dpd_saturday) {
+                        $shippingRates = $shippingMethod->hide($shippingRates);
+                    }
+                }
+            }
+
+            return $shippingRates;
         }, 10, 1);
     }
 }

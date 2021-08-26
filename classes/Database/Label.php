@@ -42,20 +42,26 @@ class Label
         }
     }
 
-    public function getByOrderId($orderId, $type)
+    public function getByOrderId($orderId, $type, $returnAll = false)
     {
+        $limit = $returnAll ? 5 : 1;
+
         $sql = $this->db->prepare(
             "SELECT *
                FROM $this->table
               WHERE order_id = %s
                 AND type = %s
            ORDER BY created_at DESC
-              LIMIT 1",
+              LIMIT $limit",
             $orderId,
             $type
         );
 
         if (isset($this->db->get_results($sql, 'ARRAY_A')[0])) {
+            if ($returnAll) {
+                return $this->db->get_results($sql, 'ARRAY_A');
+            }
+
             return $this->db->get_results($sql, 'ARRAY_A')[0];
         }
     }

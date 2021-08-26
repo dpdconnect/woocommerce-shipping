@@ -69,3 +69,51 @@
 .mapContainer {
     margin-bottom: 20px;
 }
+
+.parcelshopContainer {
+    margin-top: 10px;
+    background-color: #F8F8F8;
+    padding: 20px;
+}
+
+/* The Modal (background) */
+.parcelshop-modal {
+    display: none; /* Hidden by default */
+    position: absolute; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    /*overflow: auto; !* Enable scroll if needed *!*/
+    overflow: hidden;
+    padding-bottom: 100%;
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.parcelshop-modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    margin-top: 5%;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 56%; /* Could be more or less, depending on screen size */
+    height: 800px;
+}
+
+/* The Close Button */
+.parcelshop-modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.parcelshop-modal-close:hover,
+.parcelshop-modal-close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

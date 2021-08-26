@@ -5,6 +5,7 @@
   "autoload": {
     "psr-4": {
       "DpdConnect\\classes\\": ["classes"]
+
     }
   },
   "require": {

@@ -2,6 +2,11 @@
 
 namespace DpdConnect\classes\Handlers;
 
+use DpdConnect\classes\Connect\Product;
+use DpdConnect\classes\FreshFreezeHelper;
+use DpdConnect\classes\producttypes\Fresh;
+use DpdConnect\classes\producttypes\Parcelshop;
+use DpdConnect\classes\TypeHelper;
 use WC_Order;
 use Exception;
 use DpdConnect\classes\Option;
@@ -21,7 +26,7 @@ class LabelRequest
         add_filter('handle_bulk_actions-edit-shop_order', [self::class, 'bulk'], 10, 3);
     }
 
-    public static function single($postID, $type, $parcelCount)
+    public static function single($postID, $type, $parcelCount, $freshFreezeData = [])
     {
         $currentOrder = new WC_Order($postID);
         $orderId = $currentOrder->get_id();
@@ -29,24 +34,69 @@ class LabelRequest
         $validator = new OrderValidator();
         $orderTransformer = new OrderTransformer($validator);
 
-        try {
-            $shipment = $orderTransformer->createShipment($orderId, self::defineShipmentType($type, $orderId), $parcelCount);
-        } catch (InvalidOrderException $e) {
-            self::redirect();
+        if (FreshFreezeHelper::checkOrdersContainFreshFreezeItems([$currentOrder])) {
+            // Gather dates for fresh/freeze items
+            if (empty($freshFreezeData)) {
+                FreshFreezeHelper::doFreshFreezeRedirect($type, [$postID], $parcelCount);
+            }
+        }
+
+        $groupedOrderItems = FreshFreezeHelper::groupOrderItemsByShippingProduct([$currentOrder]);
+        $shipments = [];
+        $map = [];
+        foreach ($groupedOrderItems[$currentOrder->get_id()] as $shippingProduct => $orderItems) {
+            try {
+                $shipmentParcelCount = $parcelCount;
+                $dpdProduct = self::getDpdProduct($type, $orderId);
+
+                if ($shippingProduct === TypeHelper::DPD_SHIPPING_PRODUCT_FRESH || $shippingProduct === TypeHelper::DPD_SHIPPING_PRODUCT_FREEZE) {
+                    // Get specific FRESH or FREEZE Product
+                    $dpdProduct = TypeHelper::getProduct($shippingProduct);
+                    $shipmentParcelCount = count($freshFreezeData[$orderId][$shippingProduct]);
+                }
+
+                $map[] = $orderId;
+                $shipments[] = $orderTransformer->createShipment(
+                    $orderId,
+                    $dpdProduct,
+                    $shipmentParcelCount,
+                    $orderItems,
+                    $shippingProduct,
+                    $freshFreezeData
+                );
+                $emailData[$orderId]['shipmentType'] = $dpdProduct['type'];
+            } catch (InvalidOrderException $e) {
+                self::redirect()->$e;
+            }
         }
 
         $parcelType = (strpos($type, 'dpdconnect_create') != false) ? ParcelType::TYPERETURN : ParcelType::TYPEREGULAR;
-        $response = self::syncRequest([$shipment], [$orderId], $parcelType);
+        $response = self::syncRequest($shipments, $map, $parcelType);
         $labelContents = $response->getContent()['labelResponses'][0]['label'];
         $code = $response->getContent()['labelResponses'][0]['shipmentIdentifier'];
 
+        if (count($response->getContent()['labelResponses']) > 1) {
+            return Download::zip($response);
+        }
         return Download::pdf($labelContents, $code);
     }
 
-    public static function bulk($redirect_to, $action, $post_ids)
+    public static function bulk($redirect_to, $action, $post_ids, $freshFreezeData = [])
     {
         if (strpos($action, 'dpdconnect_create') === false) {
             return;
+        }
+
+        $orders = [];
+        foreach ($post_ids as $post_id) {
+            $orders[] = wc_get_order($post_id);
+        }
+
+        if (FreshFreezeHelper::checkOrdersContainFreshFreezeItems($orders)) {
+            // Gather dates for fresh/freeze items
+            if (empty($freshFreezeData)) {
+                FreshFreezeHelper::doFreshFreezeRedirect($action, $post_ids);
+            }
         }
 
         $type = (strpos($action, 'dpdconnect_create') != false) ? ParcelType::TYPERETURN : ParcelType::TYPEREGULAR;
@@ -57,20 +107,37 @@ class LabelRequest
         $map = [];
         $emailData = [];
 
-        foreach ($post_ids as $id) {
-            $post = get_post($id);
-            $currentOrder = new WC_Order($post->ID);
+        $groupedOrderItems = FreshFreezeHelper::groupOrderItemsByShippingProduct($orders);
+
+        foreach ($orders as $currentOrder) {
             $orderId = $currentOrder->get_id();
             $emailData[$orderId] = [];
             $emailData[$orderId]['order'] = $currentOrder;
             $map[] = $orderId;
-            try {
-                $shipmentType = self::defineShipmentType($action, $orderId);
-                $emailData[$orderId]['shipment'] = $orderTransformer->createShipment($orderId, $shipmentType);
-                $emailData[$orderId]['shipmentType'] = $shipmentType;
-                $shipments[] = $emailData[$orderId]['shipment'];
-            } catch (InvalidOrderException $e) {
-                self::redirect();
+
+            foreach ($groupedOrderItems[$orderId] as $shippingProduct => $orderItems) {
+                try {
+                    $dpdProduct = self::getDpdProduct($action, $orderId);
+                    $parcelCount = 1;
+
+                    if ($shippingProduct === TypeHelper::DPD_SHIPPING_PRODUCT_FRESH || $shippingProduct === TypeHelper::DPD_SHIPPING_PRODUCT_FREEZE) {
+                        // Get specific FRESH or FREEZE Product
+                        $dpdProduct = TypeHelper::getProduct($shippingProduct);
+                        $parcelCount = count($freshFreezeData[$orderId][$shippingProduct]);
+                    }
+
+                    $emailData[$orderId]['shipment'] = $orderTransformer->createShipment(
+                        $orderId,
+                        $dpdProduct,
+                        $parcelCount,
+                        $orderItems,
+                        $shippingProduct,
+                        $freshFreezeData
+                    );
+                    $shipments[] = $emailData[$orderId]['shipment'];
+                } catch (InvalidOrderException $e) {
+                    self::redirect()->$e;
+                }
             }
         }
 
@@ -166,56 +233,52 @@ class LabelRequest
         }
     }
 
-    private static function defineShipmentType($type, $orderId)
+    private static function getDpdProduct($type, $orderId)
     {
-        switch ($type) {
-            case 'dpdconnect_create_labels_bulk_action':
-                $order = wc_get_order($orderId);
-                $shippingMethods = $order->get_shipping_methods();
-                foreach ($shippingMethods as $method) {
-                    $settings = get_option('woocommerce_'.$method->get_method_id().'_'.$method->get_instance_id().'_settings');
-                    if(!isset($settings['dpd_method_type'])) {
-                        if(get_post_meta($orderId, '_dpd_parcelshop_id', true)) {
-                            return 'parcelshop';
-                        }
-                        Notice::add(__('Shipping method has no DPD type'));
-                        self::redirect();
+        $product = new Product();
+
+        if ($type === 'dpdconnect_create_labels_bulk_action') {
+            $order = wc_get_order($orderId);
+            $shippingMethods = $order->get_shipping_methods();
+            foreach ($shippingMethods as $method) {
+                $settings = get_option('woocommerce_'.$method->get_method_id().'_'.$method->get_instance_id().'_settings');
+                if(!isset($settings['dpd_method_type'])) {
+                    if(get_post_meta($orderId, '_dpd_parcelshop_id', true)) {
+                        return $product->getAllowedProductsByType(Parcelshop::getProductType())[0];
                     }
-                    return $settings['dpd_method_type'];
-                }
-                break;
-            case 'dpdconnect_create_return_labels_bulk_action':
-                return 'return';
-                break;
-            case 'dpdconnect_create_predict_labels_bulk_action':
-                return 'predict';
-                break;
-            case 'dpdconnect_create_parcelshop_labels_bulk_action':
-                if (!get_post_meta($orderId, '_dpd_parcelshop_id', true)) {
-                    Notice::add(__('No ParcelShop shipping method was used for this order'));
+                    Notice::add(__('Shipping method has no DPD type'));
                     self::redirect();
                 }
-                return 'parcelshop';
-                break;
-            case 'dpdconnect_create_classic_labels_bulk_action':
-                return 'classic';
-                break;
-            case 'dpdconnect_create_saturday_labels_bulk_action':
-                return 'saturday';
-                break;
-            case 'dpdconnect_create_express_10_labels_bulk_action':
-                return 'express_10';
-                break;
-            case 'dpdconnect_create_express_12_labels_bulk_action':
-                return 'express_12';
-                break;
-            case 'dpdconnect_create_express_18_labels_bulk_action':
-                return 'express_18';
-                break;
+
+                return $product->getProductByCode($settings['dpd_method_type']);
+            }
+
+            Notice::add(__('Order has no shipping method'));
+            self::redirect();
         }
+
+        $dpdProductCode = str_replace('dpdconnect_create_', '', $type);
+        $dpdProductCode = str_replace('_labels_bulk_action', '', $dpdProductCode);
+
+        $dpdProduct = $product->getProductByCode($dpdProductCode);
+
+        if (! $dpdProduct) {
+            Notice::add(__('DPD Product could not be found'));
+            self::redirect();
+        }
+
+        // Check if a Parcelshop shipping method is used for this order
+        if ($dpdProduct['type'] === Parcelshop::getProductType()) {
+            if (!get_post_meta($orderId, '_dpd_parcelshop_id', true)) {
+                Notice::add(__('No ParcelShop shipping method was used for this order'));
+                self::redirect();
+            }
+        }
+
+        return $dpdProduct;
     }
 
-    private static function redirect()
+    public static function redirect()
     {
         $redirect = isset($_GET['redirect_to']) ? base64_decode($_GET['redirect_to']) : admin_url() . 'edit.php?post_type=shop_order';
         wp_redirect($redirect);
