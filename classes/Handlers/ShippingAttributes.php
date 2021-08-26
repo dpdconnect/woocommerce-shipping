@@ -2,6 +2,9 @@
 
 namespace DpdConnect\classes\Handlers;
 
+use DpdConnect\classes\TypeHelper;
+use DpdConnect\classes\Handlers\Notice;
+
 class ShippingAttributes
 {
     public static function handle()
@@ -46,39 +49,84 @@ class ShippingAttributes
             'description'   => __('Age check for 18+ products', 'dpdconnect'),
             'desc_tip'      => true,
         ];
+        $fields[] = [
+            'id'          => 'dpd_shipping_product',
+            'label'       => __('Shipping product', 'dpdconnect'),
+            'type'        => 'select',
+            'value'       => get_post_meta($product_object->get_id(), 'dpd_shipping_product', true),
+            'options'     => [
+                TypeHelper::DPD_SHIPPING_PRODUCT_DEFAULT => __('Default', 'dpdconnect'),
+                TypeHelper::DPD_SHIPPING_PRODUCT_FRESH => __('Fresh', 'dpdconnect'),
+                TypeHelper::DPD_SHIPPING_PRODUCT_FREEZE => __('Freeze', 'dpdconnect'),
+            ]
+        ];
+        $fields[] = [
+            'id'          => 'dpd_carrier_description',
+            'label'       => __('Carrier description', 'dpdconnect'),
+            'type'        => 'textarea',
+            'value'       => get_post_meta($product_object->get_id(), 'dpd_carrier_description', true),
+        ];
 
         foreach ($fields as $field) {
-            if($field['type'] == 'checkbox') {
-                woocommerce_wp_checkbox($field);
-            } else {
+            if (!array_key_exists('type', $field)) {
                 woocommerce_wp_text_input($field);
+                continue;
+            }
+
+            switch ($field['type']) {
+                case 'checkbox':
+                    woocommerce_wp_checkbox($field);
+                    break;
+                case 'select':
+                    woocommerce_wp_select($field);
+                    break;
+                case 'textarea':
+                    woocommerce_wp_textarea_input($field);
+                    break;
             }
         }
     }
 
     public static function save($post_id)
     {
-        if (!(isset(
-            $_POST['woocommerce_meta_nonce'],
-            $_POST['dpd_hs_code'],
-            $_POST['dpd_customs_value'],
-            $_POST['dpd_origin_country']
-        ))) {
+        if ($_POST['dpd_carrier_description'] == "" && in_array($_POST['dpd_shipping_product'], array('freeze', 'fresh'))) {
             return false;
         }
+        
+            if (!(isset(
+                $_POST['woocommerce_meta_nonce'],
+                $_POST['dpd_hs_code'],
+                $_POST['dpd_customs_value'],
+                $_POST['dpd_origin_country'],
+                $_POST['dpd_shipping_product'],
+                $_POST['dpd_carrier_description']
+            ))) {
+                Notice::add(__('Reponse could not be parsed. Please contact customerit'), NoticeType::ERROR);
+                return false;
+            }
 
-        if (!wp_verify_nonce(sanitize_key($_POST['woocommerce_meta_nonce']), 'woocommerce_save_data')) {
-            return false;
+            if (!wp_verify_nonce(sanitize_key($_POST['woocommerce_meta_nonce']), 'woocommerce_save_data')) {
+                return false;
+            }
+
+            update_post_meta($post_id, 'dpd_hs_code', sanitize_text_field($_POST['dpd_hs_code']));
+            update_post_meta($post_id, 'dpd_customs_value', sanitize_text_field($_POST['dpd_customs_value']));
+            update_post_meta($post_id, 'dpd_origin_country', sanitize_text_field($_POST['dpd_origin_country']));
+
+            if (!empty($_POST['dpd_age_check'])) {
+                update_post_meta($post_id, 'dpd_age_check', sanitize_text_field($_POST['dpd_age_check']));
+            } else {
+                delete_post_meta($post_id, 'dpd_age_check', sanitize_text_field($_POST['dpd_age_check']));
+            }
+
+            update_post_meta($post_id, 'dpd_shipping_product', sanitize_text_field($_POST['dpd_shipping_product']));
+            update_post_meta(
+                $post_id,
+                'dpd_carrier_description',
+                sanitize_text_field($_POST['dpd_carrier_description'])
+            );
         }
 
-        update_post_meta($post_id, 'dpd_hs_code', sanitize_text_field($_POST['dpd_hs_code']));
-        update_post_meta($post_id, 'dpd_customs_value', sanitize_text_field($_POST['dpd_customs_value']));
-        update_post_meta($post_id, 'dpd_origin_country', sanitize_text_field($_POST['dpd_origin_country']));
 
-        if(!empty($_POST['dpd_age_check'])) {
-            update_post_meta($post_id, 'dpd_age_check', sanitize_text_field($_POST['dpd_age_check']));
-        } else {
-            delete_post_meta($post_id, 'dpd_age_check', sanitize_text_field($_POST['dpd_age_check']));
-        }
-    }
+
 }

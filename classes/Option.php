@@ -121,16 +121,15 @@ class Option
     /**
      * PARCELSHOP
      */
-    public static function googleMapsApiClientKey()
+    public static function googleMapsApiKey()
     {
-        return self::parse(get_option('dpdconnect_parcelshop'), 'dpdconnect_google_maps_api_client_key');
+        return self::parse(get_option('dpdconnect_parcelshop'), 'dpdconnect_google_maps_api_key');
     }
 
-    public static function googleMapsApiServerKey()
+    public static function useDpdGoogleMapsKey()
     {
-        return self::parse(get_option('dpdconnect_parcelshop'), 'dpdconnect_google_maps_api_server_key');
+        return (self::parse(get_option('dpdconnect_parcelshop'), 'dpdconnect_use_dpd_google_maps_api_key') == 'on');
     }
-
 
     /**
      * ADVANCED

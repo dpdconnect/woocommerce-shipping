@@ -3,6 +3,7 @@
 namespace DpdConnect\classes\Settings;
 
 use DpdConnect\classes\JobView;
+use DpdConnect\classes\Pages\FreshFreeze;
 use DpdConnect\classes\Pages\Jobs;
 use DpdConnect\classes\Pages\Batches;
 
@@ -68,6 +69,19 @@ class Menu
             function () {
                 $jobView = new JobView();
                 $jobView->render();
+            }
+        );
+
+        // Add Fresh and Freeze form page
+        add_submenu_page(
+            null,
+            'DPD Fresh Freeze',
+            '',
+            'manage_options',
+            'dpdconnect-fresh-freeze',
+            function () {
+                $freshFreeze = new FreshFreeze();
+                $freshFreeze->render();
             }
         );
     }

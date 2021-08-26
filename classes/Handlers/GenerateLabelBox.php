@@ -2,6 +2,7 @@
 
 namespace DpdConnect\classes\Handlers;
 
+use DpdConnect\classes\Connect\Product;
 use WC_Order;
 use DpdConnect\classes\Handlers\LabelRequest;
 
@@ -39,14 +40,20 @@ class GenerateLabelBox
                 <select name="label_type" style="width: 100%;">
                     <option selected disabled>Select an action</option>
                     <option value="dpdconnect_create_labels_bulk_action">Create DPD Labels</option>
-                    <option value="dpdconnect_create_predict_labels_bulk_action">Create DPD Predict(Home) Labels</option>
-                    <option value="dpdconnect_create_classic_labels_bulk_action">Create DPD Classic Labels</option>
-                    <option value="dpdconnect_create_parcelshop_labels_bulk_action">Create DPD ParcelShop Labels</option>
-                    <option value="dpdconnect_create_saturday_labels_bulk_action">Create DPD Saturday Labels</option>
-                    <option value="dpdconnect_create_express_10_labels_bulk_action">Create DPD Express 10 Labels</option>
-                    <option value="dpdconnect_create_express_12_labels_bulk_action">Create DPD Express 12 Labels</option>
-                    <option value="dpdconnect_create_express_18_labels_bulk_action">Create DPD Express 18 Labels</option>
-                    <option value="dpdconnect_create_return_labels_bulk_action">Create DPD Return Labels</option>
+                    <?php
+                    $product = new Product();
+                    foreach ($product->getAllowedProducts() as $dpdProduct) {
+                        $label = $dpdProduct['name'];
+                        if (strpos(strtolower($dpdProduct['name']), 'dpd') === false) {
+                            $label = 'DPD ' . $label;
+                        }
+
+                        echo sprintf('<option value="dpdconnect_create_%s_labels_bulk_action">Create %s Labels</option>',
+                                $dpdProduct['code'],
+                                $label
+                            );
+                    }
+                    ?>
                 </select>
             </td>
         </tr>

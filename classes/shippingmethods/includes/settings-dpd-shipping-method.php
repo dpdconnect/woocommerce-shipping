@@ -14,7 +14,7 @@ $settings = [
         'title'       => __('Method title', 'dpdconnect'),
         'type'        => 'text',
         'description' => __('This controls the title which the user sees during checkout.', 'dpdconnect'),
-        'default'     => __('DPD Classic', 'dpdconnect'),
+        'default'     => __('DPD', 'dpdconnect'),
         'desc_tip'    => true,
     ],
     'tax_status' => [

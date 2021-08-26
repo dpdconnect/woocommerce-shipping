@@ -8,6 +8,8 @@ class Download
 {
     public static function pdf($pdfContents, $fileName)
     {
+        ob_clean();
+        ob_end_flush();
         header('Content-Type: application/pdf');
         header('Content-Disposition: attachment; filename=' . $fileName . '.pdf');
 
@@ -17,6 +19,8 @@ class Download
 
     public static function zip($response)
     {
+        ob_clean();
+        ob_end_flush();
         $fileName = 'labels_' . date('YmdHis');
         $zip = new ZipArchive();
         $zipfile = tempnam(sys_get_temp_dir(), "zip");
@@ -36,5 +40,6 @@ class Download
 
         echo file_get_contents($zipfile);
         unlink($zipfile);
+        exit;
     }
 }

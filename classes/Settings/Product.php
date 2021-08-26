@@ -73,7 +73,7 @@ class Product
     {
         // get the value of the setting we've registered with register_setting()
         $options = get_option('dpdconnect_products');
-        // output the field
+
         ?>
         <input type="text"
                id="<?php echo esc_attr($args['label_for']); ?>"

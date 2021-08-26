@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "dpdconnect/php-sdk",
-            "version": "1.1.2",
+            "version": "1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dpdconnect/php-sdk.git",
-                "reference": "44af78ee365a0dd51167bcbd710377c367c019ee"
+                "reference": "f7ecc2405935734106d18742be3cd7daf44e134a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/44af78ee365a0dd51167bcbd710377c367c019ee",
-                "reference": "44af78ee365a0dd51167bcbd710377c367c019ee",
+                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/f7ecc2405935734106d18742be3cd7daf44e134a",
+                "reference": "f7ecc2405935734106d18742be3cd7daf44e134a",
                 "shasum": ""
             },
             "require": {
@@ -49,7 +49,7 @@
                 }
             ],
             "description": "DPD Connect PHP SDK",
-            "time": "2021-04-27T19:27:36+00:00"
+            "time": "2021-08-25T08:08:39+00:00"
         }
     ],
     "packages-dev": [],

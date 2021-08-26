@@ -61,6 +61,7 @@ class OrderColumn
 
     private static function columnReturnLabel($order)
     {
+
         $jobRepo = new Job();
         $job = $jobRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN);
         $jobId = $job['id'];
