@@ -108,7 +108,7 @@ class Pickup
                     var modal = document.getElementById("parcelshopModal");
                     var btn = document.getElementById("parcelshopButton");
                     var span = document.getElementsByClassName("parcelshop-modal-close")[0];
-                    var masthead = document.getElementsByClassName("site-header")[0];
+                    
 
                     // Open the modal when button is clicked
                     btn.onclick = function() {
@@ -129,7 +129,6 @@ class Pickup
                     function showModal() {
                         scrollTop = document.documentElement.scrollTop;
                         modal.style.display = "block";
-                        masthead.style.zIndex = 0;
 
                         if (useGoogleMapsKey) {
                             DPDConnect.show(token, address, 'nl', '<?php echo Option::googleMapsApiKey() ?>');
@@ -141,7 +140,6 @@ class Pickup
 
                     function closeModal() {
                         modal.style.display = "none";
-                        masthead.style.zIndex = 999;
                         document.documentElement.scrollTop = scrollTop;
                     }
                 </script>
