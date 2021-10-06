@@ -12,7 +12,11 @@ class Product extends Connection
 {
     public function getList()
     {
-        return $this->client->getProduct()->getList();
+        try {
+            return $this->client->getProduct()->getList();
+        } catch (\Exception $exception) {
+           return [];
+        }
     }
 
     public function getAllowedProducts()
