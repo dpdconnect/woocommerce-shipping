@@ -12,6 +12,10 @@ class Product extends Connection
 {
     public function getList()
     {
+        if(!Option::connectUsername()) {
+            return [];
+        }
+
         try {
             return $this->client->getProduct()->getList();
         } catch (\Exception $exception) {
