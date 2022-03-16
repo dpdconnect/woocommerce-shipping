@@ -8,26 +8,25 @@
     "packages": [
         {
             "name": "dpdconnect/php-sdk",
-            "version": "1.1.4",
+            "version": "1.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dpdconnect/php-sdk.git",
-                "reference": "f7ecc2405935734106d18742be3cd7daf44e134a"
+                "reference": "7d7941d1b8700d3cdf95576687ff60c785154b96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/f7ecc2405935734106d18742be3cd7daf44e134a",
-                "reference": "f7ecc2405935734106d18742be3cd7daf44e134a",
+                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/7d7941d1b8700d3cdf95576687ff60c785154b96",
+                "reference": "7d7941d1b8700d3cdf95576687ff60c785154b96",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "^5.5 || ^7.0"
+                "php": "^5.5 || ^7.0 || ^8.0"
             },
             "require-dev": {
                 "donatj/mock-webserver": "^2.0",
                 "overtrue/phplint": "^1.1",
-                "phpunit/phpunit": "~6.5.0",
                 "squizlabs/php_codesniffer": "^3.0@dev",
                 "symfony/yaml": "^4.2"
             },
@@ -49,7 +48,12 @@
                 }
             ],
             "description": "DPD Connect PHP SDK",
-            "time": "2021-08-25T08:08:39+00:00"
+            "support": {
+                "email": "pluginsupport@dpd.nl",
+                "issues": "http://www.dpd.nl",
+                "source": "https://github.com/dpdconnect/php-sdk/tree/1.1.7"
+            },
+            "time": "2022-03-07T11:47:20+00:00"
         }
     ],
     "packages-dev": [],
@@ -60,5 +64,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.2.0"
 }

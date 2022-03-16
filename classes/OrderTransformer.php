@@ -23,6 +23,8 @@ class OrderTransformer
         $order = wc_get_order($orderId);
         $orderItems = empty($orderItems) ? $order->get_items() : $orderItems;
         $this->validator->validateReceiver($order, $orderId, $parcelCount);
+        $dpdProductCode = TypeHelper::convertServiceToCode($dpdProduct);
+
         $shipment = [
             'orderId' => (string) $orderId,
             'sendingDepot' => Option::depot(),
@@ -47,9 +49,10 @@ class OrderTransformer
                 'postalcode' => $order->get_shipping_postcode(), // No spaces in zipCode!
                 'city' => $order->get_shipping_city(),
                 'commercialAddress' => false,
+                'eorinumber' => Option::eoriNumber(),
             ],
             'product' => [
-                'productCode' => $dpdProduct['code'],
+                'productCode' => $dpdProductCode,
                 'saturdayDelivery' => TypeHelper::isSaturday($dpdProduct),
                 'homeDelivery' => TypeHelper::isHomeDelivery($dpdProduct),
                 'ageCheck' => $this->isAgeCheckNeeded($orderItems)
@@ -81,7 +84,7 @@ class OrderTransformer
         $totalWeight = @array_reduce($orderItems, function ($sum, $item) use ($orderId) {
             $product = wc_get_product($item['product_id']);
             $this->validator->validateProduct($product, $orderId);
-            $sum += $product->get_weight() * $item->get_quantity();
+            $sum += (float)$product->get_weight() * $item->get_quantity();
 
             return $sum;
         });
@@ -125,7 +128,8 @@ class OrderTransformer
     private function addCustomsToShipment($shipment, $order, $orderItems)
     {
         $shipment['customs'] = [
-            'terms' => 'DAP',
+            // Use DAPDP as fallback when terms isn't set
+            'terms' => Option::customsTerms() ?: 'DAPDP',
             'totalCurrency' => $order->currency,
         ];
 
@@ -173,7 +177,6 @@ class OrderTransformer
             'postalcode' => $order->get_shipping_postcode(), // No spaces in zipCode!
             'city' => $order->get_shipping_city(),
             'commercialAddress' => false,
-            'sprn' => Option::smallParcelReference(),
         ];
 
         $shipment['customs']['customsLines'] = $customsLines;

@@ -17,7 +17,15 @@ class Product extends Connection
         }
 
         try {
-            return $this->client->getProduct()->getList();
+            $products = $this->client->getProduct()->getList();
+            $products[] = [
+                'name'=>'DPD Return',
+                'description'=>'Added by plugin',
+                'code'=>'RETURN',
+                'additionalService'=>false,
+                'type'=>'predict',
+            ];
+            return $products;
         } catch (\Exception $exception) {
            return [];
         }
@@ -59,7 +67,6 @@ class Product extends Connection
     public function getProductsByType(string $type)
     {
         return array_filter($this->getList(), function($product) use ($type) {
-            if(!$product['additionalService'])
             return $product['type'] === $type;
         });
     }

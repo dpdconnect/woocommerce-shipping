@@ -38,6 +38,18 @@ class TypeHelper
         }
     }
 
+    public static function convertServiceToCode($dpdProduct)
+    {
+        if($dpdProduct['code'] === "6") {
+            return 'B2C';
+        } elseif ($dpdProduct['code'] === "AGE") {
+            return 'B2C';
+        }
+
+        return $dpdProduct['code'];
+    }
+
+
     public static function isParcelshop($dpdProduct)
     {
         return (strpos(strtolower($dpdProduct['type']), 'parcelshop') !== false);
@@ -50,7 +62,7 @@ class TypeHelper
 
     public static function isSaturday($dpdProduct)
     {
-        return (strpos(strtolower($dpdProduct['name']), 'saturday') !== false);
+        return (strpos(strtolower($dpdProduct['code']), '6') !== false);
     }
 
     public static function isReturn($dpdProduct)
