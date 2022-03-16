@@ -166,6 +166,21 @@ class Company
                 'dpdconnect_custom_data' => 'custom',
             ]
         );
+
+        add_settings_field(
+            'dpdconnect_customs_terms', // as of WP 4.6 this value is used only internally
+            // use $args' label_for to populate the id inside the callback
+            __('Customs terms', 'dpdconnect'),
+            [self::class, 'renderCustomsTermsInput'],
+            self::PAGE,
+            self::SECTION,
+            [
+                'type' => 'select',
+                'label_for' => 'dpdconnect_customs_terms',
+                'class' => 'dpdconnect_row',
+                'dpdconnect_custom_data' => 'custom',
+            ]
+        );
     }
 
     public static function renderDefaultInput($args)
@@ -187,6 +202,26 @@ class Company
         </p>
         <?php } ?>
 
+        <?php
+    }
+
+    public static function renderCustomsTermsInput($args)
+    {
+        // get the value of the setting we've registered with register_setting()
+        $options = get_option('dpdconnect_company_info');
+        // output the field
+        ?>
+        <select id="<?php echo esc_attr($args['label_for']); ?>"
+                data-custom="<?php echo esc_attr($args['dpdconnect_custom_data']); ?>"
+                name="dpdconnect_company_info[<?php echo esc_attr($args['label_for']); ?>]"
+        >
+            <option value="DAPDP" <?php echo isset($options[ $args['label_for'] ]) ? ( selected($options[ $args['label_for'] ], 'DAPDP', false) ) : ( '' ); ?>>
+                <?php esc_html_e('DAP DP - D&T paid by sender', 'dpdconnect'); ?>
+            </option>
+            <option value="DAPNP" <?php echo isset($options[ $args['label_for'] ]) ? ( selected($options[ $args['label_for'] ], 'DAPNP', false) ) : ( '' ); ?>>
+                <?php esc_html_e('DAP NP - D&T paid by receiver', 'dpdconnect'); ?>
+            </option>
+        </select>
         <?php
     }
 

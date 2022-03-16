@@ -100,6 +100,11 @@ class Option
         return self::parse(get_option('dpdconnect_company_info'), 'dpdconnect_spr');
     }
 
+    public static function customsTerms()
+    {
+        return self::parse(get_option('dpdconnect_company_info'), 'dpdconnect_customs_terms');
+    }
+
     /**
      * PRODUCT SETTINGS
      */
