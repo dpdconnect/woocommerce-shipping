@@ -32,7 +32,7 @@ class Activate
             PRIMARY KEY id (id),
             INDEX created_at (created_at)
         ) $charset_collate;";
-        dbDelta($sql);
+        $wpdb->query($sql);
 
         $table_name = $wpdb->prefix . 'dpdconnect_batches';
         $sql = "CREATE TABLE IF NOT EXISTS $table_name (
@@ -45,7 +45,7 @@ class Activate
             PRIMARY KEY id (id),
             INDEX created_at (created_at)
         ) $charset_collate;";
-        dbDelta($sql);
+        $wpdb->query($sql);
 
         $table_name = $wpdb->prefix . 'dpdconnect_jobs';
         $sql = "CREATE TABLE IF NOT EXISTS $table_name (
@@ -63,6 +63,6 @@ class Activate
             INDEX created_at (created_at),
             INDEX batch_id (batch_id)
         ) $charset_collate;";
-        dbDelta($sql);
+        $wpdb->query($sql);
     }
 }
