@@ -19,6 +19,7 @@ class OrderColumn
     {
         $columns['dpdconnect_shipping_label'] = __('DPD Shipping label', 'dpdconnect');
         $columns['dpdconnect_return_label'] = __('DPD Return label', 'dpdconnect');
+        $columns['dpdconnect_tracking_number'] = __('DPD Tracking numbers', 'dpdconnect');
 
         return $columns;
     }
@@ -31,16 +32,33 @@ class OrderColumn
 
         $column === 'dpdconnect_shipping_label' ? self::columnShippingLabel($order) : null;
         $column === 'dpdconnect_return_label' ? self::columnReturnLabel($order) : null;
+        $column === 'dpdconnect_tracking_number' ? self::columnTrackingNumber($order) : null;
+    }
+
+    private static function columnTrackingNumber($order)
+    {
+        $trackingCodes = get_post_meta($order->get_id(), 'dpd_tracking_numbers');
+        if(empty($trackingCodes)) {
+            return;
+        }
+
+        foreach ($trackingCodes as $trackingCode) {
+
+            echo '<a target="_blank" href="https://tracking.dpd.de/status/en_US/parcel/' . $trackingCode[0] . '" title="' . __('Tracking numbers', 'dpdconnect') . '"><span>' . $trackingCode[0] . '</span></a><br/>';
+        }
     }
 
     private static function columnShippingLabel($order)
     {
         $jobRepo = new Job();
         $job = $jobRepo->getByOrderId($order->get_id(), ParcelType::TYPEREGULAR);
-        $jobId = $job['id'];
-        $status = $job['status'];
 
-        echo '<a href="' . admin_url() . 'admin.php?page=dpdconnect-job-details&jobId=' . $jobId . '" title="' . __('View job', 'dpdconnect') . '">' . JobStatus::Tag($status) . '</a>';
+        if(!empty($job)) {
+            $jobId = $job['id'];
+            $status = $job['status'];
+
+            echo '<a href="' . admin_url() . 'admin.php?page=dpdconnect-job-details&jobId=' . $jobId . '" title="' . __('View job', 'dpdconnect') . '">' . JobStatus::Tag($status) . '</a>';
+        }
 
         $labelRepo = new Label();
         $shippingLabel = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPEREGULAR);
@@ -64,10 +82,13 @@ class OrderColumn
 
         $jobRepo = new Job();
         $job = $jobRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN);
-        $jobId = $job['id'];
-        $status = $job['status'];
 
-        echo '<a href="' . admin_url() . 'admin.php?page=dpdconnect-job-details&jobId=' . $jobId . '" title="' . __('View job', 'dpdconnect') . '">' . JobStatus::tag($status) . '</a>';
+        if(!empty($job)) {
+            $jobId = $job['id'];
+            $status = $job['status'];
+
+            echo '<a href="' . admin_url() . 'admin.php?page=dpdconnect-job-details&jobId=' . $jobId . '" title="' . __('View job', 'dpdconnect') . '">' . JobStatus::tag($status) . '</a>';
+        }
 
         $labelRepo = new Label();
         $returnLabel = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN);

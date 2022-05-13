@@ -130,7 +130,7 @@ class OrderTransformer
         $shipment['customs'] = [
             // Use DAPDP as fallback when terms isn't set
             'terms' => Option::customsTerms() ?: 'DAPDP',
-            'totalCurrency' => $order->currency,
+            'totalCurrency' => $order->get_currency(),
         ];
 
         $totalAmount = 0.00;
