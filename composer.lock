@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "dpdconnect/php-sdk",
-            "version": "1.1.7",
+            "version": "1.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dpdconnect/php-sdk.git",
-                "reference": "7d7941d1b8700d3cdf95576687ff60c785154b96"
+                "reference": "6b7ef039433a2da09621ca99b708ad49e61fcb9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/7d7941d1b8700d3cdf95576687ff60c785154b96",
-                "reference": "7d7941d1b8700d3cdf95576687ff60c785154b96",
+                "url": "https://api.github.com/repos/dpdconnect/php-sdk/zipball/6b7ef039433a2da09621ca99b708ad49e61fcb9e",
+                "reference": "6b7ef039433a2da09621ca99b708ad49e61fcb9e",
                 "shasum": ""
             },
             "require": {
@@ -27,6 +27,7 @@
             "require-dev": {
                 "donatj/mock-webserver": "^2.0",
                 "overtrue/phplint": "^1.1",
+                "phpunit/phpunit": "~6.5.0",
                 "squizlabs/php_codesniffer": "^3.0@dev",
                 "symfony/yaml": "^4.2"
             },
@@ -51,9 +52,9 @@
             "support": {
                 "email": "pluginsupport@dpd.nl",
                 "issues": "http://www.dpd.nl",
-                "source": "https://github.com/dpdconnect/php-sdk/tree/1.1.7"
+                "source": "https://github.com/dpdconnect/php-sdk/tree/1.1.8"
             },
-            "time": "2022-03-07T11:47:20+00:00"
+            "time": "2022-05-06T08:46:46+00:00"
         }
     ],
     "packages-dev": [],
@@ -64,5 +65,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }

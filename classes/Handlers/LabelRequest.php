@@ -148,6 +148,7 @@ class LabelRequest
                 if (isset($emailData[$labelResponse['orderId']])) {
                     $emailData[$labelResponse['orderId']]['parcelNumbers'] = $labelResponse['parcelNumbers'];
                 }
+                add_post_meta($labelResponse['orderId'], 'dpd_tracking_numbers', $labelResponse['parcelNumbers']);
             }
 
             if ('enabled' == Option::sendTrackingEmail()) {
@@ -160,6 +161,7 @@ class LabelRequest
                     wp_mail($data['order']->get_billing_email(), __("Je bestelling is gereed voor verzending", 'dpdconnect'), $email_content, $headers);
                 }
             }
+
 
             return Download::zip($response);
         }
