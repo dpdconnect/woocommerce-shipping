@@ -38,10 +38,16 @@ class DPDShippingMethod extends WC_Shipping_Method
      *
      * @param int $instance_id Shipping method instance ID.
      */
-    public function __construct($instance_id = 0)
+    public function __construct($instance = array())
     {
+        if(!empty($instance)) {
+            $instance_id = $instance[1];
+            $this->id = $instance[0];
+        } else {
+            $instance_id = 0;
+            $this->id = 'dpd_shipping_method';
+        }
 
-        $this->id                 = 'dpd_shipping_method';
         $this->title              = 'DPD Shipping Method';
         $this->method_title       = __($this->title, 'dpdconnect');
         $this->method_description = __('Please select a label type', 'dpdconnect');
@@ -90,6 +96,7 @@ class DPDShippingMethod extends WC_Shipping_Method
     {
         $products = new Product();
         $selectedProduct = $products->getProductByCode($this->type);
+
         if ($selectedProduct !== null) {
             $this->title = $this->modal_settings['zone_title'] ?? $this->get_option('title', $this->title);
             $this->method_description = $selectedProduct['description'];
