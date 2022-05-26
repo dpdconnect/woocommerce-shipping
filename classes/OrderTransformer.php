@@ -38,7 +38,7 @@ class OrderTransformer
                 'email' => Option::companyEmail(),
                 'commercialAddress' => true,
                 'vatnumber' => Option::vatNumber(),
-                'eorinumber' => Option::eoriNumber(),
+                'eorinumber' => str_replace('.','', Option::eoriNumber()),
             ],
             'receiver' => [
                 'name1' => $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
@@ -49,7 +49,6 @@ class OrderTransformer
                 'postalcode' => $order->get_shipping_postcode(), // No spaces in zipCode!
                 'city' => $order->get_shipping_city(),
                 'commercialAddress' => false,
-                'eorinumber' => Option::eoriNumber(),
             ],
             'product' => [
                 'productCode' => $dpdProductCode,

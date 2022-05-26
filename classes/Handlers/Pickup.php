@@ -37,14 +37,15 @@ class Pickup
 
         $shipping_method    = $woocommerce->session->get('chosen_shipping_methods');
         $selected_shipping_method = explode(":", $shipping_method[0]);
-        $display = 'none';
-        if ($selected_shipping_method[0] === 'dpd_shipping_method') {
-            $dpdShippingMethod = new DPDShippingMethod($selected_shipping_method[1]);
 
-            if ($dpdShippingMethod->is_dpd_pickup) {
-                $display = 'table-row';
-            }
+        $display = 'none';
+
+        $dpdShippingMethod = new DPDShippingMethod($selected_shipping_method);
+
+        if ($dpdShippingMethod->is_dpd_pickup) {
+            $display = 'table-row';
         }
+
         ?>
         <tr class="dpdCheckoutRow" style="display:<?= $display ?>">
             <td colspan="2">
@@ -108,7 +109,7 @@ class Pickup
                     var modal = document.getElementById("parcelshopModal");
                     var btn = document.getElementById("parcelshopButton");
                     var span = document.getElementsByClassName("parcelshop-modal-close")[0];
-                    
+
 
                     // Open the modal when button is clicked
                     btn.onclick = function() {
@@ -168,14 +169,7 @@ class Pickup
         $shippingMethod = $woocommerce->session->get('chosen_shipping_methods');
         $selectedShippingMethod = explode(":", $shippingMethod[0]);
 
-
-        // Shipping method is not of type 'DPD', so it can't be a parcelshop shipping method
-        if ($selectedShippingMethod[0] !== 'dpd_shipping_method') {
-            // No validation for parcelshop is needed
-            return;
-        }
-
-        $dpdShippingMethod = new DPDShippingMethod($selectedShippingMethod[1]);
+        $dpdShippingMethod = new DPDShippingMethod($selectedShippingMethod);
         // Shipping method is not of type parcelshop
         if (!$dpdShippingMethod->is_dpd_pickup) {
             // No validation for parcelshop is needed
