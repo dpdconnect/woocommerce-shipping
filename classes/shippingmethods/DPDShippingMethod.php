@@ -38,13 +38,17 @@ class DPDShippingMethod extends WC_Shipping_Method
      *
      * @param int $instance_id Shipping method instance ID.
      */
-    public function __construct($instance = array())
+    public function __construct($instance = 0)
     {
-        if(!empty($instance)) {
+        if(is_array($instance)) {
             $instance_id = $instance[1];
             $this->id = $instance[0];
         } else {
-            $instance_id = 0;
+            if($instance != 0) {
+                $instance_id = $instance;
+            } else {
+                $instance_id = 0;
+            }
             $this->id = 'dpd_shipping_method';
         }
 
