@@ -44,7 +44,7 @@ class OrderColumn
 
         foreach ($trackingCodes as $trackingCode) {
 
-            echo '<a target="_blank" href="https://tracking.dpd.de/status/en_US/parcel/' . $trackingCode[0] . '" title="' . __('Tracking numbers', 'dpdconnect') . '"><span>' . $trackingCode[0] . '</span></a><br/>';
+            echo '<a target="_blank" href="https://www.dpdgroup.com/nl/mydpd/my-parcels/track?lang=en&parcelNumber=' . $trackingCode[0] . '" title="' . __('Tracking numbers', 'dpdconnect') . '"><span>' . $trackingCode[0] . '</span></a><br/>';
         }
     }
 
