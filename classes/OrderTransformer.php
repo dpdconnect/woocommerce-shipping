@@ -42,6 +42,7 @@ class OrderTransformer
             ],
             'receiver' => [
                 'name1' => $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
+                'name2' => $order->get_shipping_company(),
                 'street' => $order->get_shipping_address_1() . $order->get_shipping_address_2(),
                 'email' => $order->get_billing_email(),
                 'phoneNumber' => $order->get_billing_phone(),
