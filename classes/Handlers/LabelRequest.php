@@ -76,8 +76,13 @@ class LabelRequest
         $code = $response->getContent()['labelResponses'][0]['shipmentIdentifier'];
 
         if (count($response->getContent()['labelResponses']) > 1) {
+
             return Download::zip($response);
         }
+        foreach ($response->getContent()['labelResponses'][0]['parcelNumbers'] as $parcelNumber) {
+            add_post_meta($orderId, 'dpd_tracking_numbers', array($parcelNumber));
+        }
+
         return Download::pdf($labelContents, $code);
     }
 
