@@ -9,6 +9,7 @@
     }
   },
   "require": {
-    "dpdconnect/php-sdk": "^1.1"
+    "dpdconnect/php-sdk": "^1.1",
+    "clegginabox/pdf-merger": "dev-master"
   }
 }
