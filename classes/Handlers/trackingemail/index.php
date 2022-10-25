@@ -36,8 +36,8 @@
                                     </p>
                                 <?php } else { ?>
 								<p>
-                                    <?=$data['shipment']['receiver']['street']; ?><br/>
-                                    <?=$data['shipment']['receiver']['postalcode']; ?> <?=$data['shipment']['receiver']['city']; ?>
+                                    <?= $data['shipment']['receiver']['street']; ?><br/>
+                                    <?= isset($data['shipment']['receiver']['postalCode']) ? $data['shipment']['receiver']['postalCode'] : $data['shipment']['receiver']['postalcode'] ?> <?=$data['shipment']['receiver']['city']; ?>
 								</p>
                                 <?php } ?>
 							</td>

@@ -44,6 +44,11 @@ class LabelRequest
         $groupedOrderItems = FreshFreezeHelper::groupOrderItemsByShippingProduct([$currentOrder]);
         $shipments = [];
         $map = [];
+
+        $emailData = [];
+        $emailData[$orderId] = [];
+        $emailData[$orderId]['order'] = $currentOrder;
+
         foreach ($groupedOrderItems[$currentOrder->get_id()] as $shippingProduct => $orderItems) {
             try {
                 $shipmentParcelCount = $parcelCount;
@@ -56,7 +61,8 @@ class LabelRequest
                 }
 
                 $map[] = $orderId;
-                $shipments[] = $orderTransformer->createShipment(
+
+                $shipment = $orderTransformer->createShipment(
                     $orderId,
                     $dpdProduct,
                     $shipmentParcelCount,
@@ -64,6 +70,9 @@ class LabelRequest
                     $shippingProduct,
                     $freshFreezeData
                 );
+
+                $shipments[] = $shipment;
+                $emailData[$orderId]['shipment'] = $shipment;
                 $emailData[$orderId]['shipmentType'] = $dpdProduct['type'];
             } catch (InvalidOrderException $e) {
                 self::redirect()->$e;
@@ -72,15 +81,24 @@ class LabelRequest
 
         $parcelType = (strpos($type, 'dpdconnect_create') != false) ? ParcelType::TYPERETURN : ParcelType::TYPEREGULAR;
         $response = self::syncRequest($shipments, $map, $parcelType);
-        $labelContents = $response->getContent()['labelResponses'][0]['label'];
+        $labelResponses = $response->getContent()['labelResponses'];
+        $labelContents = current($labelResponses)['label'];
         $code = $response->getContent()['labelResponses'][0]['shipmentIdentifier'];
 
         if (count($response->getContent()['labelResponses']) > 1) {
 
             return Download::zip($response);
         }
-        foreach ($response->getContent()['labelResponses'][0]['parcelNumbers'] as $parcelNumber) {
-            add_post_meta($orderId, 'dpd_tracking_numbers', array($parcelNumber));
+
+        foreach ($labelResponses as $labelResponse) {
+            if (isset($emailData[$labelResponse['orderId']])) {
+                $emailData[$labelResponse['orderId']]['parcelNumbers'] = $labelResponse['parcelNumbers'];
+            }
+            add_post_meta($labelResponse['orderId'], 'dpd_tracking_numbers', $labelResponse['parcelNumbers']);
+        }
+
+        if ('enabled' == Option::sendTrackingEmail()) {
+            self::sendTrackingMail($emailData);
         }
 
         return Download::pdf($labelContents, $code);
@@ -139,6 +157,8 @@ class LabelRequest
                         $shippingProduct,
                         $freshFreezeData
                     );
+
+                    $emailData[$orderId]['shipmentType'] = $dpdProduct['type'];
                     $shipments[] = $emailData[$orderId]['shipment'];
                 } catch (InvalidOrderException $e) {
                     self::redirect()->$e;
@@ -157,16 +177,8 @@ class LabelRequest
             }
 
             if ('enabled' == Option::sendTrackingEmail()) {
-                foreach ($emailData as $orderId => $data) {
-                    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $data['shipment']['sender']['name1'] . ' <' . $data['shipment']['sender']['email'] . '>');
-                    ob_start();
-                    include(plugin_dir_path(__FILE__) . "trackingemail" . DIRECTORY_SEPARATOR . "index.php");
-                    $email_content = ob_get_contents();
-                    ob_end_clean();
-                    wp_mail($data['order']->get_billing_email(), __("Je bestelling is gereed voor verzending", 'dpdconnect'), $email_content, $headers);
-                }
+                self::sendTrackingMail($emailData);
             }
-
 
             return Download::zip($response);
         }
@@ -290,5 +302,20 @@ class LabelRequest
         $redirect = isset($_GET['redirect_to']) ? base64_decode($_GET['redirect_to']) : admin_url() . 'edit.php?post_type=shop_order';
         wp_redirect($redirect);
         exit;
+    }
+
+    /**
+     * @param array $emailData
+     */
+    public static function sendTrackingMail($emailData)
+    {
+        foreach ($emailData as $orderId => $data) {
+            $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $data['shipment']['sender']['name1'] . ' <' . $data['shipment']['sender']['email'] . '>');
+            ob_start();
+            include(plugin_dir_path(__FILE__) . "trackingemail" . DIRECTORY_SEPARATOR . "index.php");
+            $email_content = ob_get_contents();
+            ob_end_clean();
+            wp_mail($data['order']->get_billing_email(), __("Je bestelling is gereed voor verzending", 'dpdconnect'), $email_content, $headers);
+        }
     }
 }

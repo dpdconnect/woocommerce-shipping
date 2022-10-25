@@ -2,6 +2,7 @@
 
 namespace DpdConnect\classes\Handlers;
 
+use DpdConnect\classes\Connect\Product;
 use Exception;
 use DpdConnect\classes\Option;
 use DpdConnect\Sdk\ClientBuilder;
@@ -76,8 +77,18 @@ class Callback
             $label = $connectLabel->get($parcelNumber);
             $labelId = $databaseLabel->create($orderId, $label, $job['type'], $shipmentIdentifier, $parcelNumbers);
 
+            $jobStatus = $job['status'];
+
             $jobRepo->updateStatus($job, JobStatus::STATUSSUCCESS, null, null, $labelId);
             $batchRepo->updateStatus($job);
+
+            $order = wc_get_order($orderId);
+
+            add_post_meta($orderId, 'dpd_tracking_numbers', $incomingData['shipment']['trackingInfo']['parcelNumbers']);
+
+            if ('enabled' == Option::sendTrackingEmail() && $order && $jobStatus === JobStatus::STATUSQUEUED) {
+                self::sendMail($order, $incomingData['shipment']);
+            }
         } catch (Exception $e) {
             $error = __('Could not download label after job completion.');
             $jobRepo->updateStatus($job, JobStatus::STATUSREQUEST, $error);
@@ -95,5 +106,19 @@ class Callback
         $stateMessage = $incomingData['stateMessage'];
         $jobRepo->updateStatus($job, JobStatus::STATUSFAILED, $stateMessage, $errors);
         $batchRepo->updateStatus($job);
+    }
+
+    private static function sendMail($order, $shipment)
+    {
+        $product = new Product();
+        $dpdProduct = $product->getProductByCode($shipment['product']['productCode']);
+
+        $emailData[$order->get_id()]['order'] = $order;
+
+        $emailData[$order->get_id()]['shipment'] = $shipment;
+        $emailData[$order->get_id()]['shipmentType'] = $dpdProduct['type'];
+        $emailData[$order->get_id()]['parcelNumbers'] = $shipment['trackingInfo']['parcelNumbers'];
+
+        LabelRequest::sendTrackingMail($emailData);
     }
 }
