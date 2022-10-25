@@ -7,6 +7,7 @@ use DpdConnect\classes\Version;
 use DpdConnect\Sdk\ClientBuilder;
 use DpdConnect\Sdk\Objects\MetaData;
 use DpdConnect\Sdk\Objects\ObjectFactory;
+use DpdConnect\classes\Connect\Cache;
 
 class Connection
 {
@@ -24,7 +25,6 @@ class Connection
         ]));
 
         $this->client = $clientBuilder->buildAuthenticatedByPassword($username, $password);
-
         $this->client->getAuthentication()->setJwtToken(
             get_option('dpdconnect_jwt_token') ?: null
         );
@@ -33,5 +33,7 @@ class Connection
             update_option('dpdconnect_jwt_token', $jwtToken);
             $this->client->getAuthentication()->setJwtToken($jwtToken);
         });
+
+        $this->client->setCacheCallable(new Cache());
     }
 }
