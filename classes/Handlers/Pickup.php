@@ -4,9 +4,11 @@ namespace DpdConnect\classes\Handlers;
 
 use DpdConnect\classes\Option;
 use DpdConnect\classes\shippingmethods\DPDShippingMethod;
+use DpdConnect\Sdk\CacheWrapper;
 use DpdConnect\Sdk\Client;
 use DpdConnect\Sdk\Common\HttpClient;
 use DpdConnect\Sdk\Resources\Token;
+use DpdConnect\classes\Connect\Cache;
 
 class Pickup
 {
@@ -73,6 +75,7 @@ class Pickup
                 <script>
                     var token = '<?php
                         $token = new Token(new HttpClient(Client::ENDPOINT));
+                        $token->setCacheWrapper(new CacheWrapper(new Cache()));
                         echo $token->getPublicJWTToken(
                             Option::connectUsername(),
                             Option::connectPassword()

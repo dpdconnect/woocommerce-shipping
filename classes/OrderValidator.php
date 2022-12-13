@@ -112,14 +112,6 @@ class OrderValidator
             $this->flash($error, $orderId);
             $this->valid = false;
         }
-
-        if (!$this->country->isPartOfSingleMarket($order->get_shipping_country())) {
-            if ($parcelCount != 1) {
-                $error = sprintf(__('Multiple parcels is not supported for %s', 'dpdconnect'), $order->get_shipping_country());
-                $this->flash($error, $orderId);
-                $this->valid = false;
-            }
-        }
     }
 
 
