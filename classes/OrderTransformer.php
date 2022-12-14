@@ -172,7 +172,7 @@ class OrderTransformer
             $amount = $orderItem->get_total();
             $totalAmount += $amount;
             $customsLines[] = [
-                'description' => substr($product->get_name(), 0, 35),
+                'description' => mb_substr($product->get_name(), 0, 35, 'utf-8'),
                 'harmonizedSystemCode' => $hsCode,
                 'originCountry' => $originCountry,
                 'quantity' => (int) $orderItem->get_quantity(),
