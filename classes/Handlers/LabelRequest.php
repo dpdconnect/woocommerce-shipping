@@ -26,7 +26,7 @@ class LabelRequest
         add_filter('handle_bulk_actions-edit-shop_order', [self::class, 'bulk'], 10, 3);
     }
 
-    public static function single($postID, $type, $parcelCount, $freshFreezeData = [])
+    public static function single($postID, $type, $parcelCount, $freshFreezeData = [], $redirectToDownload = true)
     {
         $currentOrder = new WC_Order($postID);
         $orderId = $currentOrder->get_id();
@@ -101,7 +101,14 @@ class LabelRequest
             self::sendTrackingMail($emailData);
         }
 
-        return Download::pdf($labelContents, $code);
+        if ($redirectToDownload) {
+            return Download::pdf($labelContents, $code);
+        }
+
+        return [
+            'labelContents' => $labelContents,
+            'code' => $code,
+        ];
     }
 
     public static function bulk($redirect_to, $action, $post_ids, $freshFreezeData = [])
