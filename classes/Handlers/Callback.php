@@ -84,7 +84,7 @@ class Callback
 
             $order = wc_get_order($orderId);
 
-            add_post_meta($orderId, 'dpd_tracking_numbers', $incomingData['shipment']['trackingInfo']['parcelNumbers']);
+            $order->add_meta_data('dpd_tracking_numbers', $incomingData['shipment']['trackingInfo']['parcelNumbers']);
 
             if ('enabled' == Option::sendTrackingEmail() && $order && $jobStatus === JobStatus::STATUSQUEUED) {
                 self::sendMail($order, $incomingData['shipment']);

@@ -2,6 +2,7 @@
 
 namespace DpdConnect\classes\Handlers;
 
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use DpdConnect\classes\Connect\Product;
 use DpdConnect\classes\FreshFreezeHelper;
 use DpdConnect\classes\producttypes\Fresh;
@@ -23,12 +24,15 @@ class LabelRequest
 {
     public static function handle()
     {
+        // For old WooCommerce versions
         add_filter('handle_bulk_actions-edit-shop_order', [self::class, 'bulk'], 10, 3);
+        // For new WooCommerce versions
+        add_filter('handle_bulk_actions-woocommerce_page_wc-orders', [self::class, 'bulk'], 10, 3);
     }
 
     public static function single($postID, $type, $parcelCount, $freshFreezeData = [])
     {
-        $currentOrder = new WC_Order($postID);
+        $currentOrder = wc_get_order($postID);
         $orderId = $currentOrder->get_id();
 
         $validator = new OrderValidator();
@@ -79,22 +83,26 @@ class LabelRequest
             }
         }
 
-        $parcelType = (strpos($type, 'dpdconnect_create') != false) ? ParcelType::TYPERETURN : ParcelType::TYPEREGULAR;
+        $parcelType = str_contains(strtolower($type), 'return') ? ParcelType::TYPERETURN : ParcelType::TYPEREGULAR;
         $response = self::syncRequest($shipments, $map, $parcelType);
         $labelResponses = $response->getContent()['labelResponses'];
         $labelContents = current($labelResponses)['label'];
         $code = $response->getContent()['labelResponses'][0]['shipmentIdentifier'];
 
         if (count($response->getContent()['labelResponses']) > 1) {
-
             return Download::zip($response);
         }
+
 
         foreach ($labelResponses as $labelResponse) {
             if (isset($emailData[$labelResponse['orderId']])) {
                 $emailData[$labelResponse['orderId']]['parcelNumbers'] = $labelResponse['parcelNumbers'];
             }
-            add_post_meta($labelResponse['orderId'], 'dpd_tracking_numbers', $labelResponse['parcelNumbers']);
+
+
+            $order = wc_get_order($labelResponse['orderId']);
+            $order->add_meta_data('dpd_tracking_numbers', $labelResponse['parcelNumbers']);
+//                $order->save(); This creates an infinite loop which causes infinite labels to be created for some reason, but the metadata is still saved correctly
         }
 
         if ('enabled' == Option::sendTrackingEmail()) {
@@ -122,7 +130,7 @@ class LabelRequest
             }
         }
 
-        $type = (strpos($action, 'dpdconnect_create') != false) ? ParcelType::TYPERETURN : ParcelType::TYPEREGULAR;
+        $type = str_contains(strtolower($action), 'return') ? ParcelType::TYPERETURN : ParcelType::TYPEREGULAR;
 
         $orderValidator = new OrderValidator();
         $orderTransformer = new OrderTransformer($orderValidator);
@@ -173,7 +181,10 @@ class LabelRequest
                 if (isset($emailData[$labelResponse['orderId']])) {
                     $emailData[$labelResponse['orderId']]['parcelNumbers'] = $labelResponse['parcelNumbers'];
                 }
-                add_post_meta($labelResponse['orderId'], 'dpd_tracking_numbers', $labelResponse['parcelNumbers']);
+
+                $order = wc_get_order($labelResponse['orderId']);
+                $order->add_meta_data('dpd_tracking_numbers', $labelResponse['parcelNumbers']);
+//                $order->save(); This creates an infinite loop which causes infinite labels to be created for some reason, but the metadata is still saved correctly
             }
 
             if ('enabled' == Option::sendTrackingEmail()) {
@@ -262,7 +273,8 @@ class LabelRequest
             foreach ($shippingMethods as $method) {
                 $settings = get_option('woocommerce_'.$method->get_method_id().'_'.$method->get_instance_id().'_settings');
                 if(!isset($settings['dpd_method_type'])) {
-                    if(get_post_meta($orderId, '_dpd_parcelshop_id', true)) {
+                    if (wc_get_order($orderId)->get_meta('_dpd_parcelshop_id')) {
+
                         return $product->getAllowedProductsByType(Parcelshop::getProductType())[0];
                     }
                     Notice::add(__('Shipping method has no DPD type'));
@@ -288,7 +300,7 @@ class LabelRequest
 
         // Check if a Parcelshop shipping method is used for this order
         if ($dpdProduct['type'] === Parcelshop::getProductType()) {
-            if (!get_post_meta($orderId, '_dpd_parcelshop_id', true)) {
+            if (!wc_get_order($orderId)->get_meta('_dpd_parcelshop_id')) {
                 Notice::add(__('No ParcelShop shipping method was used for this order'));
                 self::redirect();
             }

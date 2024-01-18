@@ -9,9 +9,10 @@ use DpdConnect\classes\enums\NoticeType;
 
 class OrderValidator
 {
-    private $valid = true;
+    private bool $valid = true;
 
-    private $productInfo;
+    private ProductInfo $productInfo;
+    protected Country $country;
 
     public function __construct()
     {

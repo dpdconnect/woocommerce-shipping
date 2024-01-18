@@ -32,6 +32,8 @@ class DPDShippingMethod extends WC_Shipping_Method
      * @var array
      */
     protected $modal_settings = [];
+    private mixed $cost;
+    private mixed $type;
 
     /**
      * Constructor.
@@ -77,6 +79,11 @@ class DPDShippingMethod extends WC_Shipping_Method
         $this->modal_settings = get_option('woocommerce_' . $this->id . '_' . $this->instance_id . '_settings');
     }
 
+    private function save_modal_settings()
+    {
+        $this->update_option('woocommerce_' . $this->id . '_' . $this->instance_id . '_settings', $this->modal_settings);
+    }
+
     /**
      * Init user set variables.
      */
@@ -103,7 +110,8 @@ class DPDShippingMethod extends WC_Shipping_Method
 
         if ($selectedProduct !== null) {
             $this->title = $this->modal_settings['zone_title'] ?? $this->get_option('title', $this->title);
-            $this->method_description = $selectedProduct['description'];
+            $this->method_description = '<strong>Admin:</strong> ' . $selectedProduct['description'] . '<br>' .
+            '<strong>Checkout:</strong> ' . $this->modal_settings['dpd_checkout_description'];
 
             $this->is_dpd_saturday = TypeHelper::isSaturday($selectedProduct);
             $this->is_dpd_pickup = TypeHelper::isParcelshop($selectedProduct);
@@ -320,6 +328,17 @@ class DPDShippingMethod extends WC_Shipping_Method
         return $found_shipping_classes;
     }
 
+    // Always set the title to the DPD Product name
+    public function sanitize_zone_title()
+    {
+        $selectedProduct = $_POST['data']['woocommerce_dpd_shipping_method_dpd_method_type'];
+
+        $product = new Product();
+        $selectedProduct = $product->getProductByCode($selectedProduct);
+
+        return $selectedProduct['name'];
+    }
+
     /**
      * Sanitize the cost field.
      *
@@ -337,13 +356,18 @@ class DPDShippingMethod extends WC_Shipping_Method
 
     public function hide($shippingMethods)
     {
-        if (! $this->is_dpd_saturday) {
+        if (false === $this->is_dpd_saturday) {
             return $shippingMethods;
         }
 
         $searchString = $this->id;
 
+        /** @var \WC_Shipping_Rate[] $shippingMethods */
         foreach ($shippingMethods as $key => $value) {
+            if ($value->get_instance_id() !== $this->instance_id) {
+                continue;
+            }
+
             if ($searchString === substr($key, 0, strlen($searchString))) {
                 $currentDay = date('w');
                 $fromDay = $this->modal_settings['show_from_day'];
@@ -358,6 +382,11 @@ class DPDShippingMethod extends WC_Shipping_Method
                 }
 
                 if ($currentDay > $untillDay) {
+                    unset($shippingMethods[$key]);
+                    continue;
+                }
+
+                if (true === empty($this->modal_settings['show_from_time']) || true === empty($this->modal_settings['show_untill_time'])) {
                     unset($shippingMethods[$key]);
                     continue;
                 }

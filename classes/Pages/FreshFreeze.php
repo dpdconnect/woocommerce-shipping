@@ -87,7 +87,7 @@ class FreshFreeze
 
                 /** @var \WC_Product $product */
                 $product = $orderItem->get_product();
-                $shippingProduct = get_post_meta($product->get_id(), 'dpd_shipping_product', true);
+                $shippingProduct = wc_get_order($product->get_id())->get_meta('dpd_shipping_product');
                 $weight = !empty($product->get_weight()) ?: 0;
                 $weightUnit = get_option('woocommerce_weight_unit');
 
@@ -104,7 +104,7 @@ class FreshFreeze
                                         Quantity: <span style='font-weight: normal'>{$quantities[$product->get_sku()]}</span><br>
                                         <br>
                                         <label>" . __('Expiration date', 'dpdconnect') . "</label><br>
-                                        <input type='date' name='date_{$order->get_id()}_{$shippingProduct}_{$product->get_id()}' value='$defaultDate' min='$todayDate'/>     
+                                        <input type='date' name='date_{$order->get_id()}_{$shippingProduct}_{$product->get_id()}' value='$defaultDate' min='$todayDate'/>
                                     </div>
                                 </div>
                             </th>";

@@ -193,7 +193,7 @@ class Company
                id="<?php echo esc_attr($args['label_for']); ?>"
                data-custom="<?php echo esc_attr($args['dpdconnect_custom_data']); ?>"
                name="dpdconnect_company_info[<?php echo esc_attr($args['label_for']); ?>]"
-               value="<?php echo $options[$args['label_for']] ?>"
+               value="<?php echo $options[$args['label_for']] ?? '' ?>"
         />
 
         <?php if (isset($args['description'])) { ?>

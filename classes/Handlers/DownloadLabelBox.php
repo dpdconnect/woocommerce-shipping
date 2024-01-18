@@ -2,6 +2,7 @@
 
 namespace DpdConnect\classes\Handlers;
 
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use DpdConnect\classes\Database\Label;
 use DpdConnect\classes\enums\ParcelType;
 
@@ -14,15 +15,19 @@ class DownloadLabelBox
 
     public static function add()
     {
-        add_meta_box('dpdconnect_pdf', __('DPD Connect Download Labels', 'dpdconnect'), [self::class, 'render'], 'shop_order', 'side', 'high');
+        $screen = wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled()
+            ? wc_get_page_screen_id( 'shop-order' )
+            : 'shop_order';
+
+        add_meta_box('dpdconnect_pdf', __('DPD Connect Download Labels', 'dpdconnect'), [self::class, 'render'], $screen, 'side', 'high');
     }
 
-    public static function render()
+    /**
+     * @param \WC_Order $order
+     * @return void
+     */
+    public static function render($order)
     {
-        global $post;
-
-        $order = wc_get_order($post->ID);
-
         $labelRepo = new Label();
         $shippingLabels = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPEREGULAR, true);
         $returnLabels = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN, true);

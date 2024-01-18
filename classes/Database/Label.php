@@ -4,7 +4,8 @@ namespace DpdConnect\classes\Database;
 
 class Label
 {
-    private $db;
+    private \wpdb $db;
+    private string $table;
 
     public function __construct()
     {

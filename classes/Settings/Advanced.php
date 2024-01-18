@@ -4,6 +4,7 @@ namespace DpdConnect\classes\Settings;
 
 use DpdConnect\classes\Option;
 use DpdConnect\classes\Handlers\Callback;
+use DpdConnect\Sdk\Client;
 
 class Advanced
 {
@@ -42,6 +43,7 @@ class Advanced
                 'dpdconnect_custom_data' => 'custom',
                 'type' => 'text',
                 'title' => __('The url to DPD Connect', 'dpdconnect'),
+                'description' => __(sprintf('Defaults to "%s"', Client::ENDPOINT)),
             ]
         );
 
@@ -90,7 +92,7 @@ class Advanced
                data-custom="<?php echo esc_attr($args['dpdconnect_custom_data']); ?>"
                name="dpdconnect_advanced[<?php echo esc_attr($args['label_for']); ?>]"
                title="<?php echo esc_attr($args['title']) ?>"
-               value="<?php echo $options[$args['label_for']] ?>"
+               value="<?php echo $options[$args['label_for']] ?? ''; ?>"
         />
 
         <?php if (isset($args['description'])) { ?>
@@ -114,7 +116,7 @@ class Advanced
                name="dpdconnect_advanced[<?php echo esc_attr($args['label_for']); ?>]"
                placeholder=<?php echo Callback::createUrl(); ?>
                title="<?php echo esc_attr($args['title']) ?>"
-               value="<?php echo $options[$args['label_for']] ?>"
+               value="<?php echo $options[$args['label_for']] ?? ''; ?>"
         />
 
         <?php if (isset($args['description'])) { ?>
@@ -139,7 +141,7 @@ class Advanced
                placeholder=<?php echo Option::MAX_ASYNC_TRESHOLD; ?>
                max=<?php echo Option::MAX_ASYNC_TRESHOLD; ?>
                title="<?php echo esc_attr($args['title']) ?>"
-               value="<?php echo $options[$args['label_for']] ?>"
+               value="<?php echo $options[$args['label_for']] ?? '' ?>"
         />
 
         <?php if (isset($args['description'])) { ?>
