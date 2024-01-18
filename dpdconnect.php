@@ -4,9 +4,9 @@ require_once('vendor/autoload.php');
 
 /**
  * Plugin Name: DPD Connect for WooCommerce
- * Plugin URI: http://www.dpd.nl
+ * Plugin URI: https://integrations.dpd.nl/
  * Description: Enables the posibility to integrate DPD Parcel Shop Finder service into your e-commerce store with a breeze.
- * Version: 1.4.4
+ * Version: 1.4.5
  * Author: DPD / X-Interactive.nl
  * Author URI: https://github.com/dpdconnect
  * License: GPL
@@ -50,6 +50,13 @@ Update::handle();
 
 // Load available translations
 add_action('plugins_loaded', [Translation::class, 'handle']);
+
+// Make plugin HPOS compatible
+add_action( 'before_woocommerce_init', function() {
+    if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+    }
+} );
 
 /**
  * Check if WooCommerce is active
@@ -111,7 +118,7 @@ if (is_plugin_active('woocommerce/woocommerce.php')) {
      * Initiate router
      */
     Router::init($_GET);
- 
+
     /**
      * Add bulk actions to woocommerce order table
      */

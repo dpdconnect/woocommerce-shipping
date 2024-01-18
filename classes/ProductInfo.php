@@ -8,7 +8,8 @@ class ProductInfo
 {
     public function getHsCode($productId)
     {
-        $hsCode = get_post_meta($productId, 'dpd_hs_code', true);
+        $product = wc_get_product($productId);
+        $hsCode = $product->get_meta('dpd_hs_code');
 
         if ($hsCode === "") {
             $hsCode = Option::defaultHsCode();
@@ -17,9 +18,13 @@ class ProductInfo
         return $hsCode;
     }
 
+    /**
+     * @param \WC_Product $product
+     * @return array|mixed|string
+     */
     public function getCustomsValue($product)
     {
-        $customsValue = get_post_meta($product->get_id(), 'dpd_customs_value', true);
+        $customsValue = $product->get_meta('dpd_customs_value');
 
         if ($customsValue === "") {
             $customsValue = $product->get_price();
@@ -30,7 +35,8 @@ class ProductInfo
 
     public function getCountryOfOrigin($productId)
     {
-        $originCountry = get_post_meta($productId, 'dpd_origin_country', true);
+        $product = wc_get_product($productId);
+        $originCountry = $product->get_meta('dpd_origin_country');
 
         if ($originCountry === "") {
             $originCountry = Option::defaultOriginCountry();

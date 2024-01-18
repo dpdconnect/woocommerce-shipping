@@ -21,7 +21,7 @@ class FreshFreezeHelper
         /** @var \WC_Order $order */
         foreach ($orders as $order) {
             foreach ($order->get_items() as $orderItem) {
-                $shippingProduct = get_post_meta($orderItem->get_product()->get_id(), 'dpd_shipping_product', true);
+                $shippingProduct = wc_get_product($orderItem->get_product()->get_id())->get_meta('dpd_shipping_product');
 
                 if ($shippingProduct === TypeHelper::DPD_SHIPPING_PRODUCT_FRESH || $shippingProduct === TypeHelper::DPD_SHIPPING_PRODUCT_FREEZE) {
                     return true;
@@ -32,12 +32,15 @@ class FreshFreezeHelper
         return false;
     }
 
+    /**
+     * @param \WC_Order[] $orders
+     * @return array
+     */
     public static function groupOrderItemsByShippingProduct(array $orders)
     {
         $groupedOrderItems = [];
 
         foreach ($orders as $order) {
-            /** @var \WC_Order_Item $orderItem */
             foreach ($order->get_items() as $orderItem) {
                 /** @var \WC_Product $product */
                 $product = $orderItem->get_product();
@@ -46,7 +49,7 @@ class FreshFreezeHelper
                     continue;
                 }
 
-                $shippingProduct = get_post_meta($product->get_id(), 'dpd_shipping_product', true);
+                $shippingProduct = wc_get_product($product->get_id())->get_meta('dpd_shipping_product');
                 if($shippingProduct == '') {
                     $shippingProduct = 'default';
                 }

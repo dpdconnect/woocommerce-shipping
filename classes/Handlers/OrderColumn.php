@@ -11,8 +11,12 @@ class OrderColumn
 {
     public static function handle()
     {
+        // For old WooCommerce versions
         add_filter('manage_edit-shop_order_columns', [self::class, 'add']);
         add_action('manage_shop_order_posts_custom_column', [self::class, 'render']);
+        // For new WooCommerce versions
+        add_filter('manage_woocommerce_page_wc-orders_columns', [self::class, 'add']);
+        add_action('manage_woocommerce_page_wc-orders_custom_column', [self::class, 'render'], 10, 2);
     }
 
     public static function add($columns)
@@ -24,36 +28,57 @@ class OrderColumn
         return $columns;
     }
 
-    public static function render($column)
+    public static function render($column, ?\WC_Order $order = null)
     {
         global $post;
 
-        $order = wc_get_order($post->ID);
+        if (null !== $post) {
+            // For old WooCommerce versions
+            $order = wc_get_order($post->ID);
+        }
 
         $column === 'dpdconnect_shipping_label' ? self::columnShippingLabel($order) : null;
         $column === 'dpdconnect_return_label' ? self::columnReturnLabel($order) : null;
         $column === 'dpdconnect_tracking_number' ? self::columnTrackingNumber($order) : null;
     }
 
-    private static function columnTrackingNumber($order)
+    /**
+     * @param \WC_Order $order
+     * @return void
+     */
+    private static function columnTrackingNumber($order): void
     {
-        $trackingCodes = get_post_meta($order->get_id(), 'dpd_tracking_numbers');
-        if(empty($trackingCodes)) {
+        $labelRepo = new Label();
+        $shippingLabels = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPEREGULAR, true);
+
+        if (true === empty($shippingLabels)) {
+            echo '-';
             return;
         }
 
-        foreach ($trackingCodes as $trackingCode) {
+        // Only get the first 3 results if there are more than 3
+        if (count($shippingLabels) > 3) {
+            $shippingLabels = array_slice($shippingLabels, 0, 3);
+        }
 
-            echo '<a target="_blank" href="https://www.dpdgroup.com/nl/mydpd/my-parcels/track?lang=en&parcelNumber=' . $trackingCode[0] . '" title="' . __('Tracking numbers', 'dpdconnect') . '"><span>' . $trackingCode[0] . '</span></a><br/>';
+        foreach ($shippingLabels as $shippingLabel) {
+            $parcelNumbers = explode(',', $shippingLabel['parcel_numbers']);
+            $parcelNumber = $parcelNumbers[0];
+
+            echo '<a target="_blank" href="https://www.dpdgroup.com/nl/mydpd/my-parcels/track?lang=en&parcelNumber=' . $parcelNumber . '" title="' . __('Tracking numbers', 'dpdconnect') . '"><span>' . $parcelNumber . '</span></a><br/>';
         }
     }
 
+    /**
+     * @param \WC_Order $order
+     * @return void
+     */
     private static function columnShippingLabel($order)
     {
         $jobRepo = new Job();
         $job = $jobRepo->getByOrderId($order->get_id(), ParcelType::TYPEREGULAR);
 
-        if(!empty($job)) {
+        if (false === empty($job)) {
             $jobId = $job['id'];
             $status = $job['status'];
 
@@ -74,16 +99,22 @@ class OrderColumn
                 admin_url()
             );
             echo '<a href="' . $shippingUrl . '" title="' . __('Download PDF Label', 'dpdconnect') . '"><span class="dpdTag">' . __('PDF', 'dpdconnect') . '</span></a>';
+        } else {
+            echo '-';
         }
+
     }
 
+    /**
+     * @param \WC_Order $order
+     * @return void
+     */
     private static function columnReturnLabel($order)
     {
-
         $jobRepo = new Job();
         $job = $jobRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN);
 
-        if(!empty($job)) {
+        if (false === empty($job)) {
             $jobId = $job['id'];
             $status = $job['status'];
 
@@ -91,7 +122,7 @@ class OrderColumn
         }
 
         $labelRepo = new Label();
-        $returnLabel = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN);
+        $returnLabel = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN, true);
 
         if ($returnLabel) {
             $returnId = $returnLabel['id'];
@@ -104,6 +135,8 @@ class OrderColumn
                 admin_url()
             );
             echo '<a href="' . $returnUrl . '" title="' . __('Download PDF Label', 'dpdconnect') . '"><span class="dpdTag">' . __('PDF', 'dpdconnect') . '</span></a>';
+        } else {
+            echo '-';
         }
     }
 }

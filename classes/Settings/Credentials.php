@@ -68,7 +68,7 @@ class Credentials
                id="<?php echo esc_attr($args['label_for']); ?>"
                data-custom="<?php echo esc_attr($args['dpdconnect_custom_data']); ?>"
                name="dpdconnect_user_credentials[<?php echo esc_attr($args['label_for']); ?>]"
-               value="<?php echo $options[$args['label_for']] ?>"
+               value="<?php echo $options[$args['label_for']] ?? '' ?>"
         />
 
         <?php if (isset($args['description'])) { ?>

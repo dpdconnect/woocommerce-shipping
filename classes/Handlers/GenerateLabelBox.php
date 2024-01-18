@@ -2,9 +2,8 @@
 
 namespace DpdConnect\classes\Handlers;
 
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use DpdConnect\classes\Connect\Product;
-use WC_Order;
-use DpdConnect\classes\Handlers\LabelRequest;
 
 class GenerateLabelBox
 {
@@ -16,11 +15,15 @@ class GenerateLabelBox
 
     public static function add()
     {
+        $screen = wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled()
+            ? wc_get_page_screen_id( 'shop-order' )
+            : 'shop_order';
+
         add_meta_box(
             'meta-box-id',
             __('DPD Connect Generate Labels', 'dpdconnect'),
             [self::class, 'render'],
-            'shop_order',
+            $screen,
             'side',
             'high'
         );

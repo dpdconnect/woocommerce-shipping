@@ -16,6 +16,7 @@ $settings = [
         'description' => __('This controls the title which the user sees during checkout.', 'dpdconnect'),
         'default'     => __('DPD', 'dpdconnect'),
         'desc_tip'    => true,
+        'sanitize_callback' => [ $this, 'sanitize_zone_title' ], // Callback for always setting title to the DPD Product name
     ],
     'tax_status' => [
         'title'   => __('Tax status', 'dpdconnect'),

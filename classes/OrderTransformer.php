@@ -7,9 +7,8 @@ use DpdConnect\classes\Exceptions\InvalidOrderException;
 
 class OrderTransformer
 {
-    private $orderValidator;
-
-    private $productInfo;
+    private productInfo $productInfo;
+    private mixed $validator;
 
     public function __construct($validator)
     {
@@ -43,7 +42,7 @@ class OrderTransformer
             'receiver' => [
                 'name1' => $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name(),
                 'name2' => $order->get_shipping_company(),
-                'street' => $order->get_shipping_address_1() . $order->get_shipping_address_2(),
+                'street' => $order->get_shipping_address_1() . ' ' . $order->get_shipping_address_2(),
                 'email' => $order->get_billing_email(),
                 'phoneNumber' => $order->get_billing_phone(),
                 'country' => $order->get_shipping_country(),
@@ -69,7 +68,7 @@ class OrderTransformer
             }
 
             if (TypeHelper::isParcelshop($dpdProduct)) {
-                $parcelShopId = get_post_meta($orderId, '_dpd_parcelshop_id', true);
+                $parcelShopId = wc_get_order($orderId)->get_meta('_dpd_parcelshop_id');
                 $shipment['product']['parcelshopId'] = $parcelShopId;
                 $shipment['notifications'][] = [
                     'subject' => 'parcelshop',
@@ -224,7 +223,7 @@ class OrderTransformer
                 ],
                 'weight' => (int) $weight,
                 'goodsExpirationDate' => (int)$freshFreezeData[$order->get_id()][$shippingProduct][$product->get_id()],
-                'goodsDescription' => get_post_meta($product->get_id(), 'dpd_carrier_description', true)
+                'goodsDescription' => wc_get_order($product->get_id())->get_meta('dpd_carrier_description'),
             ];
         }
 
@@ -234,7 +233,7 @@ class OrderTransformer
     private function isAgeCheckNeeded($orderItems)
     {
         foreach($orderItems as $lineItem) {
-            if(get_post_meta($lineItem['product_id'], 'dpd_age_check', true) === 'yes') {
+            if(wc_get_product($lineItem['product_id'])->get_meta('dpd_age_check') === 'yes') {
                 return true;
             }
         }

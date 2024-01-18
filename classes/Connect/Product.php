@@ -19,13 +19,13 @@ class Product extends Connection
         try {
             $products = $this->client->getProduct()->getList();
 
-            if(!is_array($products)) {  
+            if(!is_array($products)) {
                 return [];
             }
 
             $products[] = [
                 'name'=>'DPD Return',
-                'description'=>'Added by plugin',
+                'description'=>'Return label',
                 'code'=>'RETURN',
                 'additionalService'=>false,
                 'type'=>'predict',

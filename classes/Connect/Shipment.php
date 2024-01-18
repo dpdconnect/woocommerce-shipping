@@ -19,9 +19,9 @@ use DpdConnect\Sdk\Exceptions\AuthenticateException;
 
 class Shipment extends Connection
 {
-    private $batch;
-
-    private $label;
+    private Job $job;
+    private Batch $batch;
+    private Label $label;
 
     public function __construct()
     {
@@ -41,6 +41,7 @@ class Shipment extends Connection
         ];
 
         $request['shipments'] = $shipments;
+
 
         try {
             $labels = $this->client->getShipment()->create($request);

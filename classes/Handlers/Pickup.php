@@ -199,6 +199,7 @@ class Pickup
         $dpdOrderMetaData = WC()->session->get('dpd_order_metadata');
         $parcelshopId = $dpdOrderMetaData['parcelshop_id'];
         $order->update_meta_data('_dpd_parcelshop_id', $parcelshopId);
+        $order->save();
         WC()->session->__unset('dpd_order_metadata');
     }
 }

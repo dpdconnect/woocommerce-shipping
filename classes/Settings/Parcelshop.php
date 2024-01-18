@@ -72,7 +72,7 @@ class Parcelshop
                id="<?php echo esc_attr($args['label_for']); ?>"
                data-custom="<?php echo esc_attr($args['dpdconnect_custom_data']); ?>"
                name="dpdconnect_parcelshop[<?php echo esc_attr($args['label_for']); ?>]"
-               value="<?php echo $options[ $args['label_for']] ?>"
+               value="<?php echo $options[ $args['label_for']] ?? '' ?>"
         />
 
         <input type="checkbox" onclick="showKey()"><?php echo __('Show key', 'dpdconnect') ?>
