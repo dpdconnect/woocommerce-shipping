@@ -1,6 +1,7 @@
 <?php
 
-require_once('vendor/autoload.php');
+require_once realpath( __DIR__ . '/vendor/autoload.php' );
+
 
 /**
  * Plugin Name: DPD Connect for WooCommerce
