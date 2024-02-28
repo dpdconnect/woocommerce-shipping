@@ -15,8 +15,8 @@ class DownloadLabelBox
 
     public static function add()
     {
-        $screen = wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled()
-            ? wc_get_page_screen_id( 'shop-order' )
+        $screen = wc_get_container()->get(CustomOrdersTableController::class)->custom_orders_table_usage_is_enabled()
+            ? wc_get_page_screen_id('shop-order')
             : 'shop_order';
 
         add_meta_box('dpdconnect_pdf', __('DPD Connect Download Labels', 'dpdconnect'), [self::class, 'render'], $screen, 'side', 'high');
@@ -26,9 +26,10 @@ class DownloadLabelBox
      * @param \WC_Order $order
      * @return void
      */
-    public static function render($order)
+    public static function render($post)
     {
         $labelRepo = new Label();
+        $order = wc_get_order($post);
         $shippingLabels = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPEREGULAR, true);
         $returnLabels = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN, true);
 
