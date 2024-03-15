@@ -29,6 +29,11 @@ class DownloadLabelBox
     public static function render($order)
     {
         $labelRepo = new Label();
+
+        if ($order instanceof \WP_Post) {
+            $order = wc_get_order($order->ID);
+        }
+
         $shippingLabels = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPEREGULAR, true);
         $returnLabels = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN, true);
 

@@ -6,7 +6,7 @@ require_once('vendor/autoload.php');
  * Plugin Name: DPD Connect for WooCommerce
  * Plugin URI: https://integrations.dpd.nl/
  * Description: Enables the posibility to integrate DPD Parcel Shop Finder service into your e-commerce store with a breeze.
- * Version: 1.4.5
+ * Version: 1.4.6
  * Author: DPD / X-Interactive.nl
  * Author URI: https://github.com/dpdconnect
  * License: GPL
