@@ -90,7 +90,11 @@ class LabelRequest
         $code = $response->getContent()['labelResponses'][0]['shipmentIdentifier'];
 
         if (count($response->getContent()['labelResponses']) > 1) {
-            return Download::zip($response);
+            if(Option::downloadFormat() == 'zip') {
+                return Download::zip($response);
+            } else {
+                return Download::mergedPdf($response);
+            }
         }
 
 
@@ -191,7 +195,11 @@ class LabelRequest
                 self::sendTrackingMail($emailData);
             }
 
-            return Download::zip($response);
+            if(Option::downloadFormat() == 'zip') {
+                return Download::zip($response);
+            } else {
+                return Download::mergedPdf($response);
+            }
         }
         return self::asyncRequest($shipments, $map, $type);
     }

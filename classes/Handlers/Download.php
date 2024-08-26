@@ -42,4 +42,29 @@ class Download
         unlink($zipfile);
         exit;
     }
+
+    public static function mergedPdf($response)
+    {
+        ob_clean();
+        ob_end_flush();
+        require __DIR__ . '/../../vendor/myokyawhtun/pdfmerger/PDFMerger.php';
+        $pdf = new \PDFMerger\PDFMerger();
+
+        $labelResponses = $response->getContent()['labelResponses'];
+        foreach ($labelResponses as $item) {
+            $path = tempnam(sys_get_temp_dir(), 'dpdpdf');
+            $f = fopen($path, 'w');
+            fwrite($f, base64_decode($item['label']));
+
+            $pdf->addPDF($path);
+        }
+
+        header("Content-Type: application/pdf");
+        header('Content-Disposition: attachment; filename="dpd-label-' . date("Ymdhis") . '.pdf"');
+
+        $createdPdf = $pdf->merge('download', 'dpd-label-' . date("Ymdhis") . '.pdf');
+        echo $createdPdf;
+        die;
+
+    }
 }

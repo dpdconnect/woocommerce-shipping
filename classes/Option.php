@@ -34,6 +34,11 @@ class Option
         return self::parse(get_option('dpdconnect_general'), 'dpdconnect_send_trackingemail');
     }
 
+    public static function downloadFormat()
+    {
+        return self::parse(get_option('dpdconnect_general'), 'dpdconnect_download_format');
+    }
+
     /**
      * USER CREDENTIALS
      */

@@ -9,6 +9,7 @@
     }
   },
   "require": {
-    "dpdconnect/php-sdk": "^1.1"
+    "dpdconnect/php-sdk": "^1.1",
+    "myokyawhtun/pdfmerger": "dev-master"
   }
 }

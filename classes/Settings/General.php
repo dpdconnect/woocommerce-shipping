@@ -80,6 +80,18 @@ class General
                 'dpdconnect_custom_data' => 'custom',
             ]
         );
+        add_settings_field(
+            'dpdconnect_download_format',
+            __(' DPD Download format', 'dpdconnect'),
+            [self::class, 'renderInputDownloadFormat'],
+            self::PAGE,
+            self::SECTION,
+            [
+                'label_for' => 'dpdconnect_download_format',
+                'class' => 'dpdconnect_row',
+                'dpdconnect_custom_data' => 'custom',
+            ]
+        );
     }
 
     public static function renderDefaultInput($args)
@@ -125,6 +137,26 @@ class General
         <p class="description">
             <?php esc_html_e('Choose the correct label format for your store.', 'dpdconnect'); ?>
         </p>
+        <?php
+    }
+
+    public static function renderInputDownloadFormat($args)
+    {
+        // get the value of the setting we've registered with register_setting()
+        $options = get_option('dpdconnect_general');
+        // output the field
+        ?>
+        <select id="<?php echo esc_attr($args['label_for']); ?>"
+                data-custom="<?php echo esc_attr($args['dpdconnect_custom_data']); ?>"
+                name="dpdconnect_general[<?php echo esc_attr($args['label_for']); ?>]"
+        >
+            <option value="zip" <?php echo isset($options[ $args['label_for'] ]) ? ( selected($options[ $args['label_for'] ], 'zip', false) ) : ( '' ); ?>>
+                <?php esc_html_e('Zip file', 'dpdconnect'); ?>
+            </option>
+            <option value="pdf" <?php echo isset($options[ $args['label_for'] ]) ? ( selected($options[ $args['label_for'] ], 'pdf', false) ) : ( '' ); ?>>
+                <?php esc_html_e('Merged PDF file', 'dpdconnect'); ?>
+            </option>
+        </select>
         <?php
     }
 
