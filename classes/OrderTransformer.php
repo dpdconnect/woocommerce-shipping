@@ -80,13 +80,24 @@ class OrderTransformer
 
         $shipment['parcels'] = [];
 
-        $totalWeight = @array_reduce($orderItems, function ($sum, $item) use ($orderId) {
-            $product = wc_get_product($item['product_id']);
+        $totalWeight = array_reduce($orderItems, function ($sum, $item) use ($orderId) {
+            
+            $product = wc_get_product($item->get_product_id());
             $this->validator->validateProduct($product, $orderId);
-            $sum += (float)$product->get_weight() * $item->get_quantity();
-
+        
+            // If this item has a variation, use the variation product instead.
+            if ($item->get_variation_id()) {
+                $variationProduct = wc_get_product($item->get_variation_id());
+                if ($variationProduct) {
+                    $product = $variationProduct;
+                }
+            }
+        
+            // Add the weight of this product multiplied by the quantity.
+            $sum += (float) $product->get_weight() * $item->get_quantity();
+        
             return $sum;
-        });
+        });        
 
         if(!$totalWeight) {
             $totalWeight = (int)Option::defaultProductWeight() * 100;
