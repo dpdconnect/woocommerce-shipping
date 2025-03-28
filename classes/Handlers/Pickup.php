@@ -16,11 +16,10 @@ class Pickup
     public static function handle()
     {
         add_action('wp_enqueue_scripts', [self::class, 'registerScripts']);
-        add_action('woocommerce_review_order_after_order_total', [self::class, 'addColumn']);
+        add_action('wp_head', [self::class, 'addColumn']);
         add_action('wp_ajax_select_parcelshop', [self::class, 'selectParcelshop']);
         add_action('wp_ajax_nopriv_select_parcelshop', [self::class, 'selectParcelshop']);
-        add_action('woocommerce_checkout_process', [self::class, 'validate']);
-        add_action('woocommerce_checkout_create_order', [self::class, 'storeParcelshopId'], 20, 2);
+        add_action('woocommerce_store_api_checkout_update_order_from_request', [self::class, 'storeParcelshopId'], 20, 2);
     }
 
     public static function registerScripts()
@@ -34,121 +33,136 @@ class Pickup
 
     public static function addColumn()
     {
-        global $woocommerce;
-        global $post;
-
-        $shipping_method    = $woocommerce->session->get('chosen_shipping_methods');
-        $selected_shipping_method = explode(":", $shipping_method[0]);
-
-        $display = 'none';
-
-        $dpdShippingMethod = new DPDShippingMethod($selected_shipping_method);
-
-        if ($dpdShippingMethod->is_dpd_pickup) {
-            $display = 'table-row';
+        if (!is_checkout()) {
+            return;
         }
+        global $post;
+    ?>
+        <script>
+            jQuery(document).ready(function() {
+                function init() {
+                    const intervalId = setInterval(function() {
+                        const $shippingOptions= jQuery('.wc-block-components-shipping-rates-control');
 
-        ?>
-        <tr class="dpdCheckoutRow" style="display:<?= $display ?>">
-            <td colspan="2">
-                <h3><?= __('Parcel Shop', 'dpdconnect'); ?></h3>
-                <div class="parcelshopContainer">
-                    <a id="parcelshopButton" href="#" class="openDPDParcelMap button alt"><?= __('Choose your DPD Parcel Shop', 'dpdconnect') ?></a>
+                        if ($shippingOptions) {
+                            clearInterval(intervalId);
+                            initParcelshopSelector();
+                        }
+                    }, 500);
+                }
 
-                    <div id="dpd-connect-selected-container" style="display: none; margin-top: 10px;">
-                        Geselecteerde parcelshop:<br />
-                        <strong>%%company%%</strong><br />
-                        %%street%% %%houseNo%%<br />
-                        %%zipCode%% %%city%%<br />
-                        <a href="#" onclick="showModal()">Veranderen</a>
-                    </div>
-                </div>
+                function initParcelshopSelector() {
+                    const $shippingOptions = jQuery('.wc-block-components-shipping-rates-control');
 
-                <div id="parcelshopModal" class="parcelshop-modal">
-                    <div class="parcelshop-modal-content">
-                        <span class="parcelshop-modal-close">&times;</span>
+                    const $element = jQuery(`
+                        <div id="dpdCheckout">
+                            <div class="parcelshopContainer">
+                                <a id="parcelshopButton" href="javascript:void(0);" class="openDPDParcelMap button alt"><?= __('Choose your DPD Parcel Shop', 'dpdconnect') ?></a>
 
-                        <div id="dpd-connect-map-container" style="width: 100%; height: 700px; display: none;"></div>
-                    </div>
-                </div>
+                                <div id="dpd-connect-selected-container" style="display: none; margin-top: 10px;">
+                                    Geselecteerde parcelshop:<br />
+                                    <strong>%%company%%</strong><br />
+                                    %%street%% %%houseNo%%<br />
+                                    %%zipCode%% %%city%%<br />
+                                </div>
 
-                <script>
-                    var token = '<?php
-                        $token = new Token(new HttpClient(Client::ENDPOINT));
-                        $token->setCacheWrapper(new CacheWrapper(new Cache()));
-                        echo $token->getPublicJWTToken(
-                            Option::connectUsername(),
-                            Option::connectPassword()
-                        );
+                                <div id="parcelshopModal" class="parcelshop-modal">
+                                    <div class="parcelshop-modal-content">
+                                        <span class="parcelshop-modal-close">&times;</span>
+
+                                        <div id="dpd-connect-map-container" style="width: 100%; height: 700px; display: none;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+
+                    const $methods = $shippingOptions.find('input');
+
+                    $methods.on('change', function() {
+                        const $method = jQuery(this);
+
+                        if ($method.val().includes('dpd_shipping_method')) {
+                            $shippingOptions.append($element);
+                        }
+                        else {
+                            $element.remove();
+                        }
+                    });
+
+                    const $method = $shippingOptions.find('input:checked');
+
+                    if ($method.val().includes('dpd_shipping_method')) {
+                        $shippingOptions.append($element);
+                    }
+
+                    <?php
+                    $token = new Token(new HttpClient(Client::ENDPOINT));
+                    $token->setCacheWrapper(new CacheWrapper(new Cache()));
+                    ?>
+
+                    const token = '<?= $token->getPublicJWTToken(
+                        Option::connectUsername(),
+                        Option::connectPassword())
                     ?>';
-                    var address = '<?php
-                        global $woocommerce;
 
-                        /** @var \WooCommerce $woocommerce */
-                        echo $woocommerce->customer->get_shipping_address() . ' ' . $woocommerce->customer->get_shipping_postcode() . ' ' . $woocommerce->customer->get_shipping_country();
+                    const useGoogleMapsKey = '<?= json_encode(Option::useDpdGoogleMapsKey()) ?>';
 
-                    ?>';
-                    var useGoogleMapsKey = '<?php
-                        echo json_encode(Option::useDpdGoogleMapsKey());
-                    ?>';
-
-                    DPDConnect.onParcelshopSelected = function (parcelshop) {
+                    DPDConnect.onParcelshopSelected = function(parcelshop) {
                         closeModal();
 
-                        // Store selected parcelshop
                         jQuery.ajax({
-                            type: "post",
-                            dataType: "json",
-                            url: "<?php echo admin_url('admin-ajax.php') ?>",
+                            type: 'post',
+                            dataType: 'json',
+                            url: '<?= admin_url('admin-ajax.php') ?>',
                             data : {
-                                action: "select_parcelshop",
-                                nonce: "<?php echo wp_create_nonce('select_parcelshop_nonce') ?>",
-                                postId: "<?php echo $post->ID ?>",
+                                action: 'select_parcelshop',
+                                nonce: '<?= wp_create_nonce('select_parcelshop_nonce') ?>',
+                                postId: '<?= $post->ID ?>',
                                 parcelshopId: parcelshop.parcelShopId,
                             }
-                        })
+                        });
                     }
 
-                    var modal = document.getElementById("parcelshopModal");
-                    var btn = document.getElementById("parcelshopButton");
-                    var span = document.getElementsByClassName("parcelshop-modal-close")[0];
+                    jQuery(document).on('click', '#parcelshopButton', function() {
+                        showModal(useGoogleMapsKey, token);
+                    });
 
-
-                    // Open the modal when button is clicked
-                    btn.onclick = function() {
-                        showModal();
-                    }
-                    // Close the modal when (x) is clicked
-                    span.onclick = function() {
+                    jQuery(document).on('click', '.parcelshop-modal-close', function() {
                         closeModal();
-                    }
-                    // When the user clicks anywhere outside of the modal, close it
-                    window.onclick = function(event) {
-                        if (event.target == modal) {
+                    });
+
+                    jQuery(document).on('click', function(event) {
+                        if (event.target === jQuery('#parcelshopModal').get(0)) {
                             closeModal();
                         }
+                    });
+                }
+
+                function showModal(useGoogleMapsKey, token) {
+                    jQuery('#parcelshopModal').show();
+
+                    const address = jQuery('#shipping-address_1').val() + ' ' + jQuery('#shipping-postcode').val() + ' ' + jQuery('#shipping-country').val();
+
+                    if (useGoogleMapsKey) {
+                        DPDConnect.show(token, address, 'nl', '<?= Option::googleMapsApiKey() ?>');
                     }
-
-                    var scrollTop;
-                    function showModal() {
-                        scrollTop = document.documentElement.scrollTop;
-                        modal.style.display = "block";
-
-                        if (useGoogleMapsKey) {
-                            DPDConnect.show(token, address, 'nl', '<?php echo Option::googleMapsApiKey() ?>');
-                        } else {
-
-                            DPDConnect.show(token, address, 'nl');
-                        }
+                    else {
+                        DPDConnect.show(token, address, 'nl');
                     }
+                }
 
-                    function closeModal() {
-                        modal.style.display = "none";
-                        document.documentElement.scrollTop = scrollTop;
-                    }
-                </script>
-            </td>
-        </tr>
+                function closeModal() {
+                    jQuery('#parcelshopModal').hide();
+                }
+
+                jQuery(document).on('click', '#shipping-method [role="radio"]', function() {
+                    initParcelshopSelector();
+                });
+
+                init();
+            });
+        </script>
         <?php
     }
 
@@ -165,7 +179,7 @@ class Pickup
         exit();
     }
 
-    public static function validate()
+    public static function storeParcelshopId($order, $data)
     {
         global $woocommerce;
 
@@ -191,11 +205,6 @@ class Pickup
             return;
         }
 
-        return;
-    }
-
-    public static function storeParcelshopId($order, $data)
-    {
         $dpdOrderMetaData = WC()->session->get('dpd_order_metadata');
         $parcelshopId = $dpdOrderMetaData['parcelshop_id'];
         $order->update_meta_data('_dpd_parcelshop_id', $parcelshopId);

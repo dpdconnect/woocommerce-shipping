@@ -13,11 +13,10 @@ class OrderTransformer
     public function __construct($validator)
     {
         $this->validator = $validator;
-
         $this->productInfo = new productInfo();
     }
 
-    public function createShipment($orderId, $dpdProduct, $parcelCount = 1, $orderItems = [], $shippingProduct = TypeHelper::DPD_SHIPPING_PRODUCT_DEFAULT, $freshFreezeData = [])
+    public function createShipment($orderId, $dpdProduct, $parcelCount = 1, $orderItems = [], $shippingProduct = TypeHelper::DPD_SHIPPING_PRODUCT_DEFAULT, $freshFreezeData = [], $volume = '')
     {
         $order = wc_get_order($orderId);
         $orderItems = empty($orderItems) ? $order->get_items() : $orderItems;
@@ -109,6 +108,7 @@ class OrderTransformer
             $shipment['parcels'][] = [
                 'customerReferences' => [(string)$orderId],
                 'weight' => (int) ceil($totalWeight / $parcelCount),
+                'volume' => $volume
             ];
         }
 
@@ -116,15 +116,16 @@ class OrderTransformer
             if (empty($freshFreezeData)) {
                 throw new InvalidOrderException('No Fresh/Freeze data was supplied');
             }
+
             // Clear previous parcels
             $shipment['parcels'] = [];
-
             $shipment['parcels'] = $this->createFreshFreezeParcels(
                 $orderItems,
                 $order,
                 ceil($totalWeight / $parcelCount),
                 $shippingProduct,
-                $freshFreezeData
+                $freshFreezeData,
+                empty($volume) ? Option::defaultPackageType() : $volume,
             );
         }
 
@@ -219,10 +220,9 @@ class OrderTransformer
         return $shipment;
     }
 
-    private function createFreshFreezeParcels($orderItems, $order, $weight, $shippingProduct, $freshFreezeData)
+    private function createFreshFreezeParcels($orderItems, $order, $weight, $shippingProduct, $freshFreezeData, $volume)
     {
         $parcels = [];
-
         foreach ($orderItems as $orderItem) {
             /** @var \WC_Product $product */
             $product = $orderItem->get_product();
@@ -232,7 +232,8 @@ class OrderTransformer
                     (string)$order->get_id(),
                     $product->get_sku()
                 ],
-                'weight' => (int) $weight,
+                'weight' => (int)$weight,
+                'volume' => empty($volume) ? Option::defaultPackageType() : $volume,
                 'goodsExpirationDate' => (int)$freshFreezeData[$order->get_id()][$shippingProduct][$product->get_id()],
                 'goodsDescription' => wc_get_order($product->get_id())->get_meta('dpd_carrier_description'),
             ];
