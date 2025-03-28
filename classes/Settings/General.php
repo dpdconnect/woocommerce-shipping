@@ -80,6 +80,7 @@ class General
                 'dpdconnect_custom_data' => 'custom',
             ]
         );
+
         add_settings_field(
             'dpdconnect_download_format',
             __(' DPD Download format', 'dpdconnect'),
@@ -88,6 +89,19 @@ class General
             self::SECTION,
             [
                 'label_for' => 'dpdconnect_download_format',
+                'class' => 'dpdconnect_row',
+                'dpdconnect_custom_data' => 'custom',
+            ]
+        );
+
+        add_settings_field(
+            'dpdconnect_default_package_type',
+            __(' DPD Default Package Type', 'dpdconnect'),
+            [self::class, 'renderInputDefaultPackageType'],
+            self::PAGE,
+            self::SECTION,
+            [
+                'label_for' => 'dpdconnect_default_package_type',
                 'class' => 'dpdconnect_row',
                 'dpdconnect_custom_data' => 'custom',
             ]
@@ -202,6 +216,28 @@ class General
         </select>
         <p class="description">
             <?php esc_html_e('Enable or disable sending tracking emails.', 'dpdconnect'); ?>
+        </p>
+        <?php
+    }
+
+    public static function renderInputDefaultPackageType($args)
+    {
+        $options = get_option('dpdconnect_general');
+
+        ?>
+        <select id="<?php echo esc_attr($args['label_for']); ?>"
+                data-custom="<?php echo esc_attr($args['dpdconnect_custom_data']); ?>"
+                name="dpdconnect_general[<?php echo esc_attr($args['label_for']); ?>]"
+        >
+            <option value="015010010" <?php echo isset($options[ $args['label_for'] ]) ? ( selected($options[ $args['label_for'] ], '015010010', false) ) : ( '' ); ?>>
+                <?php esc_html_e('Small Parcel', 'dpdconnect'); ?>
+            </option>
+            <option value="100050050" <?php echo isset($options[ $args['label_for'] ]) ? ( selected($options[ $args['label_for'] ], '100050050', false) ) : ( '' ); ?>>
+                <?php esc_html_e('Normal Parcel', 'dpdconnect'); ?>
+            </option>
+        </select>
+        <p class="description">
+            <?php esc_html_e('Choose the package type being used.', 'dpdconnect'); ?>
         </p>
         <?php
     }

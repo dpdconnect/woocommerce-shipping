@@ -3,6 +3,7 @@
 
 namespace DpdConnect\classes\Pages;
 
+use Automattic\WooCommerce\Blocks\AI\Configuration;
 use DpdConnect\classes\enums\NoticeType;
 use DpdConnect\classes\FreshFreezeHelper;
 use DpdConnect\classes\Handlers\LabelRequest;
@@ -141,9 +142,8 @@ class FreshFreeze
             $freshFreezeData[$orderId][$shippingProduct][$orderItemId] = date("Ymd", strtotime($freshFreezeDate));
         }
 
-
         if(isset($_GET['order_ids']) && count($_GET['order_ids']) === 1) {
-            LabelRequest::single($_GET['order_ids'][0], $_GET['label_type'], $_GET['parcel_count'], $freshFreezeData);
+            LabelRequest::single($_GET['order_ids'][0], $_GET['label_type'], $_GET['parcel_count'], $_GET['package_type'], $freshFreezeData);
         } else {
             LabelRequest::bulk(null, $_GET['label_type'], $_GET['order_ids'], $freshFreezeData);
         }

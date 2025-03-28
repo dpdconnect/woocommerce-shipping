@@ -2,22 +2,16 @@
 
 namespace DpdConnect\classes\Handlers;
 
-use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use DpdConnect\classes\Connect\Product;
 use DpdConnect\classes\FreshFreezeHelper;
-use DpdConnect\classes\producttypes\Fresh;
 use DpdConnect\classes\producttypes\Parcelshop;
 use DpdConnect\classes\TypeHelper;
-use WC_Order;
 use Exception;
 use DpdConnect\classes\Option;
 use DpdConnect\classes\OrderValidator;
-use DpdConnect\classes\enums\NoticeType;
 use DpdConnect\classes\enums\ParcelType;
 use DpdConnect\classes\OrderTransformer;
 use DpdConnect\classes\Connect\Shipment;
-use DpdConnect\classes\Handlers\Download;
-use DpdConnect\Sdk\Exceptions\RequestException;
 use DpdConnect\classes\Exceptions\InvalidOrderException;
 
 class LabelRequest
@@ -30,7 +24,7 @@ class LabelRequest
         add_filter('handle_bulk_actions-woocommerce_page_wc-orders', [self::class, 'bulk'], 10, 3);
     }
 
-    public static function single($postID, $type, $parcelCount, $freshFreezeData = [])
+    public static function single($postID, $type, $parcelCount, $volume = '', $freshFreezeData = [])
     {
         $currentOrder = wc_get_order($postID);
         $orderId = $currentOrder->get_id();
@@ -72,7 +66,8 @@ class LabelRequest
                     $shipmentParcelCount,
                     $orderItems,
                     $shippingProduct,
-                    $freshFreezeData
+                    $freshFreezeData,
+                    $volume
                 );
 
                 $shipments[] = $shipment;

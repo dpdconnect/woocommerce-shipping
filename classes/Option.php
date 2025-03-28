@@ -118,19 +118,34 @@ class Option
         return self::parse(get_option('dpdconnect_products'), 'dpdconnect_default_hs_code');
     }
 
+    /**
+     * @return mixed|null
+     */
     public static function defaultOriginCountry()
     {
         return self::parse(get_option('dpdconnect_products'), 'dpdconnect_default_origin_country');
     }
 
+    /**
+     * @return mixed|null
+     */
     public static function defaultProductWeight()
     {
         return self::parse(get_option('dpdconnect_products'), 'dpdconnect_default_product_weight');
     }
 
     /**
+     * @return mixed|null
+     */
+    public static function defaultPackageType()
+    {
+        return self::parse(get_option('dpdconnect_general'), 'dpdconnect_default_package_type');
+    }
+
+    /**
      * PARCELSHOP
      */
+
     public static function googleMapsApiKey()
     {
         return self::parse(get_option('dpdconnect_parcelshop'), 'dpdconnect_google_maps_api_key');
