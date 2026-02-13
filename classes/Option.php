@@ -156,6 +156,21 @@ class Option
         return (self::parse(get_option('dpdconnect_parcelshop'), 'dpdconnect_use_dpd_google_maps_api_key') == 'on');
     }
 
+    public static function additionalParcelshopMethods()
+    {
+        $methods = self::parse(get_option('dpdconnect_parcelshop'), 'dpdconnect_additional_parcelshop_methods');
+
+        if (empty($methods)) {
+            return [];
+        }
+
+        // Split by comma and trim whitespace
+        $methodArray = array_map('trim', explode(',', $methods));
+
+        // Remove empty values
+        return array_filter($methodArray);
+    }
+
     /**
      * ADVANCED
      */
@@ -164,12 +179,34 @@ class Option
         return self::parse(get_option('dpdconnect_advanced'), 'dpdconnect_connect_url');
     }
 
+    /**
+     * @return mixed|null
+     */
     public static function callbackUrl()
     {
         return self::parse(get_option('dpdconnect_advanced'), 'dpdconnect_callback_url');
     }
 
-    public static function asyncTreshold()
+    /**
+     * @return mixed|null
+     */
+    public static function autoGenerateLabel(): mixed
+    {
+        return self::parse(get_option('dpdconnect_advanced'), 'dpdconnect_auto_generate_shipping_label');
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public static function autoGenerateReturnLabel(): mixed
+    {
+        return self::parse(get_option('dpdconnect_advanced'), 'dpdconnect_auto_generate_return_label');
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public static function asyncTreshold(): mixed
     {
         $treshold = self::parse(get_option('dpdconnect_advanced'), 'dpdconnect_async_treshold');
 

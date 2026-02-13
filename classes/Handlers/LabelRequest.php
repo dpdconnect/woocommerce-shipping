@@ -16,14 +16,70 @@ use DpdConnect\classes\Exceptions\InvalidOrderException;
 
 class LabelRequest
 {
-    public static function handle()
+    /**
+     * @return void
+     */
+    public static function handle(): void
     {
         // For old WooCommerce versions
         add_filter('handle_bulk_actions-edit-shop_order', [self::class, 'bulk'], 10, 3);
         // For new WooCommerce versions
         add_filter('handle_bulk_actions-woocommerce_page_wc-orders', [self::class, 'bulk'], 10, 3);
+        // Auto Generate Label based on payment status
+        add_action('woocommerce_order_status_processing', [self::class, 'autoGenerateLabel']);
     }
 
+    /**
+     * @param $order_id
+     * @return void
+     */
+    public static function autoGenerateLabel($order_id): void
+    {
+        if(Option::autoGenerateLabel()) {
+            $order = wc_get_order($order_id);
+            $isDpdOrder = false;
+            $shippingMethodLabel = null;
+
+            foreach ($order->get_shipping_methods() as $shippingMethod) {
+                if (str_contains(strtolower($shippingMethod->get_name()), 'dpd')) {
+                    $isDpdOrder = true;
+                    $shippingMethodLabel = $shippingMethod->get_name();
+                    break;
+                }
+            }
+
+            if ($isDpdOrder && $shippingMethodLabel) {
+                $product = new Product();
+                $shippingMethodCode = null;
+                foreach ($product->getAllowedProducts() as $dpdProduct) {
+                    if ($shippingMethodLabel == $dpdProduct['name']) {
+                        $shippingMethodCode = $dpdProduct['code'];
+                        break;
+                    }
+                }
+
+                if ($shippingMethodCode) {
+                    $parcelCount = 1;
+                    $labelType = 'dpdconnect_create_' . $shippingMethodCode . '_labels_bulk_action';
+                    self::single($order_id, $labelType, $parcelCount, Option::defaultPackageType());
+
+                    if(Option::autoGenerateReturnLabel()){
+                        $labelType = 'dpdconnect_create_RETURN_labels_bulk_action';
+                        self::single($order_id, $labelType, $parcelCount, Option::defaultPackageType());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $postID
+     * @param $type
+     * @param $parcelCount
+     * @param $volume
+     * @param $freshFreezeData
+     * @return null
+     */
     public static function single($postID, $type, $parcelCount, $volume = '', $freshFreezeData = [])
     {
         $currentOrder = wc_get_order($postID);
@@ -275,11 +331,33 @@ class LabelRequest
             $shippingMethods = $order->get_shipping_methods();
             foreach ($shippingMethods as $method) {
                 $settings = get_option('woocommerce_'.$method->get_method_id().'_'.$method->get_instance_id().'_settings');
+
                 if(!isset($settings['dpd_method_type'])) {
-                    if (wc_get_order($orderId)->get_meta('_dpd_parcelshop_id')) {
+                    // Check if this is one of the additional configured parcelshop methods
+                    $methodId = $method->get_method_id() . ':' . $method->get_instance_id();
+                    $additionalMethods = Option::additionalParcelshopMethods();
+
+                    $isAdditionalParcelshopMethod = false;
+                    foreach ($additionalMethods as $additionalMethod) {
+                        // Check for exact match to prevent false positives
+                        if ($methodId === trim($additionalMethod)) {
+                            $isAdditionalParcelshopMethod = true;
+                            break;
+                        }
+                    }
+
+                    // If it's a configured additional parcelshop method OR has a parcelshop ID, use Parcelshop product
+                    if ($isAdditionalParcelshopMethod || wc_get_order($orderId)->get_meta('_dpd_parcelshop_id')) {
+                        // CRITICAL: Check if parcelshop ID exists
+                        $parcelshopId = wc_get_order($orderId)->get_meta('_dpd_parcelshop_id');
+                        if (empty($parcelshopId)) {
+                            Notice::add(__('Please select a parcelshop. No parcelshop was selected during checkout for this order.', 'dpdconnect'));
+                            self::redirect();
+                        }
 
                         return $product->getAllowedProductsByType(Parcelshop::getProductType())[0];
                     }
+
                     Notice::add(__('Shipping method has no DPD type'));
                     self::redirect();
                 }

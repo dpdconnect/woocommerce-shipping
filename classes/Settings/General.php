@@ -2,6 +2,8 @@
 
 namespace DpdConnect\classes\Settings;
 
+use DpdConnect\classes\Service\SettingsDataValidator;
+
 class General
 {
     const PAGE = 'dpdconnect_general';
@@ -242,7 +244,13 @@ class General
         <?php
     }
 
-    public static function sectionCallback($args)
+    /**
+     * @param $args
+     * @return void
+     */
+    public static function sectionCallback($args): void
     {
+        $errors = SettingsDataValidator::validateGeneralSettings();
+        SettingsDataValidator::printValidationErrors($errors);
     }
 }

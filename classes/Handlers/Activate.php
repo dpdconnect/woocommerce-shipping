@@ -30,7 +30,8 @@ class Activate
             shipment_identifier varchar(255) NOT NULL,
             parcel_numbers varchar(255) NOT NULL,
             PRIMARY KEY id (id),
-            INDEX created_at (created_at)
+            INDEX created_at (created_at),
+            INDEX order_id_type_created_at (order_id, type, created_at)
         ) $charset_collate;";
         $wpdb->query($sql);
 
@@ -61,7 +62,8 @@ class Activate
             label_id int(11) NULL,
             PRIMARY KEY id (id),
             INDEX created_at (created_at),
-            INDEX batch_id (batch_id)
+            INDEX batch_id (batch_id),
+            INDEX order_id_type_created_at (order_id, type, created_at)
         ) $charset_collate;";
         $wpdb->query($sql);
     }

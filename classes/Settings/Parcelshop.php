@@ -60,6 +60,21 @@ class Parcelshop
                 'description' => __('These may be subject to rate limiting, high volume users should use their own Google keys', 'dpdconnect'),
             ]
         );
+
+        add_settings_field(
+            'dpdconnect_additional_parcelshop_methods',
+            __('Additional Parcelshop Shipping Methods', 'dpdconnect'),
+            [self::class, 'renderAdditionalMethodsInput'],
+            self::PAGE,
+            self::SECTION,
+            [
+                'label_for' => 'dpdconnect_additional_parcelshop_methods',
+                'class' => 'dpdconnect_row',
+                'dpdconnect_custom_data' => 'custom',
+                'type' => 'checkbox',
+                'description' => __('Enable parcelshop selection for non-DPD shipping methods (e.g., Table Rate Shipping). DPD shipping methods are automatically detected and don\'t need to be selected here.', 'dpdconnect'),
+            ]
+        );
     }
 
     public static function renderApiKeyInput($args)
@@ -128,6 +143,143 @@ class Parcelshop
         </p>
     <?php } ?>
     <?php
+    }
+
+    public static function renderAdditionalMethodsInput($args)
+    {
+        // get the value of the setting we've registered with register_setting()
+        $options = get_option('dpdconnect_parcelshop');
+        $selectedMethods = isset($options[$args['label_for']]) ? explode(',', $options[$args['label_for']]) : [];
+        $selectedMethods = array_map('trim', $selectedMethods);
+
+        // Get all available shipping methods from all zones
+        $availableShippingMethods = self::getAllShippingMethods();
+
+        ?>
+        <div style="max-width: 700px;">
+            <?php if (!empty($availableShippingMethods)): ?>
+                <p class="description" style="margin-bottom: 10px;">
+                    <?php echo __('Select which shipping methods should show the parcelshop selector:', 'dpdconnect'); ?>
+                </p>
+                <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; background: #f9f9f9;">
+                    <?php foreach ($availableShippingMethods as $methodData): ?>
+                        <?php
+                            $isChecked = in_array($methodData['id'], $selectedMethods);
+                            $checkboxId = 'parcelshop_method_' . md5($methodData['id']);
+                        ?>
+                        <label style="display: block; padding: 5px 0; cursor: pointer;">
+                            <input
+                                type="checkbox"
+                                id="<?php echo esc_attr($checkboxId); ?>"
+                                class="parcelshop-method-checkbox"
+                                value="<?php echo esc_attr($methodData['id']); ?>"
+                                <?php checked($isChecked, true); ?>
+                            />
+                            <strong><?php echo esc_html($methodData['title']); ?></strong>
+                            <br>
+                            <span style="margin-left: 24px; color: #666; font-size: 11px; font-family: monospace;">
+                                ID: <?php echo esc_html($methodData['id']); ?>
+                                <?php if (!empty($methodData['zone'])): ?>
+                                    | Zone: <?php echo esc_html($methodData['zone']); ?>
+                                <?php endif; ?>
+                            </span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Hidden input that stores the comma-separated values -->
+                <input type="hidden"
+                       id="<?php echo esc_attr($args['label_for']); ?>"
+                       name="dpdconnect_parcelshop[<?php echo esc_attr($args['label_for']); ?>]"
+                       value="<?php echo esc_attr(implode(',', $selectedMethods)); ?>"
+                />
+
+                <script>
+                    jQuery(document).ready(function($) {
+                        $('.parcelshop-method-checkbox').on('change', function() {
+                            var selectedIds = [];
+                            $('.parcelshop-method-checkbox:checked').each(function() {
+                                selectedIds.push($(this).val());
+                            });
+                            $('#<?php echo esc_js($args['label_for']); ?>').val(selectedIds.join(','));
+                        });
+                    });
+                </script>
+            <?php else: ?>
+                <p class="description" style="color: #d63638;">
+                    <?php echo __('No shipping methods found. Please configure shipping zones and methods first.', 'dpdconnect'); ?>
+                </p>
+                <input type="hidden"
+                       id="<?php echo esc_attr($args['label_for']); ?>"
+                       name="dpdconnect_parcelshop[<?php echo esc_attr($args['label_for']); ?>]"
+                       value=""
+                />
+            <?php endif; ?>
+
+            <?php if (isset($args['description'])): ?>
+                <p class="description" style="margin-top: 10px;">
+                    <?php esc_html_e($args['description'], 'dpdconnect'); ?>
+                </p>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    /**
+     * Get all shipping methods from all zones
+     * @return array Array of shipping methods with their IDs and titles
+     */
+    private static function getAllShippingMethods()
+    {
+        $methods = [];
+
+        // Get all shipping zones
+        $zones = \WC_Shipping_Zones::get_zones();
+
+        foreach ($zones as $zone) {
+            $zone_obj = new \WC_Shipping_Zone($zone['id']);
+            $shipping_methods = $zone_obj->get_shipping_methods();
+
+            foreach ($shipping_methods as $instance_id => $shipping_method) {
+                // Skip DPD shipping methods (they're automatically detected)
+                if ($shipping_method->id === 'dpd_shipping_method') {
+                    continue;
+                }
+
+                // Create the full method ID (method_id:instance_id)
+                $method_id = $shipping_method->id . ':' . $instance_id;
+
+                $methods[] = [
+                    'id' => $method_id,
+                    'title' => $shipping_method->get_title() . ' (' . $shipping_method->get_method_title() . ')',
+                    'zone' => $zone['zone_name'],
+                    'method_id' => $shipping_method->id,
+                    'instance_id' => $instance_id,
+                ];
+            }
+        }
+
+        // Also get methods from the "Rest of the World" zone (zone_id = 0)
+        $zone_0 = new \WC_Shipping_Zone(0);
+        $shipping_methods = $zone_0->get_shipping_methods();
+
+        foreach ($shipping_methods as $instance_id => $shipping_method) {
+            if ($shipping_method->id === 'dpd_shipping_method') {
+                continue;
+            }
+
+            $method_id = $shipping_method->id . ':' . $instance_id;
+
+            $methods[] = [
+                'id' => $method_id,
+                'title' => $shipping_method->get_title() . ' (' . $shipping_method->get_method_title() . ')',
+                'zone' => __('Locations not covered by your other zones', 'dpdconnect'),
+                'method_id' => $shipping_method->id,
+                'instance_id' => $instance_id,
+            ];
+        }
+
+        return $methods;
     }
 
     public static function sectionCallback($args)
