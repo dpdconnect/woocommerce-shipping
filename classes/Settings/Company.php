@@ -2,6 +2,8 @@
 
 namespace DpdConnect\classes\Settings;
 
+use DpdConnect\classes\Service\SettingsDataValidator;
+
 class Company
 {
     const PAGE = 'dpdconnect_company_info';
@@ -93,7 +95,7 @@ class Company
                 'label_for' => 'dpdconnect_company_country_code',
                 'class' => 'dpdconnect_row',
                 'dpdconnect_custom_data' => 'custom',
-                'description' => 'Please set ISO 2 country code',
+                'description' => 'Please set ISO 2 country code Example: NL BE or DE',
             ]
         );
 
@@ -225,8 +227,15 @@ class Company
         <?php
     }
 
-    public static function sectionCallback($args)
+    /**
+     * @param $args
+     * @return void
+     */
+    public static function sectionCallback($args): void
     {
+        $errors = SettingsDataValidator::validateCompanySettings();
+        SettingsDataValidator::printValidationErrors($errors);
+
         echo __('Company information will be used as sender on label requests.', 'dpdconnect');
     }
 }

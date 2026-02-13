@@ -4,14 +4,21 @@ namespace DpdConnect\classes\Connect;
 
 use DpdConnect\classes\Option;
 use DpdConnect\classes\Version;
+use DpdConnect\Sdk\Client;
 use DpdConnect\Sdk\ClientBuilder;
+use DpdConnect\Sdk\Common\HttpClient;
+use DpdConnect\Sdk\Exceptions\AuthenticateException;
+use DpdConnect\Sdk\Exceptions\HttpException;
+use DpdConnect\Sdk\Exceptions\ServerException;
 use DpdConnect\Sdk\Objects\MetaData;
 use DpdConnect\Sdk\Objects\ObjectFactory;
-use DpdConnect\classes\Connect\Cache;
+use DpdConnect\Sdk\Resources\Token;
+use DpdConnect\Sdk\CacheWrapper;
 
 class Connection
 {
-    protected $client;
+    /** @var Client|null  */
+    protected ?Client $client;
 
     public function __construct()
     {
@@ -35,5 +42,24 @@ class Connection
         });
 
         $this->client->setCacheCallable(new Cache());
+    }
+
+    /**
+     * @throws AuthenticateException
+     * @throws HttpException|ServerException
+     */
+    public static function getPublicJwtToken()
+    {
+        $token = new Token(
+            new HttpClient(Option::connectUrl())
+        );
+
+        $userName = Option::connectUsername();
+
+        $cacheWrapper = new CacheWrapper(new Cache());
+        $cacheWrapper->storeCachedList(null, $userName, 'dpd_token');
+        $token->setCacheWrapper($cacheWrapper);
+
+        return $token->getPublicJWTToken($userName, Option::connectPassword());
     }
 }

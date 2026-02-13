@@ -2,6 +2,8 @@
 
 namespace DpdConnect\classes\Settings;
 
+use DpdConnect\classes\Service\SettingsDataValidator;
+
 class Product
 {
     const PAGE = 'dpdconnect_products';
@@ -51,6 +53,7 @@ class Product
                 'label_for' => 'dpdconnect_default_origin_country',
                 'class' => 'dpdconnect_row',
                 'dpdconnect_custom_data' => 'custom',
+                'description' => 'Please set ISO 2 country code Example: NL BE or DE',
             ]
         );
 
@@ -91,7 +94,13 @@ class Product
         <?php
     }
 
-    public static function sectionCallback($args)
+    /**
+     * @param $args
+     * @return void
+     */
+    public static function sectionCallback($args): void
     {
+        $errors = SettingsDataValidator::validateProductSettings();
+        SettingsDataValidator::printValidationErrors($errors);
     }
 }

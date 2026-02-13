@@ -78,6 +78,77 @@ class Advanced
                 'title' => sprintf(__('Labels requested in bulk will be handled immediately if the amount is below this treshold. The maximum treshold is %s.', 'dpdconnect'), Option::MAX_ASYNC_TRESHOLD),
             ]
         );
+
+        add_settings_field(
+            'dpdconnect_auto_generate_shipping_label',
+            __('Generate shipping label on Processing', 'dpdconnect'),
+            [self::class, 'renderCheckboxAutoGenerateLabel'],
+            self::PAGE,
+            self::SECTION,
+            [
+                'label_for' => 'dpdconnect_auto_generate_shipping_label',
+                'class' => 'dpdconnect_row',
+                'type' => 'checkbox',
+                'dpdconnect_custom_data' => 'custom',
+                'description' => 'When enabled, a DPD shipping label will be automatically generated as soon as an order status changes to "Processing".',
+            ]
+        );
+
+        add_settings_field(
+            'dpdconnect_auto_generate_return_label',
+            __('Generate return label on label creation', 'dpdconnect'),
+            [self::class, 'renderCheckboxAutoGenerateReturnLabel'],
+            self::PAGE,
+            self::SECTION,
+            [
+                'label_for' => 'dpdconnect_auto_generate_return_label',
+                'class' => 'dpdconnect_row',
+                'type' => 'checkbox',
+                'dpdconnect_custom_data' => 'custom',
+                'description' => 'When enabled, a DPD return label will be automatically generated alongside every shipping label that is created.',
+            ]
+        );
+    }
+
+    /**
+     * @param $args
+     * @return void
+     */
+    public static function renderCheckboxAutoGenerateLabel($args): void
+    {
+        $options = get_option('dpdconnect_advanced');
+        ?>
+        <input type="<?php echo esc_attr($args['type']); ?>"
+               id="<?php echo esc_attr($args['label_for']); ?>"
+               name="dpdconnect_advanced[<?php echo esc_attr($args['label_for']); ?>]"
+               value="1" <?php checked(1, $options[$args['label_for']], true); ?> />
+        <?php if (isset($args['description'])) { ?>
+        <p class="description">
+            <?php esc_html_e($args['description'], 'dpdconnect'); ?>
+        </p>
+        <?php } ?>
+        <?php
+    }
+
+    /**
+     * @param $args
+     * @return void
+     */
+    public static function renderCheckboxAutoGenerateReturnLabel($args): void
+    {
+        $options = get_option('dpdconnect_advanced');
+        ?>
+
+        <input type="<?php echo esc_attr($args['type']); ?>"
+               id="<?php echo esc_attr($args['label_for']); ?>"
+               name="dpdconnect_advanced[<?php echo esc_attr($args['label_for']); ?>]"
+               value="1" <?php checked(1, $options[$args['label_for']], true); ?> />
+        <?php if (isset($args['description'])) { ?>
+        <p class="description">
+            <?php esc_html_e($args['description'], 'dpdconnect'); ?>
+        </p>
+    <?php } ?>
+        <?php
     }
 
     public static function renderDefaultInput($args)
@@ -154,6 +225,5 @@ class Advanced
 
     public static function sectionCallback($args)
     {
-        echo __('These settings are for debugging purposes. You may leave these settings empty.', 'dpdconnect');
     }
 }

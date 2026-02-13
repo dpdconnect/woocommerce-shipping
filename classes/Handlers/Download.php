@@ -14,7 +14,6 @@ class Download
         header('Content-Disposition: attachment; filename=' . $fileName . '.pdf');
 
         echo base64_decode($pdfContents);
-        exit;
     }
 
     public static function zip($response)
@@ -40,7 +39,6 @@ class Download
 
         echo file_get_contents($zipfile);
         unlink($zipfile);
-        exit;
     }
 
     public static function mergedPdf($response)

@@ -72,15 +72,371 @@
 
 .parcelshopContainer {
     margin-top: 10px;
-    background-color: #F8F8F8;
-    padding: 20px;
+    background-color: transparent;
+    padding: 0;
+}
+
+/* Add bottom padding to checkout when DPD bar is visible */
+body.woocommerce-checkout:has(.dpd-fixed-bottom-bar.dpd-bar-visible) {
+    padding-bottom: 80px;
+}
+
+/* DPD Fixed Bottom Bar Container */
+.dpd-fixed-bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999999;
+    background: linear-gradient(to bottom, #fafafa 0%, #ffffff 100%);
+    border-top: 3px solid #d40511; /* DPD Red */
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.2), 0 -2px 8px rgba(212, 5, 17, 0.15);
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.dpd-fixed-bottom-bar.dpd-bar-visible {
+    transform: translateY(0);
+    animation: slideUpPulse 0.5s ease-out;
+}
+
+@keyframes slideUpPulse {
+    0% {
+        transform: translateY(100%);
+    }
+    70% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Collapse Toggle Button */
+.dpd-collapse-toggle {
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    background: linear-gradient(135deg, #d40511 0%, #b00410 100%);
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(212, 5, 17, 0.3);
+}
+
+.dpd-collapse-toggle:hover {
+    background: linear-gradient(135deg, #e61622 0%, #d40511 100%);
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(212, 5, 17, 0.4);
+}
+
+.dpd-collapse-toggle:active {
+    transform: scale(0.95);
+}
+
+.dpd-collapse-toggle svg {
+    stroke: #ffffff;
+    stroke-width: 2.5;
+}
+
+.dpd-collapse-toggle svg {
+    transition: opacity 0.2s ease;
+}
+
+/* Arrow visibility - show down arrow when expanded, up arrow when collapsed */
+.dpd-fixed-bottom-bar .dpd-collapse-toggle .dpd-arrow-down {
+    opacity: 1;
+}
+
+.dpd-fixed-bottom-bar .dpd-collapse-toggle .dpd-arrow-up {
+    opacity: 0;
+    position: absolute;
+}
+
+.dpd-fixed-bottom-bar.dpd-bar-collapsed .dpd-collapse-toggle .dpd-arrow-down {
+    opacity: 0;
+}
+
+.dpd-fixed-bottom-bar.dpd-bar-collapsed .dpd-collapse-toggle .dpd-arrow-up {
+    opacity: 1;
+}
+
+/* Bar content wrapper with animation */
+.dpd-bar-content {
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 1;
+}
+
+.dpd-fixed-bottom-bar.dpd-bar-collapsed .dpd-bar-content {
+    max-height: 0;
+    opacity: 0;
+}
+
+/* Collapsed state styling - minimal height to show toggle button */
+.dpd-fixed-bottom-bar.dpd-bar-collapsed {
+    min-height: 55px;
+    background: linear-gradient(to bottom, #fef5f5 0%, #ffffff 100%);
+}
+
+/* Add visual indicator when collapsed - DPD Parcel Shop text */
+.dpd-fixed-bottom-bar.dpd-bar-collapsed::before {
+    content: 'DPD Parcelshop';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: 600;
+    color: #d40511;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+/* Add decorative lines on collapsed state */
+.dpd-fixed-bottom-bar.dpd-bar-collapsed::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(to right, transparent 0%, #d40511 50%, transparent 100%);
+    border-radius: 2px;
+}
+
+/* Position toggle button differently when collapsed */
+.dpd-fixed-bottom-bar.dpd-bar-collapsed .dpd-collapse-toggle {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.dpd-fixed-bottom-bar.dpd-bar-collapsed .dpd-collapse-toggle:hover {
+    transform: translateY(-50%) scale(1.05);
+}
+
+.dpd-fixed-bottom-bar.dpd-bar-collapsed .dpd-collapse-toggle:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* Fallback for browsers that don't support :has() */
+@supports not (selector(:has(*))) {
+    body.woocommerce-checkout {
+        padding-bottom: 80px;
+    }
+}
+
+/* DPD Parcelshop Slide-up Bar Styles */
+.dpd-parcelshop-slideup-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to right, #ffffff 0%, #fafafa 100%);
+    padding: 18px 20px;
+    margin: 0;
+    transition: all 0.3s ease;
+    flex-wrap: wrap;
+    gap: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-bottom: 1px solid rgba(212, 5, 17, 0.1);
+}
+
+.dpd-parcelshop-slideup-bar:hover {
+    background: linear-gradient(to right, #fffafa 0%, #fff5f5 100%);
+}
+
+.dpd-slideup-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d40511;
+    flex-shrink: 0;
+    background-color: #fff5f5;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 2px 4px rgba(212, 5, 17, 0.1);
+}
+
+.dpd-slideup-icon svg {
+    width: 32px;
+    height: 32px;
+    stroke: #d40511;
+}
+
+.dpd-slideup-text {
+    flex: 1;
+    font-size: 17px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.4;
+    min-width: 200px;
+}
+
+.dpd-slideup-button-wrapper {
+    flex-shrink: 0;
+}
+
+.dpd-slideup-button {
+    background: linear-gradient(135deg, #d40511 0%, #b00410 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    box-shadow: 0 3px 8px rgba(212, 5, 17, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dpd-slideup-button:hover {
+    background: linear-gradient(135deg, #e61622 0%, #d40511 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(212, 5, 17, 0.4);
+}
+
+.dpd-slideup-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(212, 5, 17, 0.3);
+}
+
+.dpd-slideup-button:focus {
+    outline: 3px solid rgba(212, 5, 17, 0.3);
+    outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .dpd-fixed-bottom-bar {
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dpd-collapse-toggle {
+        top: 6px;
+        right: 12px;
+        width: 38px;
+        height: 38px;
+    }
+
+    .dpd-collapse-toggle svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .dpd-parcelshop-slideup-bar {
+        flex-direction: row;
+        align-items: center;
+        padding: 12px 50px 12px 16px; /* Add right padding for toggle button */
+        gap: 10px;
+    }
+
+    .dpd-slideup-icon {
+        margin-bottom: 0;
+    }
+
+    .dpd-slideup-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .dpd-slideup-text {
+        flex: 1;
+        min-width: unset;
+        font-size: 14px;
+    }
+
+    .dpd-slideup-button-wrapper {
+        flex-shrink: 0;
+    }
+
+    .dpd-slideup-button {
+        padding: 12px 20px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .dpd-collapse-toggle {
+        top: 6px;
+        right: 8px;
+        width: 36px;
+        height: 36px;
+    }
+
+    .dpd-collapse-toggle svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .dpd-parcelshop-slideup-bar {
+        padding: 12px 48px 12px 12px; /* Adjust right padding for toggle */
+        gap: 8px;
+    }
+
+    .dpd-slideup-icon {
+        padding: 6px;
+    }
+
+    .dpd-slideup-icon svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .dpd-slideup-text {
+        font-size: 14px;
+    }
+
+    .dpd-slideup-button {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    .dpd-fixed-bottom-bar.dpd-bar-collapsed::before {
+        font-size: 12px;
+    }
+}
+
+/* Selected Parcelshop Display */
+#dpd-connect-selected-container {
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+    border-top: 2px solid #d40511;
+    border-bottom: 1px solid rgba(212, 5, 17, 0.2);
+    font-size: 14px;
+    line-height: 1.8;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-shadow: inset 0 2px 4px rgba(212, 5, 17, 0.08);
+}
+
+#dpd-connect-selected-container strong {
+    color: #d40511;
+    font-weight: 700;
+    font-size: 15px;
 }
 
 /* The Modal (background) */
 .parcelshop-modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 9999999; /* Above the fixed bar */
     left: 0;
     top: 0;
     width: 100%; /* Full width */

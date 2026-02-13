@@ -8,6 +8,7 @@ class Update
     {
         register_activation_hook(dirname(__DIR__) . '/dpdconnect.php', 'dpdconnect_activate');
         self::updateOptions();
+        self::updateDatabaseIndexes();
     }
 
     public static function updateOptions()
@@ -34,6 +35,47 @@ class Update
                 update_option('dpdconnect_parcelshop', $options);
             }
 
+        }
+    }
+
+    /**
+     * Add composite indexes for better query performance on existing installations
+     * These indexes optimize queries that filter by order_id and type, and sort by created_at
+     */
+    public static function updateDatabaseIndexes()
+    {
+        global $wpdb;
+
+        // Check if migration has already been run
+        $db_version = get_option('dpdconnect_db_version', '1.0');
+
+        if (version_compare($db_version, '2.0.1', '<')) {
+            // Add composite index to dpdconnect_labels table
+            $labels_table = $wpdb->prefix . 'dpdconnect_labels';
+            $index_exists = $wpdb->get_results(
+                "SHOW INDEX FROM $labels_table WHERE Key_name = 'order_id_type_created_at'"
+            );
+
+            if (empty($index_exists)) {
+                $wpdb->query(
+                    "ALTER TABLE $labels_table ADD INDEX order_id_type_created_at (order_id, type, created_at)"
+                );
+            }
+
+            // Add composite index to dpdconnect_jobs table
+            $jobs_table = $wpdb->prefix . 'dpdconnect_jobs';
+            $index_exists = $wpdb->get_results(
+                "SHOW INDEX FROM $jobs_table WHERE Key_name = 'order_id_type_created_at'"
+            );
+
+            if (empty($index_exists)) {
+                $wpdb->query(
+                    "ALTER TABLE $jobs_table ADD INDEX order_id_type_created_at (order_id, type, created_at)"
+                );
+            }
+
+            // Update database version to mark migration as complete
+            update_option('dpdconnect_db_version', '2.0.1');
         }
     }
 }
