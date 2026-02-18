@@ -82,6 +82,16 @@ class LabelRequest
      */
     public static function single($postID, $type, $parcelCount, $volume = '', $freshFreezeData = [])
     {
+        // Prevent duplicate execution when hook fires multiple times
+        static $processed_singles = [];
+        $single_key = md5($postID . $type . $parcelCount . $volume . serialize($freshFreezeData));
+
+        if (isset($processed_singles[$single_key])) {
+            return null;
+        }
+
+        $processed_singles[$single_key] = true;
+
         $currentOrder = wc_get_order($postID);
         $orderId = $currentOrder->get_id();
 
@@ -172,6 +182,16 @@ class LabelRequest
         if (strpos($action, 'dpdconnect_create') === false) {
             return;
         }
+
+        // Prevent duplicate execution when both old and new WooCommerce hooks fire
+        static $processed_actions = [];
+        $action_key = md5($action . serialize($post_ids));
+
+        if (isset($processed_actions[$action_key])) {
+            return $redirect_to;
+        }
+
+        $processed_actions[$action_key] = true;
 
         $orders = [];
         foreach ($post_ids as $post_id) {
