@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/images/dpd-logo.png" alt="DPD Connect for WooCommerce" width="120" />
+<img src="assets/images/icon-dpd.svg" alt="DPD Connect for WooCommerce" width="120" />
 
 # DPD Connect for WooCommerce
 
