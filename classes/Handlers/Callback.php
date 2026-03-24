@@ -10,7 +10,6 @@ use DpdConnect\classes\enums\JobStatus;
 use DpdConnect\Sdk\Exceptions\RequestException;
 use DpdConnect\classes\Database\Job;
 use DpdConnect\classes\Database\Batch;
-use DpdConnect\classes\Database\Order;
 use DpdConnect\classes\Database\Label as DatabaseLabel;
 use DpdConnect\classes\Connect\Label as ConnectLabel;
 
@@ -63,18 +62,29 @@ class Callback
     {
         $orderId = $incomingData['shipment']['orderId'];
         $externalId = $incomingData['jobid'];
-        $parcelNumber = $incomingData['shipment']['trackingInfo']['parcelNumbers'][0];
+        $allParcelNumbers = $incomingData['shipment']['trackingInfo']['parcelNumbers'];
         $shipmentIdentifier = $incomingData['shipment']['trackingInfo']['shipmentIdentifier'];
-        $parcelNumbers = implode(',', $incomingData['shipment']['trackingInfo']['parcelNumbers']);
+        $parcelNumbers = implode(',', $allParcelNumbers);
 
         $jobRepo = new Job();
         $batchRepo = new Batch();
         $job = $jobRepo->getByExternalId($externalId);
 
+        // Idempotency: skip if this job was already successfully processed
+        if ($job['status'] === JobStatus::STATUSSUCCESS) {
+            return;
+        }
+
         try {
             $connectLabel = new ConnectLabel();
             $databaseLabel = new DatabaseLabel();
-            $label = $connectLabel->get($parcelNumber);
+
+            if (count($allParcelNumbers) === 1) {
+                $label = $connectLabel->get($allParcelNumbers[0]);
+            } else {
+                $label = self::mergeParcelLabels($connectLabel, $allParcelNumbers);
+            }
+
             $labelId = $databaseLabel->create($orderId, $label, $job['type'], $shipmentIdentifier, $parcelNumbers);
 
             $jobStatus = $job['status'];
@@ -84,7 +94,8 @@ class Callback
 
             $order = wc_get_order($orderId);
 
-            $order->add_meta_data('dpd_tracking_numbers', $incomingData['shipment']['trackingInfo']['parcelNumbers']);
+            $order->update_meta_data('dpd_tracking_numbers', $allParcelNumbers);
+            $order->save();
 
             if ('enabled' == Option::sendTrackingEmail() && $order && $jobStatus === JobStatus::STATUSQUEUED) {
                 self::sendMail($order, $incomingData['shipment']);
@@ -93,6 +104,29 @@ class Callback
             $error = __('Could not download label after job completion.');
             $jobRepo->updateStatus($job, JobStatus::STATUSREQUEST, $error);
         }
+    }
+
+    private static function mergeParcelLabels(ConnectLabel $connectLabel, array $parcelNumbers): string
+    {
+        require_once plugin_dir_path(__FILE__) . '../../vendor/myokyawhtun/pdfmerger/PDFMerger.php';
+        $merger = new \PDFMerger\PDFMerger();
+        $tmpFiles = [];
+
+        foreach ($parcelNumbers as $parcelNumber) {
+            $pdfBytes = base64_decode($connectLabel->get($parcelNumber));
+            $tmp = tempnam(sys_get_temp_dir(), 'dpdpdf');
+            file_put_contents($tmp, $pdfBytes);
+            $merger->addPDF($tmp);
+            $tmpFiles[] = $tmp;
+        }
+
+        $merged = $merger->merge('string');
+
+        foreach ($tmpFiles as $tmp) {
+            @unlink($tmp);
+        }
+
+        return base64_encode($merged);
     }
 
     private static function failure($incomingData)

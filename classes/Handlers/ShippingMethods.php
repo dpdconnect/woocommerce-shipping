@@ -82,8 +82,9 @@ class ShippingMethods
             }
 
             $product = new Product();
+            $dpdProduct = $product->getProductByCode($selectedProduct);
 
-            return $product->getProductByCode($selectedProduct)['descriptionCheckout'];
+            return $dpdProduct['descriptionCheckout'] ?? '';
         }
 
         return $value;

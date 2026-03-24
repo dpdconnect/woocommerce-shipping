@@ -115,11 +115,12 @@ class Shipment extends Connection
 
         try {
             $response = $this->client->getShipment()->createAsync($request);
-            $batchId = $this->batch->create($shipments);
 
             if (isset($response->getContent()['message'])) {
                 throw new Exception($response->getContent()['message']);
             }
+
+            $batchId = $this->batch->create($shipments);
 
             foreach ($response->getContent() as $key => $job) {
                 $this->job->create($batchId, $job['jobid'], $shipments[$key]['orderId'], $type);
@@ -132,7 +133,7 @@ class Shipment extends Connection
                     list($orderId, $simplePath) = OrderResponseTransformer::parseAsyncDetail($map, $detail);
                     Notice::add('Order ' . $orderId . ': ' . __($detail['message'] . ' for ' . $simplePath), NoticeType::ERROR, true);
                 } catch (InvalidResponseException $responseException) {
-                    Notice::add(__('Reponse could not be parsed. Please contact customerit'), NoticeType::ERROR);
+                    Notice::add(__('Response could not be parsed. Please contact customer support.', 'dpdconnect'), NoticeType::ERROR);
                     throw $e;
                 }
             }

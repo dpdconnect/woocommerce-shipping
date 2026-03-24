@@ -52,22 +52,22 @@ class TypeHelper
 
     public static function isParcelshop($dpdProduct)
     {
-        return (strpos(strtolower($dpdProduct['type']), 'parcelshop') !== false);
+        return (strpos(strtolower($dpdProduct['type'] ?? ''), 'parcelshop') !== false);
     }
 
     public static function isPredict($dpdProduct)
     {
-        return (strpos(strtolower($dpdProduct['type']), 'predict') !== false);
+        return (strpos(strtolower($dpdProduct['type'] ?? ''), 'predict') !== false);
     }
 
     public static function isSaturday($dpdProduct)
     {
-        return (strpos(strtolower($dpdProduct['code']), '6') !== false);
+        return (strpos(strtolower($dpdProduct['code'] ?? ''), '6') !== false);
     }
 
     public static function isReturn($dpdProduct)
     {
-        return (strpos(strtolower($dpdProduct['name']), 'return') !== false);
+        return (strpos(strtolower($dpdProduct['name'] ?? ''), 'return') !== false);
     }
 
     public static function isHomeDelivery($dpdProduct)

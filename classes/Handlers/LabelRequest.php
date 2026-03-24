@@ -13,6 +13,7 @@ use DpdConnect\classes\enums\ParcelType;
 use DpdConnect\classes\OrderTransformer;
 use DpdConnect\classes\Connect\Shipment;
 use DpdConnect\classes\Exceptions\InvalidOrderException;
+use DpdConnect\classes\enums\NoticeType;
 
 class LabelRequest
 {
@@ -35,6 +36,12 @@ class LabelRequest
      */
     public static function autoGenerateLabel($order_id): void
     {
+        static $inProgress = [];
+        if (isset($inProgress[$order_id])) {
+            return;
+        }
+        $inProgress[$order_id] = true;
+
         if(Option::autoGenerateLabel()) {
             $order = wc_get_order($order_id);
             $isDpdOrder = false;
@@ -96,6 +103,12 @@ class LabelRequest
         $orderId = $currentOrder->get_id();
 
         $validator = new OrderValidator();
+        $validator->validateOptions();
+        if (!$validator->isValid()) {
+            self::redirect();
+            return null;
+        }
+
         $orderTransformer = new OrderTransformer($validator);
 
         if (FreshFreezeHelper::checkOrdersContainFreshFreezeItems([$currentOrder])) {
@@ -140,7 +153,11 @@ class LabelRequest
                 $emailData[$orderId]['shipment'] = $shipment;
                 $emailData[$orderId]['shipmentType'] = $dpdProduct['type'];
             } catch (InvalidOrderException $e) {
-                self::redirect()->$e;
+                if ($e->getMessage() !== 'Validation failed') {
+                    Notice::add(sprintf(__('Order %s: %s', 'dpdconnect'), $orderId, $e->getMessage()), NoticeType::ERROR, true);
+                }
+                self::redirect();
+                return null;
             }
         }
 
@@ -166,8 +183,8 @@ class LabelRequest
 
 
             $order = wc_get_order($labelResponse['orderId']);
-            $order->add_meta_data('dpd_tracking_numbers', $labelResponse['parcelNumbers']);
-//                $order->save(); This creates an infinite loop which causes infinite labels to be created for some reason, but the metadata is still saved correctly
+            $order->update_meta_data('dpd_tracking_numbers', $labelResponse['parcelNumbers']);
+            $order->save();
         }
 
         if ('enabled' == Option::sendTrackingEmail()) {
@@ -208,6 +225,12 @@ class LabelRequest
         $type = str_contains(strtolower($action), 'return') ? ParcelType::TYPERETURN : ParcelType::TYPEREGULAR;
 
         $orderValidator = new OrderValidator();
+        $orderValidator->validateOptions();
+        if (!$orderValidator->isValid()) {
+            self::redirect();
+            return $redirect_to;
+        }
+
         $orderTransformer = new OrderTransformer($orderValidator);
         $shipments = [];
         $map = [];
@@ -244,7 +267,11 @@ class LabelRequest
                     $emailData[$orderId]['shipmentType'] = $dpdProduct['type'];
                     $shipments[] = $emailData[$orderId]['shipment'];
                 } catch (InvalidOrderException $e) {
-                    self::redirect()->$e;
+                    if ($e->getMessage() !== 'Validation failed') {
+                        Notice::add(sprintf(__('Order %s: %s', 'dpdconnect'), $orderId, $e->getMessage()), NoticeType::ERROR, true);
+                    }
+                    self::redirect();
+                    return $redirect_to;
                 }
             }
         }
@@ -258,8 +285,8 @@ class LabelRequest
                 }
 
                 $order = wc_get_order($labelResponse['orderId']);
-                $order->add_meta_data('dpd_tracking_numbers', $labelResponse['parcelNumbers']);
-//                $order->save(); This creates an infinite loop which causes infinite labels to be created for some reason, but the metadata is still saved correctly
+                $order->update_meta_data('dpd_tracking_numbers', $labelResponse['parcelNumbers']);
+                $order->save();
             }
 
             if ('enabled' == Option::sendTrackingEmail()) {

@@ -30,7 +30,7 @@ class JobList extends WP_List_Table
         $sql = "SELECT * FROM {$wpdb->prefix}dpdconnect_jobs";
 
         if (!is_null($batchId)) {
-            $sql .= " WHERE batch_id = {$batchId}";
+            $sql .= $wpdb->prepare(" WHERE batch_id = %d", $batchId);
         }
 
         if (!empty($_REQUEST['orderby'])) {
@@ -52,7 +52,7 @@ class JobList extends WP_List_Table
         $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}dpdconnect_jobs";
 
         if (!is_null($batchId)) {
-            $sql .= ' WHERE batch_id = ' . $batchId;
+            $sql .= $wpdb->prepare(' WHERE batch_id = %d', $batchId);
         }
 
         return $wpdb->get_var($sql);
