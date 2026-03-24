@@ -79,37 +79,43 @@ class OrderValidator
     public function validateReceiver($order, $orderId, $parcelCount)
     {
         if (!$order->get_shipping_first_name()) {
-            $error = __('First name is required for sender', 'dpdconnect');
+            $error = __('Receiver first name is missing — check the shipping address', 'dpdconnect');
             $this->flash($error, $orderId);
             $this->valid = false;
         }
 
         if (!$order->get_shipping_last_name()) {
-            $error = __('Last name is required for sender', 'dpdconnect');
+            $error = __('Receiver last name is missing — check the shipping address', 'dpdconnect');
             $this->flash($error, $orderId);
             $this->valid = false;
         }
 
         if (!$order->get_shipping_address_1()) {
-            $error = __('Address is required for sender', 'dpdconnect');
+            $error = __('Receiver street address is missing — check the shipping address', 'dpdconnect');
             $this->flash($error, $orderId);
             $this->valid = false;
         }
 
         if (!$order->get_shipping_country()) {
-            $error = __('Country is required for sender', 'dpdconnect');
+            $error = __('Receiver country is missing — check the shipping address', 'dpdconnect');
             $this->flash($error, $orderId);
             $this->valid = false;
         }
 
         if (!$order->get_shipping_city()) {
-            $error = __('City is required for sender', 'dpdconnect');
+            $error = __('Receiver city is missing — check the shipping address', 'dpdconnect');
             $this->flash($error, $orderId);
             $this->valid = false;
         }
 
         if (!$order->get_shipping_postcode()) {
-            $error = __('Postalcode is required for sender', 'dpdconnect');
+            $error = __('Receiver postal code is missing — check the shipping address', 'dpdconnect');
+            $this->flash($error, $orderId);
+            $this->valid = false;
+        }
+
+        if (!$order->get_billing_email()) {
+            $error = __('Receiver email address is missing — check the billing details', 'dpdconnect');
             $this->flash($error, $orderId);
             $this->valid = false;
         }

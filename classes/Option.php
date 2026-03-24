@@ -8,7 +8,7 @@ class Option
 
     private static function parse($array, $item)
     {
-        return isset($array[$item]) ? $array[$item] : null;
+        return isset($array[$item]) ? $array[$item] : '';
     }
 
     /**

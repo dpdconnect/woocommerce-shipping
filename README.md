@@ -1,20 +1,18 @@
 <div align="center">
 
-<img src="assets/images/icon-dpd.svg" alt="DPD Connect for WooCommerce" width="120" />
+<img src="assets/images/icon-dpd.svg" width="120" alt="DPD Connect" />
 
 # DPD Connect for WooCommerce
 
-[![PHP](https://img.shields.io/badge/PHP-8.0%2B-8892be?logo=php&logoColor=white)](https://www.php.net/)
-[![WordPress](https://img.shields.io/badge/WordPress-6.0%2B-21759b?logo=wordpress&logoColor=white)](https://wordpress.org/)
-[![WooCommerce](https://img.shields.io/badge/WooCommerce-7.0%2B-96588a?logo=woocommerce&logoColor=white)](https://woocommerce.com/)
-[![License](https://img.shields.io/badge/License-GPL--3.0-blue)](https://www.gnu.org/licenses/gpl-3.0.html)
-[![Version](https://img.shields.io/badge/Version-2.0.2-red)](https://github.com/dpdconnect/woocommerce-shipping/releases)
-[![HPOS](https://img.shields.io/badge/HPOS-compatible-brightgreen)](https://woocommerce.com/document/high-performance-order-storage/)
+![PHP](https://img.shields.io/badge/PHP-8.0%2B-8892BF?logo=php&logoColor=white)
+![WooCommerce](https://img.shields.io/badge/WooCommerce-6.0%2B-96588A?logo=woocommerce&logoColor=white)
+![License](https://img.shields.io/badge/License-GPL--3.0-darkgreen)
+![Version](https://img.shields.io/badge/Version-2.0.2-brightgreen)
 
 **Integrate DPD parcel shipping directly into your WooCommerce store.**
-Generate labels, offer Parcelshop pickup at checkout, and monitor async batches — all from the WordPress admin.
+Generate labels, offer Parcelshop pickup at checkout, and monitor async batches — all from the WooCommerce admin.
 
-[Features](#-features) · [Requirements](#-requirements) · [Installation](#-installation) · [Configuration](#-configuration) · [Development](#-development) · [License](#-license)
+[Features](#-features) · [Requirements](#-requirements) · [Installation](#-installation) · [Configuration](#-configuration) · [Development](#-development)
 
 </div>
 
@@ -26,228 +24,152 @@ Generate labels, offer Parcelshop pickup at checkout, and monitor async batches 
 
 | Feature | Description |
 |---|---|
-| **Single label** | Generate from any order page via the sidebar meta box |
-| **Bulk labels** | Select multiple orders and process them in one action |
-| **Return labels** | Generated and stored separately from shipping labels |
-| **Fresh & Freeze** | Temperature-controlled shipments with per-parcel expiration dates |
-| **Multi-parcel** | Split a single order across multiple parcels with even weight distribution |
+| **Single label** | Generate from any order page via the DPD Connect meta box |
+| **Bulk labels** | Select multiple orders from the orders list and process in one action |
+| **Return labels** | Generated and stored separately from outbound shipping labels |
+| **Fresh & Freeze** | Temperature-controlled shipments with per-product shipping type assignment |
+| **Multi-parcel** | Split a single order across multiple parcels via the parcel count input |
 
 ### 🗺️ Delivery Options
 
 | Feature | Description |
 |---|---|
-| **DPD Parcelshop** | Embedded map picker at checkout (classic & block checkout) |
-| **Saturday delivery** | Methods automatically hidden outside configured time windows |
-| **Age check** | Flag products to require recipient age verification at delivery |
-| **B2C and B2B** | Display the correct DPD product set based on your contract type |
+| **Parcelshop pickup** | Interactive map widget at checkout — customers choose a nearby DPD parcel shop |
+| **Predict** | DPD Predict delivery with email notification to the recipient |
+| **Saturday delivery** | Configurable day/time window — automatically hidden outside the booking window |
+| **B2B delivery** | Commercial address delivery type for business-to-business shipments |
+| **Age check** | Flag 18+ products for age verification on delivery |
 
-### ⚡ Processing & Downloads
+### ⚡ Async Processing
 
 | Feature | Description |
 |---|---|
-| **Synchronous** | Small batches generated and downloaded immediately |
-| **Asynchronous** | Larger batches queued on DPD; labels arrive via webhook |
-| **A4 and A6** | Choose the format that matches your printer |
-| **ZIP or merged PDF** | Download bulk labels as a ZIP archive or a single merged PDF |
+| **Sync** | Orders up to the async threshold (default 10) are processed immediately with instant PDF download |
+| **Async batches** | Larger selections are queued; DPD processes them and calls back when done |
+| **Batch overview** | Monitor batch progress with shipment count, success/failure counts, and status |
+| **Job overview** | Inspect individual job status, DPD external IDs, error messages, and linked labels |
 
-### 🌍 Customs & International
+### 🔔 Notifications
 
-- Per-product **HS code**, **country of origin**, and **customs value** sent with every international shipment
-- Default country of origin configurable at store level as a fallback
-
-### 🔔 Notifications & Monitoring
-
-- **Tracking email** — optional HTML email to the customer with barcode(s) and DPD tracking link
-- **Batch & job monitor** — dedicated admin pages show real-time async batch progress and per-job status
+| Feature | Description |
+|---|---|
+| **Tracking email** | DPD-branded HTML email sent to the customer after each successful label creation |
+| **Auto-generate on Processing** | Optionally create a shipping label automatically when payment is confirmed |
+| **Auto-generate return label** | Optionally create a return label alongside every outbound shipping label |
 
 ---
 
 ## ✅ Requirements
 
-### Server
-
 | Requirement | Minimum |
 |---|---|
-| PHP | **8.0** |
-| WordPress | **6.0+** |
-| WooCommerce | **7.0+** |
-| MySQL / MariaDB | **5.7+** / **10.3+** |
-
-### DPD Account
-
-| Requirement | Notes |
-|---|---|
-| DPD shipping contract | Required for all functionality |
-| API username & password | Provided by DPD on account creation |
-| Depot code | Provided by DPD, e.g. `0522` |
-| Public callback URL | Required only for **async** label creation |
-
-> **Google Maps API key** — the plugin ships with a DPD-provided key for the Parcelshop map. No key of your own is needed to get started. High-volume stores are recommended to supply their own key via **Settings → Parcelshop** to avoid rate limiting.
+| PHP | 8.0+ |
+| WordPress | 5.8+ |
+| WooCommerce | 6.0+ |
+| Composer | Required for dependency installation |
+| DPD Connect account | Required — obtain credentials from DPD |
 
 ---
 
 ## 🚀 Installation
 
-### Option A — Upload via WordPress admin
+```bash
+# 1. Clone or download the plugin
+git clone https://github.com/dpdconnect/woocommerce-shipping.git
 
-1. Download the plugin ZIP
-2. Go to **WP Admin → Plugins → Add New → Upload Plugin**
-3. Upload the ZIP and click **Install Now**
-4. Click **Activate Plugin**
+# 2. Install PHP dependencies
+composer install --no-dev --optimize-autoloader
 
-### Option B — Manual (FTP / file copy)
+# 3. Upload to WordPress plugins directory
+cp -r woocommerce-shipping /path/to/wordpress/wp-content/plugins/dpdconnect
+```
 
-1. Copy the `dpdconnect/` folder into `wp-content/plugins/`
-2. Go to **WP Admin → Plugins** and activate **DPD Connect for WooCommerce**
+Then activate the plugin in **WordPress Admin → Plugins → Installed Plugins**.
 
-On first activation, the plugin automatically creates three database tables:
-
-| Table | Purpose |
-|---|---|
-| `wp_dpdconnect_labels` | Stores generated label PDFs |
-| `wp_dpdconnect_batches` | Tracks async batch requests |
-| `wp_dpdconnect_jobs` | Tracks individual jobs within a batch |
+> WooCommerce must be installed and active before activating this plugin.
 
 ---
 
 ## ⚙️ Configuration
 
-Navigate to **WP Admin → DPD Connect → Settings** and fill in each tab in order.
+Navigate to **WooCommerce → DPD Settings** after activation.
 
-<details>
-<summary><strong>1. 🔑 Credentials</strong></summary>
-<br>
+### Quick Setup Checklist
 
-Enter the **DPD API username** and **password** provided by DPD when your account was created.
+- [ ] **Credentials** — enter your DPD Connect username and password, then click *Check Credentials* to verify
+- [ ] **General** — set account type (B2C/B2B), depot number, label format (A4/A6), and download format
+- [ ] **Company** — fill in your sender address — this appears on every label
+- [ ] **Products** — set fallback HS code, country of origin, and product weight for customs
+- [ ] **Parcelshop** — configure Google Maps API key for the checkout map widget
+- [ ] **Shipping Zones** — add *DPD Shipping Method* to your WooCommerce shipping zones and select a DPD product per zone
 
-</details>
+### Shipping Method Setup
 
-<details>
-<summary><strong>2. ⚙️ General</strong></summary>
-<br>
-
-| Setting | Description |
-|---|---|
-| Account type | B2C (consumers) or B2B (businesses) |
-| Depot code | Your DPD depot number, e.g. `0522` |
-| Label format | A4 (4 per sheet) or A6 (thermal label size) |
-| Tracking email | Enable to automatically notify customers after label creation |
-| Download format | ZIP archive or merged PDF for bulk downloads |
-| Default package type | Small Parcel (15×10×10 cm) or Normal Parcel (100×50×50 cm) |
-
-</details>
-
-<details>
-<summary><strong>3. 🏢 Company</strong></summary>
-<br>
-
-Sender details printed on every label and used as the `From:` address in tracking emails: company name, address, phone, and email.
-
-</details>
-
-<details>
-<summary><strong>4. 📦 Product</strong></summary>
-<br>
-
-Store-wide defaults used when a product has no individual value set:
-
-- **Default country of origin** — ISO 3166-1 alpha-2 code (e.g. `NL`)
-- **Default product weight** — in kilograms
-
-</details>
-
-<details>
-<summary><strong>5. 🗺️ Parcelshop</strong></summary>
-<br>
-
-| Setting | Description |
-|---|---|
-| Use DPD's API key | **Enabled by default.** Uses DPD's shared Google Maps key — no setup required. |
-| Google Maps API key | Your own key (Maps JavaScript API + Places API). Leave empty to use DPD's key. |
-| Additional parcelshop methods | Enable parcelshop for non-DPD shipping methods (e.g. Table Rate Shipping) |
-
-</details>
-
-<details>
-<summary><strong>6. 🔧 Advanced</strong></summary>
-<br>
-
-| Setting | When to use |
-|---|---|
-| Connect URL | Override the DPD API endpoint (e.g. for staging) |
-| Callback URL | Override the URL DPD calls for async labels (e.g. local dev via ngrok) |
-| Async threshold | Orders above this count switch from sync to async (max 10) |
-
-</details>
-
-After saving settings, add a DPD shipping method under **WooCommerce → Settings → Shipping → Shipping zones**.
+1. **WooCommerce → Settings → Shipping → Shipping Zones → Edit Zone**
+2. Click **Add shipping method** → select **DPD Shipping Method**
+3. Click **Edit** on the new method and select the DPD product type (Standard, Parcelshop, Predict, Saturday, etc.)
+4. Set the shipping cost using flat amounts or dynamic expressions (`[qty]`, `[cost]`, `[fee percent="x"]`)
 
 ---
 
 ## 🛠️ Development
 
-### Prerequisites
-
-- PHP 8.0+
-- [Composer](https://getcomposer.org/)
-
-### Setup
-
-```bash
-git clone https://github.com/dpdconnect/woocommerce-shipping.git
-cd woocommerce-shipping
-composer install
-```
-
-### Dependencies
-
-| Package | Version | Purpose |
-|---|---|---|
-| [`dpdconnect/php-sdk`](https://github.com/dpdconnect/php-sdk) | `^1.1` | DPD REST API client — JWT auth, shipment creation, label download |
-| [`myokyawhtun/pdfmerger`](https://github.com/myokyawhtun/PDFMerger) | `dev-master` | Merges multiple label PDFs into a single bulk download |
-
-### Directory structure
+### Project Structure
 
 ```
 dpdconnect/
-├── dpdconnect.php              Entry point — bootstraps all handlers
+├── dpdconnect.php          # Plugin entry point
 ├── composer.json
-├── assets/                     CSS for admin and checkout
-├── classes/
-│   ├── Connect/                DPD API wrappers (Connection, Shipment, Label, …)
-│   ├── Database/               Custom table repositories (Label, Batch, Job)
-│   ├── Handlers/               WordPress hook registrations
-│   │   └── trackingemail/      HTML email template + DPD logo assets
-│   ├── Pages/                  Admin list table pages (Batches, Jobs, FreshFreeze)
-│   ├── Settings/               WooCommerce settings page handlers
-│   ├── enums/                  PHP enums (ParcelType, BatchStatus, JobStatus, …)
-│   └── producttypes/           DPD product abstractions (Predict, Parcelshop, B2B, Fresh)
-├── languages/                  Translation files (.po / .mo)
-└── vendor/                     Composer dependencies
+├── assets/                 # CSS, images
+├── languages/              # Translations (.pot, .po, .mo)
+└── classes/
+    ├── Connect/            # DPD API wrappers (SDK integration)
+    ├── Database/           # wpdb repositories (labels, batches, jobs)
+    ├── Handlers/           # WordPress hook registrations
+    ├── Pages/              # Admin page renderers
+    ├── Settings/           # Settings page registrations
+    ├── Service/            # Validators
+    ├── enums/              # Status constants
+    ├── producttypes/       # DPD product type definitions
+    ├── shippingmethods/    # WC_Shipping_Method extension
+    └── Option.php          # Central settings accessor
 ```
 
-### Data flow — label generation
+### Database Tables
 
-```
-LabelRequest (bulk action hook)
-  └── OrderTransformer::createShipment()   WC order → DPD shipment array
-        └── OrderValidator                 Validates receiver + product data
-              └── Connect\Shipment         Submits to DPD API
-                    └── Job + Batch        Stored in custom DB tables
-                          └── Callback     Webhook receives PDF, stores in Label table
-                                └── Router Labels served via ?plugin=dpdconnect&file=shipping_label
-```
+The plugin creates three custom tables on activation:
+
+| Table | Purpose |
+|---|---|
+| `{prefix}dpdconnect_labels` | Stores generated label PDFs as binary blobs |
+| `{prefix}dpdconnect_batches` | Tracks async batch requests |
+| `{prefix}dpdconnect_jobs` | Tracks individual shipment jobs within a batch |
+
+### Key Classes
+
+| Class | Description |
+|---|---|
+| `Option` | Central accessor for all plugin settings (wraps `get_option`) |
+| `OrderTransformer` | Builds DPD shipment payload from a WooCommerce order |
+| `Connect\Shipment` | Sends sync/async shipment requests to the DPD API |
+| `Handlers\LabelRequest` | Orchestrates all label creation paths (bulk, single, auto) |
+| `Handlers\Pickup` | Manages the parcelshop checkout bar and AJAX handlers |
+| `Handlers\Callback` | Processes async DPD callbacks (`admin-post.php?action=dpdbatch`) |
+
+### Full Documentation
+
+Comprehensive user and developer documentation is available in the [`docs/`](docs/README.md) directory:
+
+- [Architecture](docs/developer/01-architecture.md)
+- [Label Creation Flow](docs/developer/03-label-creation-flow.md)
+- [Database Schema](docs/developer/04-database-schema.md)
+- [WordPress Hooks](docs/developer/05-wordpress-hooks.md)
+- [Debugging](docs/developer/07-debugging.md)
 
 ---
 
 ## 📄 License
 
-Released under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
+GPL-3.0-or-later — see [LICENSE](LICENSE) for details.
 
----
-
-<div align="center">
-
-Built with ❤️ by [X-Interactive](https://x-interactive.nl) &nbsp;·&nbsp; [DPD Connect portal](https://integrations.dpd.nl/)
-
-</div>
+**Author:** DPD / [X-Interactive.nl](https://github.com/dpdconnect)

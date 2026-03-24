@@ -23,6 +23,8 @@ class Pickup
         add_action('woocommerce_checkout_process', [self::class, 'validateParcelshopSelection']);
         // Block checkout validation and storage
         add_action('woocommerce_store_api_checkout_update_order_from_request', [self::class, 'storeParcelshopId'], 20, 2);
+        // Classic checkout: save parcelshop ID from session to order meta when order is created
+        add_action('woocommerce_checkout_order_created', [self::class, 'storeParcelshopIdClassic']);
     }
 
     public static function registerScripts()
@@ -126,6 +128,35 @@ class Pickup
     }
 
     /**
+     * Check if the order's actual shipping method is a parcelshop type.
+     * Uses persisted order shipping items instead of the session — reliable in any hook context.
+     */
+    private static function isParcelshopShippingSelectedForOrder(\WC_Order $order): bool
+    {
+        $dpdPickupMethodIds = self::getDpdPickupMethodIds();
+        $additionalMethods = Option::additionalParcelshopMethods();
+
+        foreach ($order->get_shipping_methods() as $method) {
+            $methodFullId = $method->get_method_id() . ':' . $method->get_instance_id();
+
+            if (in_array($methodFullId, $dpdPickupMethodIds, true)) {
+                return true;
+            }
+
+            if (!empty($additionalMethods)) {
+                foreach ($additionalMethods as $additionalMethod) {
+                    if ($methodFullId === $additionalMethod ||
+                        strpos($methodFullId, $additionalMethod) === 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Check if a parcelshop has been selected in session.
      */
     private static function hasParcelshopSelected(): bool
@@ -201,7 +232,10 @@ class Pickup
                     createDPDBar();
                     checkAndShowBar();
 
-                    // Wait for DPDConnect to load before setting up event listeners
+                    // Register DOM/shipping observers immediately — no DPDConnect dependency
+                    setupShippingMethodListeners();
+
+                    // Map interaction requires DPDConnect to be loaded
                     waitForDPDConnect(function() {
                         setupEventListeners();
                     });
@@ -306,14 +340,80 @@ class Pickup
                     // Check if it's one of the additional parcelshop methods
                     if (additionalParcelshopMethods && additionalParcelshopMethods.length > 0) {
                         for (let i = 0; i < additionalParcelshopMethods.length; i++) {
-                            // Check if the selected method matches exactly
-                            if (selectedMethodValue === additionalParcelshopMethods[i]) {
+                            // Match exact ID or Table Rate Shipping's 3-part format (stored as method_id:instance, selected as method_id:instance:rate)
+                            if (selectedMethodValue === additionalParcelshopMethods[i] ||
+                                selectedMethodValue.startsWith(additionalParcelshopMethods[i] + ':')) {
                                 return true;
                             }
                         }
                     }
 
                     return false;
+                }
+
+                function setupShippingMethodListeners() {
+                    // Collapse/Expand toggle
+                    jQuery(document).on('click', '#dpdCollapseToggle', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('DPD Parcelshop: Toggle clicked');
+
+                        const $bar = jQuery('#dpdCheckout');
+                        const isCollapsed = $bar.hasClass('dpd-bar-collapsed');
+
+                        if (isCollapsed) {
+                            $bar.removeClass('dpd-bar-collapsed');
+                            console.log('DPD Parcelshop: Bar expanded');
+                        } else {
+                            $bar.addClass('dpd-bar-collapsed');
+                            console.log('DPD Parcelshop: Bar collapsed');
+                        }
+                    });
+
+                    // Watch for shipping method changes (Block checkout)
+                    jQuery(document).on('change', '.wc-block-components-shipping-rates-control input', function() {
+                        checkAndShowBar();
+                    });
+
+                    // Watch for shipping method changes (Classic checkout)
+                    jQuery(document).on('change', 'input[name^="shipping_method"]', function() {
+                        checkAndShowBar();
+                    });
+
+                    // Watch for address changes
+                    jQuery(document).on('change', '#shipping-postcode, #shipping-address_1, #shipping-country, #billing-postcode, #billing-address_1, #billing-country', function() {
+                        setTimeout(checkAndShowBar, 500);
+                    });
+
+                    // Watch for WooCommerce classic checkout updates
+                    jQuery(document).on('updated_checkout', function() {
+                        checkAndShowBar();
+                    });
+
+                    // Reset error messages when switching away from parcelshop method
+                    jQuery(document).on('change', '.wc-block-components-shipping-rates-control input, input[name^="shipping_method"]', function() {
+                        if (!isParcelshopMethodSelected()) {
+                            jQuery('.dpd-parcelshop-error').remove();
+                            jQuery('#dpdCheckout').removeClass('dpd-validation-error');
+                        }
+                    });
+
+                    // Use MutationObserver to detect when WC blocks render shipping methods.
+                    // Debounced so it runs once after a burst of DOM changes, not on every mutation.
+                    let mutationDebounce;
+                    const observer = new MutationObserver(function() {
+                        clearTimeout(mutationDebounce);
+                        mutationDebounce = setTimeout(function() {
+                            if (!dpdBarInitialized) {
+                                createDPDBar();
+                            }
+                            checkAndShowBar();
+                        }, 150);
+                    });
+                    observer.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
                 }
 
                 function setupEventListeners() {
@@ -370,24 +470,6 @@ class Pickup
                         }
                     }
 
-                    // Collapse/Expand toggle
-                    jQuery(document).on('click', '#dpdCollapseToggle', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('DPD Parcelshop: Toggle clicked');
-
-                        const $bar = jQuery('#dpdCheckout');
-                        const isCollapsed = $bar.hasClass('dpd-bar-collapsed');
-
-                        if (isCollapsed) {
-                            $bar.removeClass('dpd-bar-collapsed');
-                            console.log('DPD Parcelshop: Bar expanded');
-                        } else {
-                            $bar.addClass('dpd-bar-collapsed');
-                            console.log('DPD Parcelshop: Bar collapsed');
-                        }
-                    });
-
                     // Button click
                     jQuery(document).on('click', '#parcelshopButton', function(e) {
                         e.preventDefault();
@@ -412,68 +494,6 @@ class Pickup
                         if (event.target === jQuery('#parcelshopModal').get(0)) {
                             closeModal();
                         }
-                    });
-
-                    // Watch for shipping method changes (Block checkout)
-                    jQuery(document).on('change', '.wc-block-components-shipping-rates-control input', function() {
-                        checkAndShowBar();
-                    });
-
-                    // Watch for shipping method changes (Classic checkout)
-                    jQuery(document).on('change', 'input[name^="shipping_method"]', function() {
-                        checkAndShowBar();
-                    });
-
-                    // Watch for address changes
-                    jQuery(document).on('change', '#shipping-postcode, #shipping-address_1, #shipping-country, #billing-postcode, #billing-address_1, #billing-country', function() {
-                        setTimeout(checkAndShowBar, 500);
-                    });
-
-                    // Watch for WooCommerce block updates
-                    jQuery(document).on('updated_checkout', function() {
-                        checkAndShowBar();
-                    });
-
-                    // Use MutationObserver for efficient DOM change detection
-                    const observer = new MutationObserver(function(mutations) {
-                        let shouldCheck = false;
-                        mutations.forEach(function(mutation) {
-                            // Check if shipping-related elements were added or modified
-                            if (mutation.type === 'childList' || mutation.type === 'attributes') {
-                                const target = mutation.target;
-                                if (target.classList && (
-                                    target.classList.contains('wc-block-components-shipping-rates-control') ||
-                                    target.classList.contains('woocommerce-shipping-methods') ||
-                                    target.id === 'shipping_method' ||
-                                    target.closest && (target.closest('.wc-block-components-shipping-rates-control') || target.closest('#shipping_method'))
-                                )) {
-                                    shouldCheck = true;
-                                }
-                            }
-                        });
-                        if (shouldCheck) {
-                            if (!dpdBarInitialized) {
-                                createDPDBar();
-                            }
-                            checkAndShowBar();
-                        }
-                    });
-
-                    // Observe the checkout form for shipping method changes
-                    const checkoutForm = document.querySelector('.woocommerce-checkout, .wp-block-woocommerce-checkout');
-                    if (checkoutForm) {
-                        observer.observe(checkoutForm, {
-                            childList: true,
-                            subtree: true,
-                            attributes: true,
-                            attributeFilter: ['checked', 'class']
-                        });
-                    }
-
-                    // Fallback: also observe body for dynamically loaded checkout forms
-                    observer.observe(document.body, {
-                        childList: true,
-                        subtree: true
                     });
 
                     // Classic checkout form validation
@@ -535,14 +555,6 @@ class Pickup
                         }
                     });
 
-                    // Reset parcelshop selection when shipping method changes away from parcelshop
-                    jQuery(document).on('change', '.wc-block-components-shipping-rates-control input, input[name^="shipping_method"]', function() {
-                        if (!isParcelshopMethodSelected()) {
-                            // Clear error messages when switching away from parcelshop
-                            jQuery('.dpd-parcelshop-error').remove();
-                            jQuery('#dpdCheckout').removeClass('dpd-validation-error');
-                        }
-                    });
                 }
 
                 function showModal(useGoogleMapsKey, token) {
@@ -635,7 +647,7 @@ class Pickup
      */
     public static function storeParcelshopId($order, $data)
     {
-        if (!self::isParcelshopShippingSelected()) {
+        if (!self::isParcelshopShippingSelectedForOrder($order)) {
             return;
         }
 
@@ -644,6 +656,28 @@ class Pickup
         if (!self::hasParcelshopSelected()) {
             // Throw exception to stop block checkout - Store API will catch and return error
             throw new \Exception($validationError);
+        }
+
+        $dpdOrderMetaData = WC()->session->get('dpd_order_metadata');
+        $parcelshopId = $dpdOrderMetaData['parcelshop_id'];
+        $order->update_meta_data('_dpd_parcelshop_id', $parcelshopId);
+        $order->save();
+        WC()->session->__unset('dpd_order_metadata');
+    }
+
+    /**
+     * Store parcelshop ID to order meta for classic checkout.
+     * Hooked to woocommerce_checkout_order_created — fires after WC_Order is persisted,
+     * WC session is still alive so the selected parcelshop ID can be read and saved.
+     */
+    public static function storeParcelshopIdClassic(\WC_Order $order)
+    {
+        if (!self::isParcelshopShippingSelectedForOrder($order)) {
+            return;
+        }
+
+        if (!self::hasParcelshopSelected()) {
+            return;
         }
 
         $dpdOrderMetaData = WC()->session->get('dpd_order_metadata');

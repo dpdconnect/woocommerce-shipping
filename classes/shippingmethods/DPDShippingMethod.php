@@ -331,12 +331,16 @@ class DPDShippingMethod extends WC_Shipping_Method
     // Always set the title to the DPD Product name
     public function sanitize_zone_title()
     {
-        $selectedProduct = $_POST['data']['woocommerce_dpd_shipping_method_dpd_method_type'];
+        $selectedProductCode = $_POST['data']['woocommerce_dpd_shipping_method_dpd_method_type'] ?? null;
+
+        if (null === $selectedProductCode) {
+            return '';
+        }
 
         $product = new Product();
-        $selectedProduct = $product->getProductByCode($selectedProduct);
+        $selectedProduct = $product->getProductByCode($selectedProductCode);
 
-        return $selectedProduct['name'];
+        return $selectedProduct['name'] ?? '';
     }
 
     /**
