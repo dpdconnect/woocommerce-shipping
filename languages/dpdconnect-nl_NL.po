@@ -1,18 +1,18 @@
-# Copyright (C) 2019 DPD / X-Interactive.nl
+# Copyright (C) 2024 DPD / X-Interactive.nl
 # This file is distributed under the same license as the DPD Connect for WooCommerce plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: DPD Connect for WooCommerce 1.0\n"
+"Project-Id-Version: DPD Connect for WooCommerce 2.0.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dpdconnect\n"
-"POT-Creation-Date: 2019-07-11T12:36:12+00:00\n"
-"PO-Revision-Date: 2019-07-11 14:36+0200\n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2026-04-21T12:00:00+00:00\n"
+"PO-Revision-Date: 2026-04-21 12:00+0200\n"
+"Last-Translator: X-Interactive <m.veen@x-interactive.nl>\n"
+"Language-Team: Dutch\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Claude Code\n"
 "X-Domain: dpdconnect\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -38,80 +38,75 @@ msgstr "DPD / X-Interactive.nl"
 msgid "https://github.com/dpdconnect"
 msgstr "https://github.com/dpdconnect"
 
-#: classes/OrderValidator.php:30
+#: classes/OrderValidator.php
 msgid "Configure your company name in DPD Connect settings"
 msgstr "Stel je bedrijfsnaam in bij de DPD Connect instellingen"
 
-#: classes/OrderValidator.php:36
+#: classes/OrderValidator.php
 msgid "Configure your company address in DPD Connect settings"
-msgstr "Stel je bedrijfsadress in bij de DPD Connect instellingen"
+msgstr "Stel je bedrijfsadres in bij de DPD Connect instellingen"
 
-#: classes/OrderValidator.php:42
+#: classes/OrderValidator.php
 msgid "Configure your company country code in DPD Connect settings"
 msgstr "Stel je landcode in bij de DPD Connect instellingen"
 
-#: classes/OrderValidator.php:48
+#: classes/OrderValidator.php
 msgid "Configure your company postal code in DPD Connect settings"
 msgstr "Stel je postcode in bij de DPD Connect instellingen"
 
-#: classes/OrderValidator.php:54
+#: classes/OrderValidator.php
 msgid "Configure your company city in DPD Connect settings"
 msgstr "Stel je vestigingsplaats in bij de DPD Connect instellingen"
 
-#: classes/OrderValidator.php:60
+#: classes/OrderValidator.php
 msgid "Configure your company phone in DPD Connect settings"
 msgstr "Stel je bedrijfstelefoonnummer in bij de DPD Connect instellingen"
 
-#: classes/OrderValidator.php:66
+#: classes/OrderValidator.php
 msgid "Configure your company email in DPD Connect settings"
 msgstr "Stel je bedrijfsemail in bij de DPD Connect instellingen"
 
-#: classes/OrderValidator.php:72
+#: classes/OrderValidator.php
 msgid "Configure your depot in DPD Connect settings"
 msgstr "Stel het DPD Depot in bij de DPD Connect instellingen"
 
-#: classes/OrderValidator.php:81
-msgid "First name is required for sender"
-msgstr "Voornaam is verplicht voor verzender"
+#: classes/OrderValidator.php
+msgid "Receiver first name is missing — check the shipping address"
+msgstr "Voornaam ontvanger ontbreekt — controleer het verzendadres"
 
-#: classes/OrderValidator.php:87
-msgid "Last name is required for sender"
-msgstr "Achternaam is verplicht voor verzender"
+#: classes/OrderValidator.php
+msgid "Receiver last name is missing — check the shipping address"
+msgstr "Achternaam ontvanger ontbreekt — controleer het verzendadres"
 
-#: classes/OrderValidator.php:93
-msgid "Address is required for sender"
-msgstr "Adres is verplicht voor verzender"
+#: classes/OrderValidator.php
+msgid "Receiver street address is missing — check the shipping address"
+msgstr "Straatnaam ontvanger ontbreekt — controleer het verzendadres"
 
-#: classes/OrderValidator.php:99
-msgid "Country is required for sender"
-msgstr "Land is verplicht voor verzender"
+#: classes/OrderValidator.php
+msgid "Receiver country is missing — check the shipping address"
+msgstr "Land ontvanger ontbreekt — controleer het verzendadres"
 
-#: classes/OrderValidator.php:105
-msgid "City is required for sender"
-msgstr "Stad is verplicht voor verzender"
+#: classes/OrderValidator.php
+msgid "Receiver city is missing — check the shipping address"
+msgstr "Stad ontvanger ontbreekt — controleer het verzendadres"
 
-#: classes/OrderValidator.php:111
-msgid "Postalcode is required for sender"
-msgstr "Postcode is verplicht voor verzender"
+#: classes/OrderValidator.php
+msgid "Receiver postal code is missing — check the shipping address"
+msgstr "Postcode ontvanger ontbreekt — controleer het verzendadres"
 
-#: classes/OrderValidator.php:118
-msgid "Multiple parcels is not supported for %s"
-msgstr "Meerdere pakketten wordt niet ondersteund voor %s"
+#: classes/OrderValidator.php
+msgid "Receiver email address is missing — check the billing details"
+msgstr "E-mailadres ontvanger ontbreekt — controleer de factuurgegevens"
 
 #. translators: %s: ID of product
-#: classes/OrderValidator.php:130
+#: classes/OrderValidator.php
 msgid "Product name is required on all products. Check product with ID %s"
 msgstr ""
 "Productnaam is een verplicht veld bij alle producten. Controleer het product "
 "met ID %s"
 
-#. translators: %s: Weight of product
-#: classes/OrderValidator.php:137
-msgid "Product weight is missing for: %s"
-msgstr "Product gewicht mist bij: %s"
-
 #. translators: 1: Name of product 2: ID of product
-#: classes/OrderValidator.php:144
+#: classes/OrderValidator.php
 msgid ""
 "Product country of origin is missing for: %1$s . Either set a country for <a "
 "href=\"wp-admin/post.php?post=%2$s&action=edit\">this product</a> in its "
@@ -120,185 +115,222 @@ msgid ""
 msgstr ""
 "Land van herkomst ontbreekt voor: %1$s. Stel of een land in bij de "
 "verzendattributen van <a href=\"wp-admin/post.php?post=%2$s&action=edit"
-"\">dit product</a>  of stel een <a href=\"/wp-admin/admin.php?page=dpdconnect"
+"\">dit product</a> of stel een <a href=\"/wp-admin/admin.php?page=dpdconnect"
 "\">standaard land</a> in voor je hele webshop."
 
-#: classes/JobView.php:18
+#: classes/JobView.php
 msgid "Job details"
 msgstr "Job details"
 
-#: classes/enums/BatchStatus.php:21 classes/enums/JobStatus.php:17
+#: classes/enums/BatchStatus.php classes/enums/JobStatus.php
 msgid "Request"
 msgstr "Aanvraag"
 
-#: classes/enums/BatchStatus.php:23 classes/enums/JobStatus.php:19
+#: classes/enums/BatchStatus.php classes/enums/JobStatus.php
 msgid "Queued"
 msgstr "In de wacht"
 
-#: classes/enums/BatchStatus.php:25 classes/enums/JobStatus.php:21
+#: classes/enums/BatchStatus.php classes/enums/JobStatus.php
 msgid "Processing"
 msgstr "Wordt verwerkt"
 
-#: classes/enums/BatchStatus.php:27 classes/enums/JobStatus.php:23
+#: classes/enums/BatchStatus.php classes/enums/JobStatus.php
 msgid "Success"
 msgstr "Geslaagd"
 
-#: classes/enums/BatchStatus.php:29 classes/enums/JobStatus.php:25
+#: classes/enums/BatchStatus.php classes/enums/JobStatus.php
 msgid "Failed"
 msgstr "Gefaald"
 
-#: classes/enums/BatchStatus.php:31
+#: classes/enums/BatchStatus.php
 msgid "Partially failed"
 msgstr "Gedeeltelijk gefaald"
 
-#: classes/JobList.php:15
+#: classes/JobList.php
 msgid "Job"
 msgstr "Job"
 
-#: classes/JobList.php:16 classes/Settings/Menu.php:54
+#: classes/JobList.php classes/Settings/Menu.php
 msgid "Jobs"
 msgstr "Jobs"
 
-#: classes/JobList.php:94
+#: classes/JobList.php
 msgid "And %s more errors."
-msgstr "En nog %s errors."
+msgstr "En nog %s fouten."
 
-#: classes/JobList.php:118 classes/BatchList.php:91
+#: classes/JobList.php classes/BatchList.php
 msgid "Date"
 msgstr "Datum"
 
-#: classes/JobList.php:119
+#: classes/JobList.php
 msgid "Batch ID"
 msgstr "Batch ID"
 
-#: classes/JobList.php:120
+#: classes/JobList.php
 msgid "Order ID"
 msgstr "Order ID"
 
-#: classes/JobList.php:121 classes/BatchList.php:95
+#: classes/JobList.php classes/BatchList.php
 msgid "Status"
 msgstr "Status"
 
-#: classes/JobList.php:122
+#: classes/JobList.php
+msgid "Type"
+msgstr "Type"
+
+#: classes/JobList.php
 msgid "Job ID"
 msgstr "Job ID"
 
-#: classes/JobList.php:123
+#: classes/JobList.php
 msgid "Error"
 msgstr "Fout"
 
-#: classes/JobList.php:124
+#: classes/JobList.php
 msgid "Message"
 msgstr "Bericht"
 
-#: classes/JobList.php:125 classes/BatchList.php:96
+#: classes/JobList.php classes/BatchList.php
 msgid "Action"
 msgstr "Actie"
 
-#: classes/JobList.php:150
+#: classes/JobList.php
 msgid "View details"
 msgstr "Bekijk details"
 
-#: classes/Settings/Company.php:24
+#: classes/Settings/Company.php
 msgid "Company information"
 msgstr "Bedrijfsinformatie"
 
-#: classes/Settings/Company.php:32
+#: classes/Settings/Company.php
 msgid "Company name"
 msgstr "Bedrijfsnaam"
 
-#: classes/Settings/Company.php:46
+#: classes/Settings/Company.php
 msgid "Company address"
-msgstr "Bedrijfsadress"
+msgstr "Bedrijfsadres"
 
-#: classes/Settings/Company.php:60
+#: classes/Settings/Company.php
 msgid "Company postal code"
 msgstr "Postcode bedrijf"
 
-#: classes/Settings/Company.php:74
+#: classes/Settings/Company.php
 msgid "Company city"
 msgstr "Plaatsnaam bedrijf"
 
-#: classes/Settings/Company.php:88
+#: classes/Settings/Company.php
 msgid "Company country Code"
 msgstr "Vestigingsland bedrijf"
 
-#: classes/Settings/Company.php:103
+#: classes/Settings/Company.php
 msgid "Company phone number"
 msgstr "Bedrijfstelefoonnummer"
 
-#: classes/Settings/Company.php:117
+#: classes/Settings/Company.php
 msgid "Company email"
-msgstr "Bedrijf email"
+msgstr "Bedrijfse-mail"
 
-#: classes/Settings/Company.php:153
+#: classes/Settings/Company.php
+msgid "Vat number"
+msgstr "Btw-nummer"
+
+#: classes/Settings/Company.php
+msgid "Eori number"
+msgstr "EORI-nummer"
+
+#: classes/Settings/Company.php
+msgid "HMRC number"
+msgstr "HMRC-nummer"
+
+#: classes/Settings/Company.php
+msgid "Customs terms"
+msgstr "Douanevoorwaarden"
+
+#: classes/Settings/Company.php
+msgid "DAP DP - D&T paid by sender"
+msgstr "DAP DP - D&T betaald door verzender"
+
+#: classes/Settings/Company.php
+msgid "DAP NP - D&T paid by receiver"
+msgstr "DAP NP - D&T betaald door ontvanger"
+
+#: classes/Settings/Company.php
 msgid "Company information will be used as sender on label requests."
 msgstr "Bedrijfsinformatie wordt gebruikt als verzender bij label requests."
 
-#: classes/Settings/Parcelshop.php:24
+#: classes/Settings/Parcelshop.php
 msgid "Parcelshop settings"
 msgstr "Parcelshop instellingen"
 
-#: classes/Settings/Parcelshop.php:32
-msgid "Google Maps Static & Javascript API key"
-msgstr "Google Maps Static & Javascript API key"
+#: classes/Settings/Parcelshop.php
+msgid "Google Maps API Key"
+msgstr "Google Maps API-sleutel"
 
-#: classes/Settings/Parcelshop.php:41
-msgid ""
-"This key is sent to your visitors browser and is used to render Google Maps "
-"in the checkout so visitors can select a parcelshop."
-msgstr ""
-"Deze key wordt naar de browser van bezoekers gestuurd en wordt gebruikt om "
-"Google Maps kaarten te tonen, zodat bezoekers een parcelshop kunnen "
-"selecteren."
+#: classes/Settings/Parcelshop.php
+msgid "This key is used for rendering Google Maps in the checkout and requesting Geographical coordinates based on zipcodes."
+msgstr "Deze sleutel wordt gebruikt om Google Maps in de checkout te tonen en om geografische coordinaten op basis van postcodes op te vragen."
 
-#: classes/Settings/Parcelshop.php:48
-msgid "Google Maps Geocoding API key"
-msgstr "Google Maps Geocoding API key"
+#: classes/Settings/Parcelshop.php
+msgid "Use DPD's Google Maps API Key"
+msgstr "Gebruik de Google Maps API-sleutel van DPD"
 
-#: classes/Settings/Parcelshop.php:57
-msgid ""
-"This key is used for requesting Geographical coordinates based on zipcodes. "
-"This key remains on the server."
-msgstr ""
-"Deze key wordt gebruikt om geografische coordinaten op basis van postcode op "
-"te kunnen vragen. Deze sleutel blijft op de server."
+#: classes/Settings/Parcelshop.php
+msgid "These may be subject to rate limiting, high volume users should use their own Google keys"
+msgstr "Deze kunnen onderhevig zijn aan rate limiting, gebruikers met hoog volume dienen eigen Google-sleutels te gebruiken"
 
-#: classes/Settings/Parcelshop.php:85
-msgid ""
-"Google Maps API keys can be obtained directly from Google. You can use the "
-"same key for both fields, which however will result in reaching Googles rate "
-"limit more quickly."
-msgstr ""
-"Google maps api keys kunnen rechtstreeks bij Google verkregen worden. "
-"Dezelfde sleutel kan voor beide velden gebruikt worden, maar dit zal er toe "
-"leiden dat de rate limit bij Google sneller bereikt wordt."
+#: classes/Settings/Parcelshop.php
+msgid "Additional Parcelshop Shipping Methods"
+msgstr "Extra Parcelshop-verzendmethoden"
 
-#: classes/Settings/Advanced.php:26
+#: classes/Settings/Parcelshop.php
+msgid "Enable parcelshop selection for non-DPD shipping methods (e.g., Table Rate Shipping). DPD shipping methods are automatically detected and don't need to be selected here."
+msgstr "Schakel parcelshop-selectie in voor niet-DPD verzendmethoden (bijv. Table Rate Shipping). DPD-verzendmethoden worden automatisch gedetecteerd en hoeven hier niet geselecteerd te worden."
+
+#: classes/Settings/Parcelshop.php
+msgid "Show key"
+msgstr "Sleutel tonen"
+
+#: classes/Settings/Parcelshop.php
+msgid "Select which shipping methods should show the parcelshop selector:"
+msgstr "Selecteer welke verzendmethoden de parcelshop-selector moeten tonen:"
+
+#: classes/Settings/Parcelshop.php
+msgid "No shipping methods found. Please configure shipping zones and methods first."
+msgstr "Geen verzendmethoden gevonden. Configureer eerst verzendingszones en -methoden."
+
+#: classes/Settings/Parcelshop.php
+msgid "Locations not covered by your other zones"
+msgstr "Locaties die niet gedekt worden door je andere zones"
+
+#: classes/Settings/Parcelshop.php
+msgid "Google Maps API keys can be obtained directly from Google."
+msgstr "Google Maps API-sleutels kunnen rechtstreeks bij Google verkregen worden."
+
+#: classes/Settings/Advanced.php
 msgid "DPD Advanced settings"
 msgstr "DPD geavanceerde instellingen"
 
-#: classes/Settings/Advanced.php:34
+#: classes/Settings/Advanced.php
 msgid "Connect URL"
 msgstr "Connect URL"
 
-#: classes/Settings/Advanced.php:43
+#: classes/Settings/Advanced.php
 msgid "The url to DPD Connect"
 msgstr "De url naar DPD Connect"
 
-#: classes/Settings/Advanced.php:50
+#: classes/Settings/Advanced.php
 msgid "Callback URL"
 msgstr "Callback URL"
 
-#: classes/Settings/Advanced.php:59
+#: classes/Settings/Advanced.php
 msgid "Responses for async requests will be sent to this base url"
 msgstr "Responses van async requests worden naar deze base url gestuurd"
 
-#: classes/Settings/Advanced.php:66
+#: classes/Settings/Advanced.php
 msgid "Async treshold"
 msgstr "Async drempelwaarde"
 
-#: classes/Settings/Advanced.php:75
+#: classes/Settings/Advanced.php
 msgid ""
 "Labels requested in bulk will be handled immediately if the amount is below "
 "this treshold. The maximum treshold is %s."
@@ -306,389 +338,470 @@ msgstr ""
 "Bulk labelrequests worden meteen afgehandeld als het aantal onder deze "
 "drempelwaarde blijft. De maximale drempelwaarde is %s."
 
-#: classes/Settings/Advanced.php:130
-msgid ""
-"These settings are for debugging purposes. You may leave these settings "
-"empty."
-msgstr ""
-"Deze instellingen zijn voor debug doeleinden en mogen leeg gelaten blijven."
+#: classes/Settings/Advanced.php
+msgid "Generate shipping label on Processing"
+msgstr "Verzendlabel genereren bij verwerking"
 
-#: classes/Settings/Product.php:24
+#: classes/Settings/Advanced.php
+msgid "Generate return label on label creation"
+msgstr "Retourlabel genereren bij het aanmaken van een label"
+
+#: classes/Settings/Product.php
 msgid "Product attributes"
 msgstr "Product attributen"
 
-#: classes/Settings/Product.php:32
+#: classes/Settings/Product.php
 msgid "Default Harmonized System Code"
 msgstr "Standaard Harmonized System Code"
 
-#: classes/Settings/Product.php:46
+#: classes/Settings/Product.php
 msgid "Default Country of Origin"
 msgstr "Standaard land van herkomst"
 
-#: classes/Settings/Menu.php:33
+#: classes/Settings/Product.php
+msgid "Default Product Weight (kg)"
+msgstr "Standaard productgewicht (kg)"
+
+#: classes/Settings/Menu.php
 msgid "Settings"
 msgstr "Instellingen"
 
-#: classes/Settings/Menu.php:43 classes/BatchList.php:14
+#: classes/Settings/Menu.php classes/BatchList.php
 msgid "Batches"
 msgstr "Batches"
 
-#: classes/Settings/Menu.php:109
+#: classes/Settings/Menu.php
 msgid "Settings Saved"
 msgstr "Instellingen opgeslagen"
 
-#: classes/Settings/Menu.php:126
+#: classes/Settings/Menu.php
 msgid "General"
-msgstr "Algemene instellingen"
+msgstr "Algemeen"
 
-#: classes/Settings/Menu.php:127
+#: classes/Settings/Menu.php
 msgid "Credentials"
 msgstr "Inloggegevens"
 
-#: classes/Settings/Menu.php:128
+#: classes/Settings/Menu.php
 msgid "Company"
 msgstr "Bedrijfsgegevens"
 
-#: classes/Settings/Menu.php:129
+#: classes/Settings/Menu.php
 msgid "Product"
 msgstr "Product"
 
-#: classes/Settings/Menu.php:130
+#: classes/Settings/Menu.php classes/Handlers/trackingemail/index.php
 msgid "Parcelshop"
 msgstr "Parcelshop"
 
-#: classes/Settings/Menu.php:131
+#: classes/Settings/Menu.php
 msgid "Advanced"
 msgstr "Geavanceerd"
 
-#: classes/Settings/Menu.php:170
+#: classes/Settings/Menu.php
 msgid "Save Settings"
 msgstr "Instellingen opslaan"
 
-#: classes/Settings/General.php:24
+#: classes/Settings/General.php
 msgid "General settings"
 msgstr "Algemene instellingen"
 
-#: classes/Settings/General.php:32
+#: classes/Settings/General.php
 msgid "DPD Account type"
 msgstr "DPD account type"
 
-#: classes/Settings/General.php:46
+#: classes/Settings/General.php
 msgid "DPD Depot"
 msgstr "DPD Depot"
 
-#: classes/Settings/General.php:60
+#: classes/Settings/General.php
 msgid " DPD Label Format"
-msgstr " DPD label formaat"
+msgstr " DPD-labelformaat"
 
-#: classes/Settings/General.php:106
+#: classes/Settings/General.php
+msgid " DPD Send Trackingemail"
+msgstr " DPD tracking e-mail versturen"
+
+#: classes/Settings/General.php
+msgid " DPD Download format"
+msgstr " DPD downloadformaat"
+
+#: classes/Settings/General.php
+msgid " DPD Default Package Type"
+msgstr " DPD standaard pakkettype"
+
+#: classes/Settings/General.php
 msgid "A4 format"
 msgstr "A4 formaat"
 
-#: classes/Settings/General.php:109
+#: classes/Settings/General.php
 msgid "A6 format"
 msgstr "A6 formaat"
 
-#: classes/Settings/General.php:113
+#: classes/Settings/General.php
 msgid "Choose the correct label format for your store."
 msgstr "Kies het juiste labelformaat voor je winkel."
 
-#: classes/Settings/General.php:129
+#: classes/Settings/General.php
+msgid "Zip file"
+msgstr "Zip-bestand"
+
+#: classes/Settings/General.php
+msgid "Merged PDF file"
+msgstr "Samengevoegd PDF-bestand"
+
+#: classes/Settings/General.php
 msgid "B2C"
 msgstr "B2C"
 
-#: classes/Settings/General.php:132
+#: classes/Settings/General.php
 msgid "B2B"
 msgstr "B2B"
 
-#: classes/Settings/General.php:136
+#: classes/Settings/General.php
 msgid "Choose the correct account type for your store."
 msgstr "Selecteer het juiste account type voor je webwinkel."
 
-#: classes/Settings/Credentials.php:24
-msgid "DPD Connect Credentials"
-msgstr "DPD Connect Inloggegevens"
+#: classes/Settings/General.php
+msgid "DISABLED"
+msgstr "UITGESCHAKELD"
 
-#: classes/Settings/Credentials.php:32
+#: classes/Settings/General.php
+msgid "ENABLED"
+msgstr "INGESCHAKELD"
+
+#: classes/Settings/General.php
+msgid "Enable or disable sending tracking emails."
+msgstr "Schakel het versturen van tracking e-mails in of uit."
+
+#: classes/Settings/General.php
+msgid "Small Parcel"
+msgstr "Klein pakket"
+
+#: classes/Settings/General.php
+msgid "Normal Parcel"
+msgstr "Normaal pakket"
+
+#: classes/Settings/General.php
+msgid "Choose the package type being used."
+msgstr "Kies het te gebruiken pakkettype."
+
+#: classes/Settings/Credentials.php
+msgid "DPD Connect Credentials"
+msgstr "DPD Connect inloggegevens"
+
+#: classes/Settings/Credentials.php
 msgid "Connect Username"
 msgstr "Connect gebruikersnaam"
 
-#: classes/Settings/Credentials.php:47
+#: classes/Settings/Credentials.php
 msgid "Connect Password"
 msgstr "Connect wachtwoord"
 
-#: classes/Handlers/OrderColumn.php:20
+#: classes/Settings/Credentials.php
+msgid "Check Credentials"
+msgstr "Inloggegevens controleren"
+
+#: classes/Settings/Credentials.php
+msgid "Unauthorized"
+msgstr "Niet geautoriseerd"
+
+#: classes/Settings/Credentials.php
+msgid "Credentials are valid. Authentication successful."
+msgstr "Inloggegevens zijn geldig. Authenticatie geslaagd."
+
+#: classes/Settings/Credentials.php
+msgid "Authentication failed: No JWT Token received."
+msgstr "Authenticatie mislukt: geen JWT-token ontvangen."
+
+#: classes/Settings/Credentials.php
+msgid "Authentication failed: "
+msgstr "Authenticatie mislukt: "
+
+#: classes/Settings/Credentials.php
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: classes/Settings/Credentials.php
+msgid "Products endpoint reachable. %d product(s) available: %s"
+msgstr "Producten-endpoint bereikbaar. %d product(en) beschikbaar: %s"
+
+#: classes/Settings/Credentials.php
+msgid "Products endpoint reachable but no products returned."
+msgstr "Producten-endpoint bereikbaar maar geen producten ontvangen."
+
+#: classes/Settings/Credentials.php
+msgid "Failed to reach products endpoint: "
+msgstr "Producten-endpoint niet bereikbaar: "
+
+#: classes/Settings/Credentials.php
+msgid "Skipped: Credentials must be valid before checking products."
+msgstr "Overgeslagen: inloggegevens moeten geldig zijn voordat producten gecontroleerd kunnen worden."
+
+#: classes/Settings/Credentials.php
+msgid "Credentials:"
+msgstr "Inloggegevens:"
+
+#: classes/Settings/Credentials.php
+msgid "Products:"
+msgstr "Producten:"
+
+#: classes/Settings/Credentials.php
+msgid "An unexpected error occurred."
+msgstr "Er is een onverwachte fout opgetreden."
+
+#: classes/Settings/Credentials.php
+msgid "Connection error. Please try again."
+msgstr "Verbindingsfout. Probeer het opnieuw."
+
+#: classes/Handlers/OrderColumn.php
 msgid "DPD Shipping label"
 msgstr "DPD verzendlabel"
 
-#: classes/Handlers/OrderColumn.php:21
+#: classes/Handlers/OrderColumn.php
 msgid "DPD Return label"
-msgstr "DPD return label"
+msgstr "DPD retourlabel"
 
-#: classes/Handlers/OrderColumn.php:22
-msgid "DPD Saturday label"
-msgstr "DPD zaterdag label"
+#: classes/Handlers/OrderColumn.php
+msgid "DPD Tracking numbers"
+msgstr "DPD trackingnummers"
 
-#: classes/Handlers/OrderColumn.php:45 classes/Handlers/OrderColumn.php:71
-#: classes/Handlers/OrderColumn.php:97
+#: classes/Handlers/OrderColumn.php
+msgid "Tracking numbers"
+msgstr "Trackingnummers"
+
+#: classes/Handlers/OrderColumn.php
 msgid "View job"
 msgstr "Bekijk job"
 
-#: classes/Handlers/OrderColumn.php:60 classes/Handlers/OrderColumn.php:86
-#: classes/Handlers/OrderColumn.php:112
+#: classes/Handlers/OrderColumn.php
 msgid "Download PDF Label"
 msgstr "Download PDF label"
 
-#: classes/Handlers/OrderColumn.php:60 classes/Handlers/OrderColumn.php:86
-#: classes/Handlers/OrderColumn.php:112
+#: classes/Handlers/OrderColumn.php
 msgid "PDF"
 msgstr "PDF"
 
-#: classes/Handlers/Pickup.php:39
-msgid "Select parcelshop"
-msgstr "Selecteer parcelshop"
+#: classes/Handlers/Pickup.php
+msgid "Choose your DPD pickup point"
+msgstr "Kies je DPD-afhaallocatie"
 
-#: classes/Handlers/Pickup.php:40
-msgid "Change parcelshop"
-msgstr "Wijzig parcelshop"
+#: classes/Handlers/Pickup.php
+msgid "Select DPD Parcel Shop"
+msgstr "Selecteer DPD Parcelshop"
 
-#: classes/Handlers/Pickup.php:41
-msgid "Close"
-msgstr "Sluiten"
+#: classes/Handlers/Pickup.php
+msgid "Change Parcel Shop"
+msgstr "Wijzig Parcelshop"
 
-#: classes/Handlers/Pickup.php:42
-msgid "Closed"
-msgstr "Gesloten"
+#: classes/Handlers/Pickup.php
+msgid "Please select a parcelshop before placing your order."
+msgstr "Selecteer een parcelshop voordat je je bestelling plaatst."
 
-#: classes/Handlers/Pickup.php:59
-msgid "Parcel Shop"
-msgstr "Parcelshop"
+#: classes/Handlers/Pickup.php
+msgid "Failed to save parcelshop selection. Please try again."
+msgstr "Parcelshop-selectie kon niet worden opgeslagen. Probeer het opnieuw."
 
-#: classes/Handlers/Pickup.php:62
-msgid "Choose your DPD Parcel Shop"
-msgstr "Selecteer je parcelshop"
-
-#: classes/Handlers/DownloadLabelBox.php:17
+#: classes/Handlers/DownloadLabelBox.php
 msgid "DPD Connect Download Labels"
-msgstr "DPD Connect download labels"
+msgstr "DPD Connect labels downloaden"
 
-#: classes/Handlers/DownloadLabelBox.php:40
+#: classes/Handlers/DownloadLabelBox.php
 msgid "Shipping label"
 msgstr "Verzendlabel"
 
-#: classes/Handlers/DownloadLabelBox.php:47
+#: classes/Handlers/DownloadLabelBox.php
 msgid "Return label"
-msgstr "Return label"
+msgstr "Retourlabel"
 
-#: classes/Handlers/DownloadLabelBox.php:54
-msgid "Saturday label"
-msgstr "Zaterdag label"
-
-#: classes/Handlers/ShippingAttributes.php:19
+#: classes/Handlers/ShippingAttributes.php
 msgid "Harmonized System Code"
 msgstr "Harmonized System Code"
 
-#: classes/Handlers/ShippingAttributes.php:20
+#: classes/Handlers/ShippingAttributes.php
 msgid "e.g.: 9030"
-msgstr "b.v..: 9030"
+msgstr "bijv.: 9030"
 
-#: classes/Handlers/ShippingAttributes.php:22
+#: classes/Handlers/ShippingAttributes.php
 msgid "Harmonized System Codes, to be used in customs data"
 msgstr "Harmonized System Codes, om te gebruiken in douanegegevens"
 
-#: classes/Handlers/ShippingAttributes.php:27
+#: classes/Handlers/ShippingAttributes.php
 msgid "Customs Value"
-msgstr "Douane waarde"
+msgstr "Douanewaarde"
 
-#: classes/Handlers/ShippingAttributes.php:28
+#: classes/Handlers/ShippingAttributes.php
 msgid "e.g.: 29.50"
-msgstr "b.v..: 29.50"
+msgstr "bijv.: 29.50"
 
-#: classes/Handlers/ShippingAttributes.php:30
+#: classes/Handlers/ShippingAttributes.php
 msgid "Value used by customs to determine the import duty"
 msgstr "Door de douane gebruikte waarde om de importheffing te bepalen"
 
-#: classes/Handlers/ShippingAttributes.php:35
+#: classes/Handlers/ShippingAttributes.php
 msgid "Country of Origin"
 msgstr "Land van herkomst"
 
-#: classes/Handlers/ShippingAttributes.php:36
+#: classes/Handlers/ShippingAttributes.php
 msgid "e.g.: NL"
-msgstr "b.v..: NL"
+msgstr "bijv.: NL"
 
-#: classes/Handlers/ShippingAttributes.php:38
+#: classes/Handlers/ShippingAttributes.php
 msgid "ISO 3166-1 alpha-2 code of the Country of origin"
 msgstr "ISO 3166-1 alpha-2 code van het land van herkomst"
 
-#: classes/Handlers/GenerateLabelBox.php:18
-msgid "DPD Connect Generate Labels"
-msgstr "DPD Connect genereer labels"
+#: classes/Handlers/ShippingAttributes.php
+msgid "Age check"
+msgstr "Leeftijdscontrole"
 
-#: classes/Handlers/GenerateLabelBox.php:51
+#: classes/Handlers/ShippingAttributes.php
+msgid "Age check for 18+ products"
+msgstr "Leeftijdscontrole voor 18+ producten"
+
+#: classes/Handlers/ShippingAttributes.php
+msgid "Shipping product"
+msgstr "Verzendproduct"
+
+#: classes/Handlers/ShippingAttributes.php
+msgid "Default"
+msgstr "Standaard"
+
+#: classes/Handlers/ShippingAttributes.php
+msgid "Fresh"
+msgstr "Fresh"
+
+#: classes/Handlers/ShippingAttributes.php
+msgid "Freeze"
+msgstr "Freeze"
+
+#: classes/Handlers/ShippingAttributes.php
+msgid "Carrier description"
+msgstr "Vervoerdersbeschrijving"
+
+#: classes/Handlers/GenerateLabelBox.php
+msgid "DPD Connect Generate Labels"
+msgstr "DPD Connect labels genereren"
+
+#: classes/Handlers/GenerateLabelBox.php
 msgid ""
 "Request shipping labels from DPD Connect. Shipments can be seperated in "
 "multiple parcels by specifying the amount of needed labels (Only available "
 "for supported EU destinations)."
 msgstr ""
-"Vraag verzendlabels aan bij DPD Connect. Zendingen kunnen opgedeeld worden  "
-"in meerdere pakketten door het aantal benodigde labels op te geven (Dit is "
+"Vraag verzendlabels aan bij DPD Connect. Zendingen kunnen opgedeeld worden "
+"in meerdere pakketten door het aantal benodigde labels op te geven (dit is "
 "alleen beschikbaar bij ondersteunde landen binnen de EU)."
 
-#: classes/Handlers/GenerateLabelBox.php:56
-msgid "Shipping"
-msgstr "Verzend"
+#: classes/Handlers/SelectDefaultPackageType.php
+msgid "Choose Package Type"
+msgstr "Kies pakkettype"
 
-#: classes/Handlers/GenerateLabelBox.php:60
-msgid "Return"
-msgstr "Retour"
+#: classes/Handlers/LabelRequest.php
+msgid "Order %s: %s"
+msgstr "Order %s: %s"
 
-#: classes/Handlers/GenerateLabelBox.php:65
-msgid "Saturday"
-msgstr "Zaterdag"
+#: classes/Handlers/LabelRequest.php
+msgid "Please select a parcelshop. No parcelshop was selected during checkout for this order."
+msgstr "Selecteer een parcelshop. Er is geen parcelshop geselecteerd tijdens het afrekenen van deze bestelling."
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "DPD Pickup"
-msgstr "DPD Pickup"
+#: classes/Handlers/LabelRequest.php
+msgid "Je bestelling is gereed voor verzending"
+msgstr "Je bestelling is gereed voor verzending"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "B2C Pickup DPD shipment"
-msgstr "B2C Classic DPD verzending"
+#: classes/Handlers/trackingemail/index.php
+msgid "Je pakket van bestelling #%s wordt verstuurd"
+msgstr "Je pakket van bestelling #%s wordt verstuurd"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "Enable"
-msgstr "Inschakelen"
+#: classes/Handlers/trackingemail/index.php
+msgid "Hallo %s"
+msgstr "Hallo %s"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "Enable DPD Pickup."
-msgstr "DPD Classic inschakelen."
+#: classes/Handlers/trackingemail/index.php
+msgid "We hebben je pakket zojuist verzonden. Je pakket wordt bij DPD aangeboden."
+msgstr "We hebben je pakket zojuist verzonden. Je pakket wordt bij DPD aangeboden."
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "Title"
-msgstr "Titel"
+#: classes/Handlers/trackingemail/index.php
+msgid "Bezorgadres"
+msgstr "Bezorgadres"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "This is title of the shippingmethod shown in the shippingzones"
-msgstr ""
-"Dit is de titel van the verzendmethod die getoond wordt in de verzendzones"
+#: classes/Handlers/trackingemail/index.php
+msgid "Afzender"
+msgstr "Afzender"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "DPD Express 10"
-msgstr "DPD Express 10"
+#: classes/Handlers/trackingemail/index.php
+msgid "Barcode"
+msgstr "Barcode"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "B2B Express 10 DPD shipment"
-msgstr "B2B Express 10 DPD verzending"
+#: classes/Handlers/trackingemail/index.php
+msgid "Volg je pakket"
+msgstr "Volg je pakket"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "Enable DPD E10."
-msgstr "DPD E10 inschakelen."
+#: classes/Handlers/trackingemail/index.php
+msgid "Klik op onderstaande link om je pakket te volgen"
+msgstr "Klik op onderstaande link om je pakket te volgen"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "DPD Express 12"
-msgstr "DPD Express 12"
+#: classes/Handlers/trackingemail/index.php
+msgid "Volg pakket"
+msgstr "Volg pakket"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "B2B Express 12 DPD shipment"
-msgstr "B2B Express 12 DPD verzending"
+#: classes/Handlers/trackingemail/index.php
+msgid "Met vriendelijke groet,"
+msgstr "Met vriendelijke groet,"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "Enable DPD E12."
-msgstr "DPD E12 inschakelen."
+#: classes/shippingmethods/DPDShippingMethod.php
+msgid "Please select a label type"
+msgstr "Selecteer een labeltype"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "DPD Predict"
-msgstr "DPD Predict"
+#: classes/shippingmethods/DPDShippingMethod.php
+msgid "DPD Shipping Method"
+msgstr "DPD verzendmethode"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "B2C Predict DPD shipment"
-msgstr "B2B Predict DPD verzending"
-
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "Enable DPD Predict."
-msgstr "DPD Predict inschakelen."
-
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "DPD Saturday"
-msgstr "DPD zaterdag"
-
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "B2C Saturday DPD shipment"
-msgstr "B2C Zaterdag DPD verzending"
-
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "Enable DPD Saturday."
-msgstr "DPD Zaterdag inschakelen."
-
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/DPDShippingMethod.php
 msgid "Show from day"
 msgstr "Toon vanaf dag"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/DPDShippingMethod.php
 msgid ""
 "From which day and time in the week Saturday deliveries will be available in "
 "checkout"
 msgstr ""
-"Vanaf welke dag en tijd in de week zaterdag leveringen besdchikbaar is in de "
+"Vanaf welke dag en tijd in de week zaterdagleveringen beschikbaar zijn in de "
 "checkout"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/DPDShippingMethod.php
 msgid "Show from time"
 msgstr "Toon vanaf tijdstip"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/DPDShippingMethod.php
 msgid "From which time Saturday deliveries will be available in checkout"
-msgstr "Vanaf welke tijd zaterdagleveringen beschkbaar zijn in de checkout"
+msgstr "Vanaf welke tijd zaterdagleveringen beschikbaar zijn in de checkout"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/DPDShippingMethod.php
 msgid "Show untill day"
 msgstr "Toon tot dag"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/DPDShippingMethod.php
 msgid ""
 "Untill which day in the week Saturday deliveries will be available in "
 "checkout"
 msgstr ""
-"Tot en met welke dag in de week zaterdag leveringen beschikbaar is in de "
+"Tot en met welke dag in de week zaterdagleveringen beschikbaar zijn in de "
 "checkout"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/DPDShippingMethod.php
 msgid "Show untill time"
 msgstr "Toon tot tijd"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/DPDShippingMethod.php
 msgid "Untill which time Saturday deliveries will be available in checkout"
-msgstr "Tot welke tijd zaterdag leveringen beschikbaar is in de checkout"
+msgstr "Tot welke tijd zaterdagleveringen beschikbaar zijn in de checkout"
 
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "DPD Classic"
-msgstr "DPD Classic"
-
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "B2B Classic DPD shipment"
-msgstr "B2B Classic DPD verzending"
-
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "Enable DPD Classic."
-msgstr "DPD Classic inschakelen."
-
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "DPD Express 18"
-msgstr "DPD Express 18"
-
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "B2B Express 18 DPD shipment"
-msgstr "B2B Express 18 DPD verzending"
-
-#: classes/shippingmethods/DPD_Shipping_Method
-msgid "Enable DPD E18."
-msgstr "DPD E18 inschakelen."
-
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "Enter a cost (excl. tax) or sum, e.g. <code>10.00 * [qty]</code>."
 msgstr ""
-"Voer een bedrag (excl. btw) of som in, b.v. <code>10.00 * [qty]</code>."
+"Voer een bedrag (excl. btw) of som in, bijv. <code>10.00 * [qty]</code>."
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid ""
 "Use <code>[qty]</code> for the number of items, <br/><code>[cost]</code> for "
 "the total cost of items, and <code>[fee percent=\"10\" min_fee=\"20\" "
@@ -698,37 +811,41 @@ msgstr ""
 "voor de totaalkosten van items en <code>[fee percent=\"10\" min_fee=\"20\" "
 "max_fee=\"\"]</code> voor bedragen gebaseerd op percentages."
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "Method title"
-msgstr "Method titel"
+msgstr "Naam verzendmethode"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "This controls the title which the user sees during checkout."
-msgstr "Bepaal de titel die bezoekers zien in de checkout."
+msgstr "Bepaalt de titel die bezoekers zien in de checkout."
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
+msgid "DPD"
+msgstr "DPD"
+
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "Tax status"
-msgstr "Btw status"
+msgstr "Btw-status"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "Taxable"
 msgstr "Belastbaar"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgctxt "Tax status"
 msgid "None"
 msgstr "Geen"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "Cost"
 msgstr "Bedrag"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "Shipping class costs"
 msgstr "Verzendkosten"
 
 #. translators: %s: URL for link.
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid ""
 "These costs can optionally be added based on the <a href=\"%s\">product "
 "shipping class</a>."
@@ -737,145 +854,134 @@ msgstr ""
 "\">product verzendmethode</a>."
 
 #. translators: %s: shipping class name
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "\"%s\" shipping class cost"
 msgstr "\"%s\" verzendkosten"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "N/A"
 msgstr "N.v.t."
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "No shipping class cost"
 msgstr "Geen verzendkosten"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "Calculation type"
 msgstr "Rekentype"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "Per class: Charge shipping for each shipping class individually"
-msgstr "Per methode: Reken individuele verzendkosten voor elke methode"
+msgstr "Per methode: reken individuele verzendkosten voor elke methode"
 
-#: classes/shippingmethods/DPD_Shipping_Method
+#: classes/shippingmethods/includes/settings-dpd-shipping-method.php
 msgid "Per order: Charge shipping for the most expensive shipping class"
-msgstr "Per order: Reken verzendkosten voor de duurste verzendmethode"
+msgstr "Per order: reken verzendkosten voor de duurste verzendmethode"
 
-#: classes/Pages/Jobs.php:35
+#: classes/Handlers/ShippingMethods.php
+msgid "DPD Label Type"
+msgstr "DPD-labeltype"
+
+#: classes/Handlers/ShippingMethods.php
+msgid "DPD Checkout description"
+msgstr "DPD checkout-beschrijving"
+
+#: classes/Pages/Jobs.php
 msgid "Job overview"
 msgstr "Job overzicht"
 
-#: classes/Pages/Jobs.php:37
+#: classes/Pages/Jobs.php
 msgid "Job overview batch "
 msgstr "Job overzicht batch "
 
-#: classes/Pages/Batches.php:27
+#: classes/Pages/Batches.php
 msgid "Batch overview"
 msgstr "Batch overzicht"
 
-#: classes/BatchList.php:13
+#: classes/BatchList.php
 msgid "Batch"
 msgstr "Batch"
 
-#: classes/BatchList.php:90
+#: classes/BatchList.php
 msgid "ID"
 msgstr "ID"
 
-#: classes/BatchList.php:92
+#: classes/BatchList.php
 msgid "Job count"
 msgstr "Aantal jobs"
 
-#: classes/BatchList.php:93
+#: classes/BatchList.php
 msgid "Success count"
 msgstr "Aantal geslaagd"
 
-#: classes/BatchList.php:94
+#: classes/BatchList.php
 msgid "Failure count"
 msgstr "Aantal gefaald"
 
-#~ msgid "There are multiple errors"
-#~ msgstr "Er zijn meerdere fouten"
+#: classes/Service/SettingsDataValidator.php
+msgid "Authentication failed: %s"
+msgstr "Authenticatie mislukt: %s"
 
-#~ msgid "Google Maps API client key"
-#~ msgstr "Google Maps API client key"
+#: classes/Service/SettingsDataValidator.php
+msgid "No JWT Token received"
+msgstr "Geen JWT-token ontvangen"
 
-#~ msgid "Google Maps API server key"
-#~ msgstr "Google Maps API server key"
+#: classes/Service/SettingsDataValidator.php
+msgid "Field is empty"
+msgstr "Veld is leeg"
 
-#~ msgid "Please enter your address before selecting a Parcel."
-#~ msgstr "Vul onderstaande gegevens in."
+#: classes/Service/SettingsDataValidator.php
+msgid "Value is too long - max %d characters"
+msgstr "Waarde is te lang - maximaal %d tekens"
 
-#~ msgid " DPD Account type"
-#~ msgstr "DPD account type"
+#: classes/Service/SettingsDataValidator.php
+msgid "Value is too short - min %d characters"
+msgstr "Waarde is te kort - minimaal %d tekens"
 
-#~ msgid "Plugin Enabled"
-#~ msgstr "Plugin ingeschakeld"
+#: classes/Service/SettingsDataValidator.php
+msgid "Invalid format"
+msgstr "Ongeldig formaat"
 
-#~ msgid "Reference #1"
-#~ msgstr "Referentie #1"
+#: classes/Service/SettingsDataValidator.php
+msgid "%1$s - %2$s"
+msgstr "%1$s - %2$s"
 
-#~ msgid "Reference #2"
-#~ msgstr "Referentie #2"
+#: classes/Connect/Shipment.php
+msgid "Response could not be parsed. Please contact customer support."
+msgstr "Response kon niet worden verwerkt. Neem contact op met de klantenservice."
 
-#~ msgid "Base costs"
-#~ msgstr "Basiskosten"
+#: classes/Pages/FreshFreeze.php
+msgid "An error has occured while gathering Fresh/Freeze data"
+msgstr "Er is een fout opgetreden bij het verzamelen van Fresh/Freeze gegevens"
 
-#~ msgid "Free shipping from"
-#~ msgstr "Gratis verzending vanaf"
+#: classes/Pages/FreshFreeze.php
+msgid "Enter Fresh/Freeze Expiration Dates"
+msgstr "Voer Fresh/Freeze-vervaldata in"
 
-#~ msgid "Connection succesfull to live DIS-enviroment"
-#~ msgstr "Verbinding met Live DIS omgeving succesvol tot stand gebracht"
+#: classes/Pages/FreshFreeze.php
+msgid "Expiration date"
+msgstr "Vervaldatum"
 
-#~ msgid ""
-#~ "Connection failed to live DIS-enviroment, please check your credentials"
-#~ msgstr ""
-#~ "Verbinding met live DIS omgeving niet gelukt. Controleer je inloggegevens"
+#: classes/Handlers/LabelRequest.php
+msgid "Shipping method has no DPD type"
+msgstr "Verzendmethode heeft geen DPD-type"
 
-#~ msgid "Connection succesfull to the staging DIS-enviroment"
-#~ msgstr "Verbinding met de staging DIS omgeving geslaagd"
+#: classes/Handlers/LabelRequest.php
+msgid "Order has no shipping method"
+msgstr "Order heeft geen verzendmethode"
 
-#~ msgid ""
-#~ "Connection failed to the staging DIS-enviroment, please check your "
-#~ "credentials"
-#~ msgstr ""
-#~ "Verbinding met de staging DIS omgeving niet geslaagd. Controleer je "
-#~ "inloggegevens"
+#: classes/Handlers/LabelRequest.php
+msgid "DPD Product could not be found"
+msgstr "DPD-product kon niet worden gevonden"
 
-#~ msgid "Small package"
-#~ msgstr "Klein pakket"
+#: classes/Handlers/LabelRequest.php
+msgid "No ParcelShop shipping method was used for this order"
+msgstr "Er is geen ParcelShop-verzendmethode gebruikt voor deze bestelling"
 
-#~ msgid "Normaal package"
-#~ msgstr "Normaal pakket"
+#: classes/Handlers/LabelRequest.php
+msgid "Labels succesfully requested"
+msgstr "Labels succesvol aangevraagd"
 
-#~ msgid ""
-#~ "Choose yes to set the package to Normal Package due to the size of the "
-#~ "package"
-#~ msgstr ""
-#~ "Selecteer 'ja' om het pakket op normaal formaat te zetten. Dit is nodig "
-#~ "vanwege het formaat van het pakket"
-
-#~ msgid "Empty"
-#~ msgstr "Leeg"
-
-#~ msgid "Ordernumber"
-#~ msgstr "Ordernummer"
-
-#~ msgid "Phonenumber"
-#~ msgstr "Telefoonnummer bedrijf"
-
-#~ msgid "Choose which information is shown on the label at reference #1"
-#~ msgstr ""
-#~ "Selecteer welke informatie op het label wordt getoond bij referentie #1"
-
-#~ msgid "Choose which information is shown on the label at reference #2"
-#~ msgstr ""
-#~ "Selecteer welke informatie op het label wordt getoond bij referentie #2"
-
-#~ msgid "Demo"
-#~ msgstr "Demo"
-
-#~ msgid "Live"
-#~ msgstr "Live"
-
-#~ msgid "Choose the correct environment of your store."
-#~ msgstr "Selecteer de juiste omgeving voor je webwinkel."
+#: classes/Handlers/Callback.php
+msgid "Could not download label after job completion."
+msgstr "Label kon niet worden gedownload na voltooiing van de job."
