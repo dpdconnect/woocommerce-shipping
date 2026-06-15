@@ -1,0 +1,62 @@
+name: Build and Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [master]
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+
+      - name: Extract version from PR title
+        id: version
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          VERSION=$(echo "$PR_TITLE" | grep -oP '\d+\.\d+\.\d+' | head -1)
+          if [ -z "$VERSION" ]; then
+            echo "No version found in PR title: $PR_TITLE"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Detected version: $VERSION"
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer:v2
+
+      - name: Install production dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      - name: Build dpdconnect.zip
+        run: |
+          zip -r dpdconnect.zip . \
+            -x ".git/*" \
+            -x ".gitignore" \
+            -x ".github/*" \
+            -x "composer.lock" \
+            -x "tests/*" \
+            -x "phpunit.xml*" \
+            -x ".phpcs*" \
+            -x ".editorconfig"
+          echo "Built dpdconnect.zip ($(du -h dpdconnect.zip | cut -f1))"
+
+      - name: Create Release with asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: ${{ steps.version.outputs.version }}
+          body: |
+            Release ${{ steps.version.outputs.version }}
+
+            Download `dpdconnect.zip` below to install the plugin.
+          files: dpdconnect.zip
