@@ -122,7 +122,7 @@ class OrderColumn
         }
 
         $labelRepo = new Label();
-        $returnLabel = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN, true);
+        $returnLabel = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN);
 
         if ($returnLabel) {
             $returnId = $returnLabel['id'];
