@@ -40,14 +40,19 @@ class Pickup
      * Generate public JWT token server-side.
      * Credentials are handled in isolated PHP context, only the token is returned.
      */
-    private static function getPublicToken(): string
+    private static function getPublicToken(): ?string
     {
-        $token = new Token(new HttpClient(Client::ENDPOINT));
-        $token->setCacheWrapper(new CacheWrapper(new Cache()));
-        return $token->getPublicJWTToken(
-            Option::connectUsername(),
-            Option::connectPassword()
-        );
+        try {
+            $token = new Token(new HttpClient(Client::ENDPOINT));
+            $token->setCacheWrapper(new CacheWrapper(new Cache()));
+            return $token->getPublicJWTToken(
+                Option::connectUsername(),
+                Option::connectPassword()
+            );
+        } catch (\Exception $e) {
+            error_log('DPD Connect: Failed to get public token - ' . $e->getMessage());
+            return null;
+        }
     }
 
     /**
@@ -189,6 +194,9 @@ class Pickup
 
         // Generate token server-side before any output
         $publicToken = self::getPublicToken();
+        if ($publicToken === null) {
+            return;
+        }
         $useGoogleMapsKey = Option::useDpdGoogleMapsKey();
         $googleMapsApiKey = Option::googleMapsApiKey();
         $ajaxUrl = admin_url('admin-ajax.php');
