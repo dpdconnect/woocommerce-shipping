@@ -587,6 +587,13 @@ class Pickup
                     else if (jQuery('#billing-address_1').length > 0) {
                         address = jQuery('#billing-address_1').val() + ' ' + jQuery('#billing-postcode').val() + ' ' + jQuery('#billing-country').val();
                     }
+                    // Classic checkout uses underscore IDs; prefer the shipping address when "ship to a different address" is active
+                    else if (jQuery('#ship-to-different-address-checkbox').is(':checked') && jQuery('#shipping_address_1').val()) {
+                        address = jQuery('#shipping_address_1').val() + ' ' + jQuery('#shipping_postcode').val() + ' ' + jQuery('#shipping_country').val();
+                    }
+                    else if (jQuery('#billing_address_1').length > 0) {
+                        address = jQuery('#billing_address_1').val() + ' ' + jQuery('#billing_postcode').val() + ' ' + jQuery('#billing_country').val();
+                    }
                     else {
                         // Fallback for other field structures
                         const addressField = jQuery('input[id*="address"], input[name*="address"]').first().val() || '';
