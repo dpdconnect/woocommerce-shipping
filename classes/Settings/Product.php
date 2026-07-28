@@ -70,6 +70,20 @@ class Product
                 'dpdconnect_custom_data' => 'custom',
             ]
         );
+
+        add_settings_field(
+            'dpdconnect_max_parcel_weight',
+            __('Max Weight Per Parcel (kg)', 'dpdconnect'),
+            $callback,
+            self::PAGE,
+            self::SECTION,
+            [
+                'label_for' => 'dpdconnect_max_parcel_weight',
+                'class' => 'dpdconnect_row',
+                'dpdconnect_custom_data' => 'custom',
+                'description' => __('Automatically split orders into multiple parcels when total weight exceeds this limit. Leave empty to disable.', 'dpdconnect'),
+            ]
+        );
     }
 
     public static function renderDefaultInput($args)
