@@ -135,6 +135,15 @@ class Option
     }
 
     /**
+     * @return float
+     */
+    public static function maxParcelWeight(): float
+    {
+        $weight = self::parse(get_option('dpdconnect_products'), 'dpdconnect_max_parcel_weight');
+        return $weight ? (float) $weight : 0.0;
+    }
+
+    /**
      * @return mixed|null
      */
     public static function defaultPackageType()

@@ -104,6 +104,12 @@ class OrderTransformer
             $totalWeight = $this->convertWeightToDpdWeight($totalWeight);
         }
 
+        $maxParcelWeight = Option::maxParcelWeight();
+        if ($maxParcelWeight > 0 && $parcelCount === 1) {
+            $maxWeightInDpd = $maxParcelWeight * 100;
+            $parcelCount = max(1, (int) ceil($totalWeight / $maxWeightInDpd));
+        }
+
         for ($x = 1; $x <= $parcelCount; $x++) {
             $shipment['parcels'][] = [
                 'customerReferences' => [(string)$orderId],
