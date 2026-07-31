@@ -46,8 +46,8 @@ class DownloadLabelBox
         if ($shippingLabels) {
             foreach ($shippingLabels as $shippingLabel) {
                 $shippingId = $shippingLabel['id'];
-                $shippingUrl = add_query_arg(['plugin' => 'dpdconnect', 'file' => 'shipping_label', 'id' => $shippingId], admin_url());
-                echo '<tr><td><a href="' . $shippingUrl . '">' . __('Shipping label', 'dpdconnect') . '</a></td>';
+                $shippingUrl = \DpdConnect\classes\Router::labelUrl($shippingId);
+                echo '<tr><td><a href="' . esc_url($shippingUrl) . '">' . __('Shipping label', 'dpdconnect') . '</a></td>';
                 echo '<td>' . $shippingLabel['created_at'] . '</td></tr>';
             }
         }
@@ -55,8 +55,8 @@ class DownloadLabelBox
         if ($returnLabels) {
             foreach ($returnLabels as $returnLabel) {
                 $returnId = $returnLabel['id'];
-                $returnUrl = add_query_arg(['plugin' => 'dpdconnect', 'file' => 'shipping_label', 'id' => $returnId], admin_url());
-                echo '<tr><td><a href="' . $returnUrl . '">' . __('Return label', 'dpdconnect') . '</a></td>';
+                $returnUrl = \DpdConnect\classes\Router::labelUrl($returnId);
+                echo '<tr><td><a href="' . esc_url($returnUrl) . '">' . __('Return label', 'dpdconnect') . '</a></td>';
                 echo '<td>' . $returnLabel['created_at'] . '</td></tr>';
             }
         }

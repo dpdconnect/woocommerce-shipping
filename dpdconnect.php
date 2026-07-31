@@ -6,7 +6,7 @@ require_once('vendor/autoload.php');
  * Plugin Name: DPD Connect for WooCommerce
  * Plugin URI: https://integrations.dpd.nl/
  * Description: Enables the posibility to integrate DPD Parcel Shop Finder service into your e-commerce store with a breeze.
- * Version: 2.0.8
+ * Version: 2.0.9
  * Author: DPD / X-Interactive.nl
  * Author URI: https://github.com/dpdconnect
  * License: GPL
@@ -39,7 +39,7 @@ defined('ABSPATH') or exit;
 define('DPDCONNECT_PLUGIN_ROOT_PATH', plugin_dir_path(__FILE__));
 
 // SET plugin version (avoid get_plugin_data() which triggers early textdomain loading in WP 6.7+)
-define('DPDCONNECT_PLUGIN_VERSION', '2.0.8');
+define('DPDCONNECT_PLUGIN_VERSION', '2.0.9');
 
 // Add tables for storing labels
 Activate::handle();
@@ -114,9 +114,11 @@ if (is_plugin_active('woocommerce/woocommerce.php')) {
     OrderColumn::handle();
 
     /**
-     * Initiate router
+     * Initiate router.
+     * Deferred to `init` so the capability/nonce checks in Router can use the
+     * pluggable auth functions, which are not yet loaded at plugin-load time.
      */
-    Router::init($_GET);
+    add_action('init', [Router::class, 'init'], 1);
 
     /**
      * Add bulk actions to woocommerce order table

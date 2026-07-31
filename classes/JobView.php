@@ -104,16 +104,8 @@ class JobView
     private function download_button($item)
     {
         if ($item['label_id']) {
-            $shippingId = $item['label_id'];
-            $labelUrl = add_query_arg(
-                [
-                    'plugin' => 'dpdconnect',
-                    'file' => 'shipping_label',
-                    'id' => $item['label_id'],
-                ],
-                admin_url()
-            );
-            return '<a href="' . $labelUrl . '" title="' . __('Download PDF Label', 'dpdconnect') . '"><span class="dpdTag">' . __('PDF', 'dpdconnect') . '</span></a>';
+            $labelUrl = \DpdConnect\classes\Router::labelUrl($item['label_id']);
+            return '<a href="' . esc_url($labelUrl) . '" title="' . __('Download PDF Label', 'dpdconnect') . '"><span class="dpdTag">' . __('PDF', 'dpdconnect') . '</span></a>';
         }
     }
 

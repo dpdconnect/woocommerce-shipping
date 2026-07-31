@@ -439,8 +439,11 @@ class LabelRequest
 
     public static function redirect()
     {
-        $redirect = isset($_GET['redirect_to']) ? base64_decode($_GET['redirect_to']) : admin_url() . 'edit.php?post_type=shop_order';
-        wp_redirect($redirect);
+        $default = admin_url() . 'edit.php?post_type=shop_order';
+        $redirect = isset($_GET['redirect_to']) ? base64_decode($_GET['redirect_to']) : $default;
+        // wp_safe_redirect() confines the target to the site's own host, preventing
+        // the attacker-controlled base64 value from being used as an open redirect.
+        wp_safe_redirect($redirect ?: $default);
         exit;
     }
 

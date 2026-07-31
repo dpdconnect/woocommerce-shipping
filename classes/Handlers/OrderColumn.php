@@ -89,16 +89,8 @@ class OrderColumn
         $shippingLabel = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPEREGULAR);
 
         if ($shippingLabel) {
-            $shippingId = $shippingLabel['id'];
-            $shippingUrl = add_query_arg(
-                [
-                    'plugin' => 'dpdconnect',
-                    'file' => 'shipping_label',
-                    'id' => $shippingId,
-                ],
-                admin_url()
-            );
-            echo '<a href="' . $shippingUrl . '" title="' . __('Download PDF Label', 'dpdconnect') . '"><span class="dpdTag">' . __('PDF', 'dpdconnect') . '</span></a>';
+            $shippingUrl = \DpdConnect\classes\Router::labelUrl($shippingLabel['id']);
+            echo '<a href="' . esc_url($shippingUrl) . '" title="' . __('Download PDF Label', 'dpdconnect') . '"><span class="dpdTag">' . __('PDF', 'dpdconnect') . '</span></a>';
         } else {
             echo '-';
         }
@@ -125,16 +117,8 @@ class OrderColumn
         $returnLabel = $labelRepo->getByOrderId($order->get_id(), ParcelType::TYPERETURN);
 
         if ($returnLabel) {
-            $returnId = $returnLabel['id'];
-            $returnUrl = add_query_arg(
-                [
-                    'plugin' => 'dpdconnect',
-                    'file' => 'shipping_label',
-                    'id' => $returnId,
-                ],
-                admin_url()
-            );
-            echo '<a href="' . $returnUrl . '" title="' . __('Download PDF Label', 'dpdconnect') . '"><span class="dpdTag">' . __('PDF', 'dpdconnect') . '</span></a>';
+            $returnUrl = \DpdConnect\classes\Router::labelUrl($returnLabel['id']);
+            echo '<a href="' . esc_url($returnUrl) . '" title="' . __('Download PDF Label', 'dpdconnect') . '"><span class="dpdTag">' . __('PDF', 'dpdconnect') . '</span></a>';
         } else {
             echo '-';
         }

@@ -23,12 +23,17 @@ class BatchList extends WP_List_Table
         $sql = "SELECT * FROM {$wpdb->prefix}dpdconnect_batches";
 
         if (!empty($_REQUEST['orderby'])) {
-            $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-            $sql .= ! empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+            // Whitelist the sortable columns; esc_sql() does NOT make an ORDER BY
+            // identifier safe, so an allowlist is required to prevent SQL injection.
+            $allowedColumns = ['id', 'created_at', 'status'];
+            $orderby = in_array($_REQUEST['orderby'], $allowedColumns, true) ? $_REQUEST['orderby'] : 'created_at';
+            $order = (!empty($_REQUEST['order']) && strtoupper($_REQUEST['order']) === 'DESC') ? 'DESC' : 'ASC';
+            $sql .= " ORDER BY $orderby $order";
         } else {
             $sql .= ' ORDER BY created_at DESC';
         }
 
+        $per_page = (int) $per_page;
         $sql .= " LIMIT $per_page";
         $sql .= ' OFFSET ' . ($page_number - 1) * $per_page;
         $result = $wpdb->get_results($sql, 'ARRAY_A');

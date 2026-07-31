@@ -20,8 +20,31 @@ class Callback
         add_action('admin_post_nopriv_dpdbatch', [self::class, 'listen']);
     }
 
+    /**
+     * Shared secret appended to the callback URL that DPD calls back on.
+     * Because the URL is registered with DPD per shipment (see createUrl), only
+     * DPD's own callbacks carry a valid token; forged requests are rejected.
+     */
+    public static function secret(): string
+    {
+        $secret = get_option('dpdconnect_callback_secret');
+
+        if (empty($secret)) {
+            $secret = wp_generate_password(40, false);
+            update_option('dpdconnect_callback_secret', $secret, false);
+        }
+
+        return $secret;
+    }
+
     public static function listen()
     {
+        $token = isset($_GET['token']) ? (string) $_GET['token'] : '';
+        if (!hash_equals(self::secret(), $token)) {
+            status_header(403);
+            exit;
+        }
+
         $incomingData = json_decode(file_get_contents('php://input'), true);
 
         $state = $incomingData['state'];
@@ -54,6 +77,7 @@ class Callback
 
         $action = 'dpdbatch';
         $url = $baseUrl . "admin-post.php?action=$action";
+        $url = add_query_arg('token', self::secret(), $url);
 
         return $url;
     }

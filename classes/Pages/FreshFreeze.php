@@ -45,6 +45,7 @@ class FreshFreeze
             }
         </style>";
         $content .= "<form action='' method='post'>
+            " . wp_nonce_field('dpdconnect_fresh_freeze', 'dpdconnect_fresh_freeze_nonce', true, false) . "
             <div class='wrap'>
             <h1>" . __('Enter Fresh/Freeze Expiration Dates', 'dpdconnect') . "</h1>
             <table class='form-table'>
@@ -127,6 +128,18 @@ class FreshFreeze
 
     public static function process()
     {
+        // Only shop managers may trigger label generation, and only with a valid
+        // nonce (this admin page otherwise acts purely on request parameters).
+        if (!current_user_can('manage_woocommerce')
+            || !isset($_POST['dpdconnect_fresh_freeze_nonce'])
+            || !wp_verify_nonce(sanitize_key($_POST['dpdconnect_fresh_freeze_nonce']), 'dpdconnect_fresh_freeze')) {
+            wp_die(
+                esc_html__('This action could not be verified. Please try again.', 'dpdconnect'),
+                '',
+                ['response' => 403]
+            );
+        }
+
         // Get all items where key begins with 'data_'
         $items = array_filter($_POST, function($key) {
             return substr($key, 0, strlen('date_')) === 'date_';
