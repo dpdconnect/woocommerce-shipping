@@ -5,6 +5,7 @@ namespace DpdConnect\classes;
 use WP_List_Table;
 use DpdConnect\classes\enums\JobStatus;
 use DpdConnect\classes\enums\ParcelType;
+use DpdConnect\classes\Router;
 
 class JobList extends WP_List_Table
 {
@@ -34,10 +35,15 @@ class JobList extends WP_List_Table
         }
 
         if (!empty($_REQUEST['orderby'])) {
-            $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-            $sql .= ! empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+            // Whitelist the sortable columns; esc_sql() does NOT make an ORDER BY
+            // identifier safe, so an allowlist is required to prevent SQL injection.
+            $allowedColumns = ['batch_id', 'created_at', 'status', 'order_id'];
+            $orderby = in_array($_REQUEST['orderby'], $allowedColumns, true) ? $_REQUEST['orderby'] : 'created_at';
+            $order = (!empty($_REQUEST['order']) && strtoupper($_REQUEST['order']) === 'DESC') ? 'DESC' : 'ASC';
+            $sql .= " ORDER BY $orderby $order";
         }
 
+        $per_page = (int) $per_page;
         $sql .= " LIMIT $per_page";
         $sql .= ' OFFSET ' . ($page_number - 1) * $per_page;
         $result = $wpdb->get_results($sql, 'ARRAY_A');
@@ -160,16 +166,8 @@ class JobList extends WP_List_Table
         $jobButton = '<a href="' . $jobUrl . '"><span class="dpdTag">' . __('View details', 'dpdconnect') . '</span></a>';
 
         if ($item['label_id']) {
-            $shippingId = $item['label_id'];
-            $labelUrl = add_query_arg(
-                [
-                    'plugin' => 'dpdconnect',
-                    'file' => 'shipping_label',
-                    'id' => $item['label_id'],
-                ],
-                admin_url()
-            );
-            $labelButton = '<a href="' . $labelUrl . '" title="' . __('Download PDF Label', 'dpdconnect') . '"><span class="dpdTag">' . __('PDF', 'dpdconnect') . '</span></a>';
+            $labelUrl = Router::labelUrl($item['label_id']);
+            $labelButton = '<a href="' . esc_url($labelUrl) . '" title="' . __('Download PDF Label', 'dpdconnect') . '"><span class="dpdTag">' . __('PDF', 'dpdconnect') . '</span></a>';
             return $labelButton . ' ' . $jobButton;
         }
         return $jobButton;

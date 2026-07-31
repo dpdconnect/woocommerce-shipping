@@ -33,6 +33,7 @@ class SelectDefaultPackageType
         echo '<p>' . __('Choose Package Type', 'dpdconnect') . '</p>';
         ?>
         <form action="" method="post">
+            <?php wp_nonce_field('dpdconnect_select_package_type', 'dpdconnect_select_package_type_nonce'); ?>
             <table class="order_actions submitbox">
                 <tr class="wide" id="actions">
                     <td>
@@ -62,6 +63,12 @@ class SelectDefaultPackageType
             return;
         }
         if(isset($_POST['generate_label']) && !empty($_POST['label_type'])) {
+            if (!current_user_can('manage_woocommerce')
+                || !isset($_POST['dpdconnect_select_package_type_nonce'])
+                || !wp_verify_nonce(sanitize_key($_POST['dpdconnect_select_package_type_nonce']), 'dpdconnect_select_package_type')) {
+                return;
+            }
+
             LabelRequest::single($postId, $_POST['label_type'], $_POST['parcel_count']);
         }
     }

@@ -35,6 +35,7 @@ class GenerateLabelBox
         echo '<p>' . __('Request shipping labels from DPD Connect. Shipments can be seperated in multiple parcels by specifying the amount of needed labels (Only available for supported EU destinations).', 'dpdconnect') . '</p>';
         ?>
         <form action="" method="post">
+        <?php wp_nonce_field('dpdconnect_generate_label', 'dpdconnect_generate_label_nonce'); ?>
         <table class="order_actions submitbox">
         <tr class="wide" id="actions">
             <td>
@@ -84,6 +85,14 @@ class GenerateLabelBox
             return;
         }
        if(isset($_POST['generate_label']) && !empty($_POST['label_type'])) {
+            // Only shop managers may generate labels, and only with a valid nonce
+            // (prevents CSRF against the order-save request).
+            if (!current_user_can('manage_woocommerce')
+                || !isset($_POST['dpdconnect_generate_label_nonce'])
+                || !wp_verify_nonce(sanitize_key($_POST['dpdconnect_generate_label_nonce']), 'dpdconnect_generate_label')) {
+                return;
+            }
+
             LabelRequest::single($orderId, $_POST['label_type'], $_POST['parcel_count'], $_POST['package_type']);
         }
     }
