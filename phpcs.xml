@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<ruleset name="DPD Connect for WooCommerce - compatibility">
+    <description>
+        PHP cross-version compatibility checks for the DPD Connect WooCommerce plugin.
+        WP-aware (PHPCompatibilityWP ignores functions/constants polyfilled by WordPress).
+        Update testVersion to match the plugin's "Requires PHP" range.
+    </description>
+
+    <!-- What to scan -->
+    <file>dpdconnect.php</file>
+    <file>classes</file>
+
+    <!-- What to skip -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/assets/*</exclude-pattern>
+    <exclude-pattern>*/languages/*</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+    <arg value="ps"/>
+    <arg name="colors"/>
+
+    <!-- Supported PHP range. The floor matches the "Requires PHP" header (8.1, the php-sdk
+         requirement); the upper bound scans ahead of it. CI lints both ends. -->
+    <config name="testVersion" value="8.1-8.5"/>
+    <rule ref="PHPCompatibilityWP"/>
+</ruleset>

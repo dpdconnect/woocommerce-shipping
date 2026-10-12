@@ -14,9 +14,9 @@ DOCS_METADATA:
 
 | Requirement | Minimum version |
 |---|---|
-| WordPress | 5.8+ |
-| WooCommerce | 6.0+ |
-| PHP | 7.4+ |
+| WordPress | 6.2+ |
+| WooCommerce | 8.0+ |
+| PHP | 8.1+ |
 | Composer | Required for dependency installation |
 
 ## Manual Installation
