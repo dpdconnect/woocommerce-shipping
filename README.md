@@ -4,8 +4,8 @@
 
 # DPD Connect for WooCommerce
 
-![PHP](https://img.shields.io/badge/PHP-8.0%2B-8892BF?logo=php&logoColor=white)
-![WooCommerce](https://img.shields.io/badge/WooCommerce-6.0%2B-96588A?logo=woocommerce&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.1%2B-8892BF?logo=php&logoColor=white)
+![WooCommerce](https://img.shields.io/badge/WooCommerce-8.0%2B-96588A?logo=woocommerce&logoColor=white)
 ![License](https://img.shields.io/badge/License-GPL--3.0-darkgreen)
 ![Version](https://img.shields.io/badge/Version-2.0.2-brightgreen)
 
@@ -63,9 +63,9 @@ Generate labels, offer Parcelshop pickup at checkout, and monitor async batches 
 
 | Requirement | Minimum |
 |---|---|
-| PHP | 8.0+ |
-| WordPress | 5.8+ |
-| WooCommerce | 6.0+ |
+| PHP | 8.1+ |
+| WordPress | 6.2+ |
+| WooCommerce | 8.0+ |
 | Composer | Required for dependency installation |
 | DPD Connect account | Required — obtain credentials from DPD |
 

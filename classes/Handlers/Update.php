@@ -16,6 +16,9 @@ class Update
         // Remove old api keys, store them in new api key if they were set
         if (DPDCONNECT_PLUGIN_VERSION != '1.2.9') {
             $options = get_option('dpdconnect_parcelshop');
+            if (!is_array($options)) {
+                $options = [];
+            }
 
             if (!isset($options['dpdconnect_google_maps_api_key'])) {
                 $apiKey = '';

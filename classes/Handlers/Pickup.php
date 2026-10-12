@@ -6,9 +6,9 @@ use DpdConnect\classes\Option;
 use DpdConnect\classes\shippingmethods\DPDShippingMethod;
 use DpdConnect\Sdk\CacheWrapper;
 use DpdConnect\Sdk\Client;
-use DpdConnect\Sdk\Common\HttpClient;
 use DpdConnect\Sdk\Resources\Token;
 use DpdConnect\classes\Connect\Cache;
+use DpdConnect\classes\Connect\Connection;
 
 class Pickup
 {
@@ -43,7 +43,7 @@ class Pickup
     private static function getPublicToken(): ?string
     {
         try {
-            $token = new Token(new HttpClient(Client::ENDPOINT));
+            $token = new Token(Connection::httpClient(Client::ENDPOINT));
             $token->setCacheWrapper(new CacheWrapper(new Cache()));
             return $token->getPublicJWTToken(
                 Option::connectUsername(),

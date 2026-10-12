@@ -17,6 +17,18 @@ use DpdConnect\Sdk\CacheWrapper;
 
 class Connection
 {
+    /**
+     * cURL timeouts in seconds, passed to every SDK HTTP client we build.
+     *
+     * The plugin was locked on php-sdk 1.1.9, whose defaults were 100s total / 100s
+     * connect, and 1000/1000 when the constructor was called without arguments. From
+     * 1.1.14 onward the SDK defaults are 30s total / 2s connect. A synchronous label
+     * request covers up to Option::MAX_ASYNC_TRESHOLD shipments and a slow host needs
+     * more than two seconds to connect, so set the window here rather than inherit it.
+     */
+    private const HTTP_TIMEOUT = 300;
+    private const HTTP_CONNECT_TIMEOUT = 10;
+
     /** @var Client|null  */
     protected ?Client $client;
 
@@ -30,6 +42,8 @@ class Connection
             'webshopVersion' => Version::webshop(),
             'pluginVersion' => Version::plugin(),
         ]));
+
+        $clientBuilder->setHttpClient(self::httpClient($url));
 
         $this->client = $clientBuilder->buildAuthenticatedByPassword($username, $password);
         $this->client->getAuthentication()->setJwtToken(
@@ -51,7 +65,7 @@ class Connection
     public static function getPublicJwtToken()
     {
         $token = new Token(
-            new HttpClient(Option::connectUrl())
+            self::httpClient(Option::connectUrl())
         );
 
         $userName = Option::connectUsername();
@@ -61,5 +75,13 @@ class Connection
         $token->setCacheWrapper($cacheWrapper);
 
         return $token->getPublicJWTToken($userName, Option::connectPassword());
+    }
+
+    /**
+     * Build an SDK HTTP client with the plugin's timeouts instead of the SDK defaults.
+     */
+    public static function httpClient(string $url): HttpClient
+    {
+        return new HttpClient($url, self::HTTP_TIMEOUT, self::HTTP_CONNECT_TIMEOUT);
     }
 }
