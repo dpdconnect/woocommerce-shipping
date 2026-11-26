@@ -58,13 +58,22 @@ class Shipment extends Connection
             return $labels;
         } catch (RequestException $e) {
             foreach ($e->getErrorDetails()->validation as $detail) {
-                list($orderId, $simplePath) = OrderResponseTransformer::parseDetail($map, $detail);
+                try {
+                    list($orderId, $simplePath) = OrderResponseTransformer::parseDetail($map, $detail);
+                } catch (InvalidResponseException $parseException) {
+                    // Validation error without a shipment path (e.g. a product rule): show the DPD message as-is
+                    Notice::add($detail['message'] ?? __('Something went wrong at DPD Connect'), NoticeType::ERROR, true);
+                    continue;
+                }
                 Notice::add('Order ' . $orderId . ': ' . __($detail['message'] . ' for ' . $simplePath), NoticeType::ERROR, true);
             }
 
             foreach ($e->getErrorDetails()->errors as $detail) {
                 if (!is_array($detail)) {
-                    Notice::add($detail, NoticeType::ERROR, true);
+                    // The SDK adds an empty entry when DPD sends no message; an empty notice helps nobody
+                    if (!empty($detail)) {
+                        Notice::add($detail, NoticeType::ERROR, true);
+                    }
                 } else {
                     try {
                         list($orderId, $simplePath) = OrderResponseTransformer::parseDetail($map, $detail);

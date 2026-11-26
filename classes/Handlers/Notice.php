@@ -22,6 +22,11 @@ class Notice
         update_option("my_flash_notices", $notices);
     }
 
+    public static function hasNotices(): bool
+    {
+        return !empty(get_option("my_flash_notices", []));
+    }
+
     public static function flash()
     {
         $notices = get_option("my_flash_notices", []);
