@@ -350,6 +350,10 @@ class LabelRequest
         try {
             return $shipmentRepo->create($shipments, $map, $type);
         } catch (Exception $e) {
+            // Never redirect silently: the user would see no label and no reason
+            if (!Notice::hasNotices()) {
+                Notice::add(__('The label could not be created. DPD Connect returned an error without details.', 'dpdconnect'), NoticeType::ERROR, true);
+            }
             self::redirect();
         }
     }
